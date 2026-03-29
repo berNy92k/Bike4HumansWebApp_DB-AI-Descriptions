@@ -46,6 +46,26 @@ This means the project is no longer just a standard shop backend — it is becom
 
 ---
 
+Admin panel:
+![admin_homepage.png](app/static/images/readme/admin_homepage.png)
+
+Admin panel -> Orders (filters/ sort by):
+![img.png](app/static/images/readme/admin_orders.png)
+
+Homepage:
+![homepage.png](app/static/images/readme/homepage.png)
+
+Bikes:
+![homepage_bikes.png](app/static/images/readme/homepage_bikes.png)
+
+Shopping cart:
+![homepage_shopping_cart.png](app/static/images/readme/homepage_shopping_cart.png)
+
+Order page:
+![homepage_orders.png](app/static/images/readme/homepage_orders.png)
+
+---
+
 ## ✨ Highlights
 
 - **Dedicated admin panel** for managing bikes, manufacturers, users, carts, checkouts, and orders
