@@ -1,0 +1,116 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Koszyk - krok 3{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Koszyk</span>
+            <h2>Krok 3: finalizacja płatności</h2>
+            {% if payment_status in ["cancel", "failed"] %}
+                <p>Płatność nie powiodła się albo została anulowana. Za chwilę pokażemy wynik zamówienia.</p>
+            {% else %}
+                <p>Finalizujemy zamówienie. Za chwilę zostaniesz przekierowany na stronę ordera.</p>
+            {% endif %}
+        </div>
+
+        <div class="checkout-step2">
+            <div class="checkout-summary product-card">
+                <div class="checkout-summary__header">
+                    <h3>Status przetwarzania</h3>
+                    <span class="checkout-summary__badge" id="countdown-badge">3s</span>
+                </div>
+
+                <div class="checkout-summary__grid">
+                    <div class="checkout-summary__item">
+                        <span>Payment status</span>
+                        <strong>{{ payment_status }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Checkout ID</span>
+                        <strong>{{ checkout_id }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Payment method ID</span>
+                        <strong>{{ payment_method_id }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Tax</span>
+                        <strong>{{ tax }}%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="checkout-step2__side">
+                <div class="checkout-sidebar product-card">
+                    {% if payment_status in ["cancel", "failed"] %}
+                        <h3>Płatność anulowana</h3>
+                        <p class="detail-text">Zamówienie zostanie oznaczone jako anulowane.</p>
+                    {% else %}
+                        <h3>Przetwarzanie płatności</h3>
+                        <p class="detail-text">Twoje zamówienie jest przygotowywane do utworzenia.</p>
+                    {% endif %}
+                </div>
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    const countdownBadge = document.getElementById("countdown-badge");
+    const paymentStatus = "{{ payment_status }}";
+
+    const getCookieValue = (name) => {
+        const cookie = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`));
+
+        return cookie ? decodeURIComponent(cookie.split("=").slice(1).join("=")) : "";
+    };
+
+    const token = getCookieValue("access_token");
+
+    const payload = {
+        checkout_id: {{ checkout_id }},
+        payment_method_id: {{ payment_method_id }},
+        tax: {{ tax }},
+        payment_status: "{{ payment_status }}"
+    };
+
+    try {
+        await fetch("/order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token ? `Bearer ${token}` : ""
+            },
+            body: JSON.stringify(payload)
+        });
+    } catch (error) {
+        console.error("Order request failed:", error);
+    }
+
+    let seconds = 3;
+
+    const tick = () => {
+        if (countdownBadge) {
+            countdownBadge.textContent = `${seconds}s`;
+        }
+
+        if (seconds <= 0) {
+            window.location.href = "/order";
+            return;
+        }
+
+        seconds -= 1;
+        setTimeout(tick, 1000);
+    };
+
+    tick();
+});
+</script>
+{% endblock %}

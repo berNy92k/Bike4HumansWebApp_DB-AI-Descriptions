@@ -1,0 +1,130 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Provider płatności{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Payment provider</span>
+            <h2>Fake provider płatności</h2>
+            <p>Wybierz, czy płatność została zakończona, anulowana albo zakończyła się błędem.</p>
+        </div>
+
+        <div class="checkout-step2">
+            <div class="checkout-summary product-card">
+                <div class="checkout-summary__header">
+                    <h3>Informacje o płatności</h3>
+                    <span class="checkout-summary__badge">Symulacja</span>
+                </div>
+
+                <div class="checkout-summary__grid">
+                    <div class="checkout-summary__item">
+                        <span>Checkout ID</span>
+                        <strong>{{ checkout.id }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Name</span>
+                        <strong>{{ user.name }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Surname</span>
+                        <strong>{{ user.surname }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Email</span>
+                        <strong>{{ user.email }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Payment method</span>
+                        <strong>{{ method.name }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Opłata serwisowa</span>
+                        <strong>{{ method.price }} {{ checkout.currency }}</strong>
+                    </div>
+                    <div class="checkout-summary__item">
+                        <span>Tax</span>
+                        <strong>{{ tax }}%</strong>
+                    </div>
+                    <div class="checkout-summary__item checkout-summary__item--total">
+                        <span>Total price</span>
+                        <strong>{{ checkout.total_price +  method.price}} {{ checkout.currency }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="checkout-step2__side">
+                <div class="checkout-sidebar product-card">
+                    <h3>Fake provider</h3>
+
+                    <form id="payment-provider-form" class="checkout-sidebar__form">
+                        <input type="hidden" name="checkout_id" value="{{ checkout.id }}">
+                        <input type="hidden" name="payment_method_id" value="{{ payment_method_id }}">
+                        <input type="hidden" name="tax" value="{{ tax }}">
+
+                        <button type="button" data-status="delivery" class="site-btn site-btn--primary checkout-sidebar__button">
+                            Zapłacone
+                        </button>
+
+                        <button type="button" data-status="canceled" class="site-btn site-btn--secondary checkout-sidebar__button">
+                            Anuluj
+                        </button>
+
+                        <button type="button" data-status="failed" class="site-btn site-btn--error checkout-sidebar__button">
+                            Błąd płatności
+                        </button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buttons = document.querySelectorAll("#payment-provider-form button[data-status]");
+
+    const getCookieValue = (name) => {
+        const cookie = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`));
+
+        return cookie ? decodeURIComponent(cookie.split("=").slice(1).join("=")) : "";
+    };
+
+    const redirectToOrderPage = async (status) => {
+        const token = getCookieValue("access_token");
+
+        try {
+            const previousStatus = "pending"
+            const updateResponse = await fetch(`/order?status=${encodeURIComponent(status)}&statusPrevious=${encodeURIComponent(previousStatus)}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token ? `Bearer ${token}` : ""
+                }
+            });
+
+            if (!updateResponse.ok) {
+                throw new Error(`PUT /order failed with status ${updateResponse.status}`);
+            }
+
+            const data = await updateResponse.json();
+            window.location.href = `/order/details?orderId=${encodeURIComponent(data.order_id)}`;
+        } catch (error) {
+            console.error("Payment provider flow failed:", error);
+        }
+    };
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const status = button.dataset.status;
+            redirectToOrderPage(status);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Dodaj producenta{% endblock %}
+
+{% block nav_manufacturers_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/manufacturers/admin_create_manufacturers.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/manufacturers/admin_create_manufacturer.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Dodaj producenta</h2>
+        <p>Uzupełnij dane nowego producenta w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/manufacturer/list">← Wróć do listy</a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form id="manufacturer-create-form" class="bike-form" autocomplete="off">
+        <div id="form-message" class="form-message" aria-live="polite"></div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="name">Nazwa</label>
+                <input id="name" name="name" type="text" placeholder="Np. Trek" required>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="description">Opis</label>
+                <textarea id="description" name="description" rows="5" placeholder="Krótki opis producenta..."></textarea>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="image_url">Zdjęcie</label>
+                <input id="image_url" type="text" value="Uzupełniane automatycznie" readonly class="gray-input">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Zapisz producenta</button>
+            <a class="btn btn-secondary" href="/admin/manufacturer/list">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+<header class="site-header">
+    <div class="site-header__inner">
+        <a href="/" class="site-brand">
+            <span class="site-brand__icon">🚴</span>
+            <span class="site-brand__text">
+                <strong>Bike4Humans</strong>
+                <small>Sklep rowerowy premium</small>
+            </span>
+        </a>
+
+        <nav class="site-nav">
+            <a href="/">Home</a>
+            <a href="/bikes">Rowery</a>
+            <a href="#about">Dlaczego my</a>
+        </nav>
+
+        <div class="site-header__actions">
+            {% if logged_user %}
+                {% if has_checkout %}
+                    <a href="/cart/step2" class="site-btn site-btn--secondary">Checkout</a>
+                {% elif has_cart %}
+                    <a href="/cart/step1" class="site-btn site-btn--secondary">Koszyk</a>
+                {% endif %}
+
+                <a href="/auth/logout" class="site-btn site-btn--primary">Wyloguj się</a>
+            {% else %}
+                <a href="/auth/login" class="site-btn site-btn--primary">Zaloguj się</a>
+            {% endif %}
+        </div>
+    </div>
+</header>

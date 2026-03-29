@@ -1,0 +1,61 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Szczegóły roweru{% endblock %}
+
+{% block nav_bikes_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/bikes/admin_bikes.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Szczegóły roweru</h2>
+        <p>Podgląd pełnych informacji o wybranym rowerze.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/bikes/list">← Wróć do listy</a>
+        <a class="btn btn-primary" href="/admin/bikes/{{ bike.id }}/edit">Edytuj</a>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>{{ bike.name }}</h3>
+        <a href="/admin/user/{{ bike.created_by }}/details"><span class="badge badge-neutral">created by: {{ bike.created_by }}</span></a>
+        <span class="badge badge-neutral">ID: {{ bike.id }}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;">
+        <div>
+            {% if bike.image_url %}
+                <img src="{{ bike.image_url }}" alt="{{ bike.name }}" style="width: 100%; border-radius: 12px; object-fit: cover;">
+            {% else %}
+                <div style="width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #f2f4f7; font-size: 48px;">
+                    🚲
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <p><strong>Nazwa:</strong> {{ bike.name }}</p>
+            <p><strong>Producent:</strong>
+                {% for manufacturer in manufacturers %}
+                    {% if manufacturer.id == bike.brand_id %}
+                        <a href="/admin/manufacturer/{{ manufacturer.id }}/details">{{ manufacturer.name }}</a>
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <p><strong>Cena:</strong> {{ "%.2f"|format(bike.price) }} zł</p>
+            <p><strong>Stan magazynowy:</strong> {{ bike.stock_quantity }}</p>
+            <p><strong>Status:</strong> {% if bike.is_active %}Aktywny{% else %}Nieaktywny{% endif %}</p>
+            <p><strong>Utworzono:</strong> {{ bike.created_at }}</p>
+            <p><strong>Aktualizacja:</strong> {{ bike.updated_at }}</p>
+            <p><strong>Opis:</strong> {{ bike.description or 'Brak opisu' }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Szczegóły producenta{% endblock %}
+
+{% block nav_manufacturers_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/manufacturers/admin_create_manufacturers.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Szczegóły producenta</h2>
+        <p>Podgląd pełnych informacji o wybranym producencie.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/manufacturer/list">← Wróć do listy</a>
+        <a class="btn btn-primary" href="/admin/manufacturer/{{ manufacturer.id }}/edit">Edytuj</a>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>{{ manufacturer.name }}</h3>
+        <a href="/admin/user/{{ manufacturer.created_by }}/details"><span class="badge badge-neutral">created by: {{ manufacturer.created_by }}</span></a>
+        <span class="badge badge-neutral">ID: {{ manufacturer.id }}</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;">
+        <div>
+            {% if manufacturer.image_url %}
+                <img src="{{ manufacturer.image_url }}" alt="{{ manufacturer.name }}" style="width: 100%; border-radius: 12px; object-fit: cover;">
+            {% else %}
+                <div style="width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #f2f4f7; font-size: 48px;">
+                    🏭
+                </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <p><strong>Nazwa:</strong> {{ manufacturer.name }}</p>
+            <p><strong>Opis:</strong> {{ manufacturer.description or 'Brak opisu' }}</p>
+            <p><strong>Zdjęcie:</strong> {{ manufacturer.image_url or 'Brak zdjęcia' }}</p>
+            <p><strong>Utworzono:</strong> {{ manufacturer.created_at }}</p>
+            <p><strong>Aktualizacja:</strong> {{ manufacturer.updated_at }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

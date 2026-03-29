@@ -1,0 +1,65 @@
+{% extends 'front/homepage/layout.html' %}
+
+{% block title %}Bike4Humans | Rejestracja{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <section class="auth-card auth-card--wide">
+        <div class="auth-card__intro">
+            <span class="section__label">Rejestracja</span>
+            <h1>Załóż konto</h1>
+            <p>Utwórz konto, żeby szybciej kupować, śledzić swoje dane i korzystać z funkcji sklepu.</p>
+
+            <div class="auth-card__note">
+                <strong>Prosto i przejrzyście</strong>
+                <span>Utwórz konto, aby szybciej kupować i zarządzać swoim profilem.</span>
+            </div>
+        </div>
+
+        <form id="register-form" class="auth-form auth-form--grid" method="post" action="/auth/user">
+            <label class="auth-field">
+                <span>Login</span>
+                <input type="text" name="username" placeholder="np. rowerowy_kris" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Email</span>
+                <input type="email" name="email" placeholder="np. kris@example.com" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Imię</span>
+                <input type="text" name="name" placeholder="Imię" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Nazwisko</span>
+                <input type="text" name="surname" placeholder="Nazwisko" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Hasło</span>
+                <input type="password" name="password" placeholder="Utwórz hasło" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Powtórz hasło</span>
+                <input type="password" name="confirm_password" placeholder="Powtórz hasło" required>
+            </label>
+
+            <div class="auth-form__footer">
+                <label class="auth-checkbox">
+                    <input type="checkbox" required>
+                    <span>Akceptuję regulamin</span>
+                </label>
+
+                <a href="/auth/login" class="auth-link">Masz już konto?</a>
+            </div>
+
+            <button type="submit" class="site-btn site-btn--primary auth-submit">Utwórz konto</button>
+        </form>
+    </section>
+</div>
+
+<script src="/static/js/auth/register.js"></script>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Producent{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/front/homepage/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="section__heading">
+        <span class="section__label">Producent</span>
+        <h2>{{ manufacturer.name }}</h2>
+        <p>{{ manufacturer.description }}</p>
+    </div>
+
+    <div class="hero" style="grid-template-columns: 1fr 0.9fr; background: #fff; color: var(--text);">
+        <div class="product-card" style="padding: 22px;">
+            <h3 style="margin-top: 0;">O producencie</h3>
+            <p style="color: var(--muted); line-height: 1.7;">
+                {{ manufacturer.long_description }}
+            </p>
+
+            <ul class="info-list">
+                <li><strong>Kraj</strong><span>{{ manufacturer.country }}</span></li>
+                <li><strong>Rok założenia</strong><span>{{ manufacturer.founded_year }}</span></li>
+                <li><strong>Liczba modeli</strong><span>{{ manufacturer.bike_count }}</span></li>
+            </ul>
+
+            <div class="hero__actions">
+                <a href="/manufacturers" class="site-btn site-btn--secondary">Wróć do listy</a>
+            </div>
+        </div>
+
+        <aside class="product-card" style="padding: 22px;">
+            <h3 style="margin-top: 0;">Rowery tej marki</h3>
+            <div style="display: grid; gap: 12px; margin-top: 16px;">
+                {% for bike in bikes %}
+                <a class="mini-item" href="/bikes/{{ bike.id }}">
+                    <span>{{ bike.name }}</span>
+                    <span class="muted">{{ bike.price }} zł</span>
+                </a>
+                {% endfor %}
+            </div>
+        </aside>
+    </div>
+</section>
+{% endblock %}

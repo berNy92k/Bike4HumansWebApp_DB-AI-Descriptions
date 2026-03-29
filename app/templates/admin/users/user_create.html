@@ -1,0 +1,82 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Dodaj użytkownika{% endblock %}
+
+{% block nav_users_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/users/admin_create_user.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/users/admin_create_user.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Dodaj użytkownika</h2>
+        <p>Uzupełnij dane nowego użytkownika w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/user/list">← Wróć do listy</a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form id="user-create-form" class="bike-form" autocomplete="off">
+        <div id="form-message" class="form-message" aria-live="polite"></div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="username">Nazwa użytkownika</label>
+                <input id="username" name="username" type="text" placeholder="Np. jan.kowalski" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" placeholder="Np. jan@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Imię</label>
+                <input id="name" name="name" type="text" placeholder="Np. Jan" required>
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Nazwisko</label>
+                <input id="surname" name="surname" type="text" placeholder="Np. Kowalski" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role_id">Rola</label>
+                <select id="role_id" name="role_id" required>
+                    <option value="">Wybierz rolę</option>
+                    {% for role in roles %}
+                    <option value="{{ role.id }}">{{ role.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Hasło</label>
+                <input id="password" name="password" type="password" placeholder="Wpisz hasło" required>
+            </div>
+
+            <div class="form-group form-group-full checkbox-row">
+                <input id="is_active" name="is_active" type="checkbox" checked>
+                <label for="is_active">Aktywny</label>
+            </div>
+
+            <div class="form-group form-group-full checkbox-row">
+                <input id="email_verified" name="email_verified" type="checkbox">
+                <label for="email_verified">E-mail zweryfikowany</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Zapisz użytkownika</button>
+            <a class="btn btn-secondary" href="/admin/user/list">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

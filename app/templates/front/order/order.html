@@ -1,0 +1,119 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Zamówienie{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Zamówienie</span>
+            {% if order_status in ["cancel", "failed", "canceled"] %}
+                <h2>Nie udało się sfinalizować płatności</h2>
+                <p>To zamówienie nie zostało opłacone lub zostało anulowane. Możesz wrócić i spróbować ponownie.</p>
+            {% else %}
+                <h2>Zamówienie zostało utworzone</h2>
+                <p>Poniżej znajdziesz podsumowanie Twojego zamówienia i jego bieżący status.</p>
+            {% endif %}
+        </div>
+
+        <div class="checkout-step2">
+            <div class="checkout-summary product-card">
+                <div class="checkout-summary__header">
+                    <h3>
+                        {% if order_status in ["cancel", "failed", "canceled"] %}
+                            Status zamówienia
+                        {% else %}
+                            Podsumowanie zamówienia
+                        {% endif %}
+                    </h3>
+                    <span class="checkout-summary__badge {% if order_status in ['cancel', 'failed', 'canceled'] %}checkout-summary__badge--error{% else %}checkout-summary__badge--success{% endif %}">
+                        {{ order_status|default(order.status) }}
+                    </span>
+                </div>
+
+                {% if order_status in ["cancel", "failed", "canceled"] %}
+                    <div class="checkout-summary__grid">
+                        <div class="checkout-summary__item checkout-summary__item--total">
+                            <span>Informacja</span>
+                            <strong>Płatność została anulowana lub zakończona błędem.</strong>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="checkout-summary__grid">
+                        <div class="checkout-summary__item">
+                            <span>Order ID</span>
+                            <strong>#{{ order.order_id }}</strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Metoda płatności</span>
+                            <strong>{{ payment_method_name }}</strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Waluta</span>
+                            <strong>{{ order.currency }}</strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Tax</span>
+                            <strong>{{ tax }}%</strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Suma produktów</span>
+                            <strong>{{ order.total_price }} {{ order.currency }}</strong>
+                        </div>
+                        <div class="checkout-summary__item checkout-summary__item--total">
+                            <span>Łącznie</span>
+                            <strong>{{ final_total }} {{ order.currency }}</strong>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <aside class="checkout-step2__side">
+                <div class="checkout-sidebar product-card">
+                    {% if order_status in ["cancel", "failed", "canceled"] %}
+                        <h3>Co dalej?</h3>
+                        <p class="detail-text">
+                            Możesz wrócić do koszyka i ponowić próbę płatności.
+                        </p>
+                        <a href="/cart/step2" class="site-btn site-btn--primary checkout-sidebar__button">Wróć do płatności</a>
+                    {% else %}
+                        <h3>Informacje dodatkowe</h3>
+                        <div class="detail-grid detail-grid--side">
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value">{{ order_status|default(order.status) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Payment</span>
+                                <span class="detail-value">{{ payment_method_name }}</span>
+                            </div>
+                        </div>
+
+                        <a href="/" class="site-btn site-btn--primary checkout-sidebar__button">Wróć na stronę główną</a>
+                    {% endif %}
+                </div>
+            </aside>
+        </div>
+
+        {% if order_status not in ["cancel", "failed", "canceled"] %}
+        <div class="section" style="margin-top: 24px;">
+            <div class="product-card">
+                <div class="checkout-summary__header">
+                    <h3>Pozycje w zamówieniu</h3>
+                    <span class="checkout-summary__badge">Szczegóły</span>
+                </div>
+
+                <div class="checkout-summary__grid">
+                    {% for item in order.items %}
+                    <div class="checkout-summary__item">
+                        <span>{{ item.bike.name }} × {{ item.quantity }}</span>
+                        <strong>{{ item.bike.price * item.quantity }} {{ order.currency }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Szczegóły roweru{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/front/homepage/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section bike-detail-section">
+        <div class="section__heading">
+            <a href="/bikes"> <span class="section__label">Rowery</span> </a>
+            <h2>{{ bike.name }}</h2>
+            <p>
+                {% for manufacturer in manufacturers %}
+                    {% if manufacturer.id == bike.brand_id %}
+                        {{ manufacturer.name }}
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+
+        <div class="bike-detail-layout">
+            <div class="bike-detail-main product-card">
+                <div class="bike-detail-image">
+                    <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
+                </div>
+
+                <div class="detail-block">
+                    <h3>Opis</h3>
+                    <p class="detail-text">{{ bike.description or 'Brak opisu' }}</p>
+                </div>
+            </div>
+
+            <aside class="bike-detail-side product-card">
+                <div class="detail-block">
+                    <h3>Najważniejsze informacje</h3>
+                    <div class="detail-grid detail-grid--side">
+                        <div class="detail-item">
+                            <span class="detail-label">Producent</span>
+                            <span class="detail-value">
+                                {% for manufacturer in manufacturers %}
+                                    {% if manufacturer.id == bike.brand_id %}
+                                        {{ manufacturer.name }}
+                                    {% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Rama</span>
+                            <span class="detail-value">{{ bike.frame_size }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Koła</span>
+                            <span class="detail-value">{{ bike.wheel_size }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Cena</span>
+                            <span class="detail-value">{{ bike.price }} zł</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-block">
+                    <h3>Dodatkowe informacje</h3>
+                    <div class="detail-grid detail-grid--side">
+                        <div class="detail-item">
+                            <span class="detail-label">Dostępność</span>
+                            <span class="detail-value">{{ bike.stock_quantity }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Kolor</span>
+                            <span class="detail-value">{{ bike.color or '—' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero__actions">
+                    <form id="add-to-cart-form">
+                        <input type="hidden" name="bike_id" value="{{ bike.id }}">
+                        <button type="submit" class="site-btn site-btn--primary">Dodaj do koszyka</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("add-to-cart-form");
+
+    if (!form) {
+        console.error("Nie znaleziono formularza add-to-cart-form");
+        return;
+    }
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const token = getCookie("access_token");
+        if (!token) {
+            window.location.href = "/auth/login";
+            return;
+        }
+
+        const bikeId = form.querySelector('input[name="bike_id"]')?.value;
+
+        if (!bikeId) {
+            console.error("Nie znaleziono bike_id w formularzu");
+            return;
+        }
+
+        const response = await fetch("/cart/item", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                bike_id: Number(bikeId)
+            })
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            window.location.href = "/auth/login";
+            return;
+        }
+
+        if (!response.ok) {
+            alert("Nie udało się dodać roweru do koszyka.");
+            return;
+        }
+
+        window.location.href = "/cart/step1";
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}

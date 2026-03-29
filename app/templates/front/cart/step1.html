@@ -1,0 +1,121 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Koszyk - krok 1{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Koszyk</span>
+            <h2>Krok 1: podsumowanie zamówienia</h2>
+            <p>Sprawdź zawartość koszyka i przejdź do kolejnego etapu zakupu.</p>
+        </div>
+
+        {% if cart and cart.items %}
+        <div class="product-card" style="padding: 24px; border-radius: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div>
+                    <h3 style="margin: 0;">Twoje produkty</h3>
+                    <p style="margin: 6px 0 0; color: #6b7280;">Masz {{ cart.items|length }} produkt(ów) w koszyku.</p>
+                </div>
+                <div style="background: #f3f4f6; padding: 10px 14px; border-radius: 999px; font-weight: 600;">
+                    Krok 1 z 3
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 16px; margin-bottom: 24px;">
+                {% for item in cart.items %}
+                <div style="display: grid; grid-template-columns: 120px 1fr auto; gap: 16px; align-items: center; padding: 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff;">
+                    <div style="width: 120px; height: 90px; border-radius: 12px; background: #f8fafc; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        {% if item.bike.image_url %}
+                            <img src="{{ item.bike.image_url }}" alt="{{ item.bike.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                            <span style="color: #9ca3af; font-size: 14px;">Brak zdjęcia</span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h4 style="margin: 0 0 8px;">{{ item.bike.name }}</h4>
+                        <div style="display: grid; gap: 4px; color: #6b7280; font-size: 14px;">
+                            <span>Cena: <strong style="color: #111827;">{{ item.bike.price }} zł</strong></span>
+                            <span>Ilość: <strong style="color: #111827;">{{ item.quantity }}</strong></span>
+                            {% if item.bike.color %}
+                            <span>Kolor: <strong style="color: #111827;">{{ item.bike.color }}</strong></span>
+                            {% endif %}
+                            {% if item.bike.frame_size %}
+                            <span>Rama: <strong style="color: #111827;">{{ item.bike.frame_size }}</strong></span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Wartość</div>
+                        <div style="font-size: 20px; font-weight: 700; color: #111827;">
+                            {{ (item.bike.price * item.quantity) | round(2) }} zł
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+                <div>
+                    <p style="margin: 0; color: #6b7280;">Po kliknięciu najpierw utworzymy checkout, a potem przejdziesz do kolejnego kroku.</p>
+                </div>
+
+                <button type="button" class="site-btn site-btn--primary" id="go-to-step2-btn">
+                    Dalej
+                </button>
+            </div>
+        </div>
+        {% else %}
+        <div class="product-card" style="padding: 28px; border-radius: 18px; text-align: center;">
+            <h3 style="margin-top: 0;">Twój koszyk jest pusty</h3>
+            <p style="color: #6b7280; margin-bottom: 20px;">Dodaj rowery do koszyka, aby rozpocząć proces zakupowy.</p>
+            <a href="/" class="site-btn site-btn--primary">Wróć do zakupów</a>
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+<script>
+    const checkoutButton = document.getElementById("go-to-step2-btn");
+
+    function getCookie(name) {
+        const cookies = document.cookie.split(";").map(cookie => cookie.trim());
+        const found = cookies.find(cookie => cookie.startsWith(name + "="));
+        return found ? decodeURIComponent(found.substring(name.length + 1)) : null;
+    }
+
+    if (checkoutButton) {
+        checkoutButton.addEventListener("click", async () => {
+            checkoutButton.disabled = true;
+
+            try {
+                const token = getCookie("access_token");
+
+                if (!token) {
+                    throw new Error("Brak tokenu dostępu.");
+                }
+
+                const response = await fetch("/checkout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Nie udało się utworzyć checkoutu.");
+                }
+
+                window.location.href = "/cart/step2";
+            } catch (error) {
+                console.error(error);
+                checkoutButton.disabled = false;
+                alert("Wystąpił problem podczas tworzenia checkoutu. Spróbuj ponownie.");
+            }
+        });
+    }
+</script>
+{% endblock %}

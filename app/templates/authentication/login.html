@@ -1,0 +1,43 @@
+{% extends 'front/homepage/layout.html' %}
+
+{% block title %}Bike4Humans | Logowanie{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <section class="auth-card">
+        <div class="auth-card__intro">
+            <span class="section__label">Logowanie</span>
+            <h1>Witaj ponownie</h1>
+            <p>Zaloguj się, aby sprawdzić zamówienia, ulubione produkty i szybciej wracać do zakupów.</p>
+
+            <div class="auth-card__note">
+                <strong>Bike4Humans</strong>
+                <span>Twoje konto, zamówienia i dane — wszystko w jednym miejscu.</span>
+            </div>
+        </div>
+
+        <form class="auth-form" method="post" action="/auth/token">
+            <label class="auth-field">
+                <span>Login</span>
+                <input type="text" name="username" placeholder="np. jan_kowalski" required>
+            </label>
+
+            <label class="auth-field">
+                <span>Hasło</span>
+                <input type="password" name="password" placeholder="Twoje hasło" required>
+            </label>
+
+            <div class="auth-form__actions">
+                <label class="auth-checkbox">
+                    <input type="checkbox" name="remember_me">
+                    <span>Zapamiętaj mnie</span>
+                </label>
+
+                <a href="/auth/register" class="auth-link">Nie masz konta?</a>
+            </div>
+
+            <button type="submit" class="site-btn site-btn--primary auth-submit">Zaloguj się</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

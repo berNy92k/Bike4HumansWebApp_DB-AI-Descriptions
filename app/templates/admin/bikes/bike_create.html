@@ -1,0 +1,77 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Dodaj rower{% endblock %}
+
+{% block nav_bikes_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/bikes/admin_create_bike.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/bikes/admin_create_bike.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Dodaj rower</h2>
+        <p>Uzupełnij dane nowego roweru w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/bikes/list">← Wróć do listy</a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form id="bike-create-form" class="bike-form" autocomplete="off">
+        <div id="form-message" class="form-message" aria-live="polite"></div>
+
+        <div class="form-grid">
+            <div class="form-group form-group-full">
+                <label for="name">Nazwa</label>
+                <input id="name" name="name" type="text" placeholder="Np. Trek Marlin 7" required>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="description">Opis</label>
+                <textarea id="description" name="description" rows="5" placeholder="Krótki opis roweru..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="brand_id">Producent</label>
+                <select id="brand_id" name="brand_id" required>
+                    <option value="">Wybierz producenta</option>
+                    {% for manufacturer in manufacturers %}
+                    <option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Cena</label>
+                <input id="price" name="price" type="number" step="0.01" min="0" placeholder="0.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="stock_quantity">Stan magazynowy</label>
+                <input id="stock_quantity" name="stock_quantity" type="number" step="1" min="0" value="0">
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="image_url">Zdjęcie</label>
+                <input id="image_url" type="text" value="Uzupełniane automatycznie" readonly class="gray-input">
+            </div>
+
+            <div class="form-group form-group-full checkbox-row">
+                <input id="is_active" name="is_active" type="checkbox" checked>
+                <label for="is_active">Aktywny</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Zapisz rower</button>
+            <a class="btn btn-secondary" href="/admin/bikes/list">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
