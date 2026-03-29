@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Rowery{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/front/homepage/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Rowery</span>
+            <h2>Lista rowerów</h2>
+            <p>Przeglądaj dostępne modele i wybierz coś dla siebie.</p>
+        </div>
+
+        <div class="bikes-grid">
+            {% for bike in bikes %}
+            <a class="bike-card" href="/bikes/{{ bike.id }}">
+                <div class="bike-card__image">
+                    <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
+                </div>
+                <div class="bike-card__body">
+                    <div class="badge">{{ bike.manufacturer_name }}</div>
+                    <h3 class="bike-card__title">{{ bike.name }}</h3>
+                    <p class="bike-card__text">{{ bike.short_description }}</p>
+                    <div class="bike-card__footer">
+                        <strong>{{ bike.price }} zł</strong>
+                        <span class="muted">{{ bike.category }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="pagination-card">
+            <div class="pagination-info">
+                Pokazano {{ bikes|length }} wyników
+            </div>
+
+            <div class="pagination-controls">
+                <label class="page-size-label" for="page-size">Na stronie:</label>
+                <select
+                    id="page-size"
+                    class="page-size-select"
+                    onchange="window.location.href='/bikes?page=1&size=' + this.value"
+                >
+                    <option value="4" {% if size == 4 %}selected{% endif %}>4</option>
+                    <option value="8" {% if size == 8 %}selected{% endif %}>8</option>
+                    <option value="12" {% if size == 12 %}selected{% endif %}>12</option>
+                    <option value="16" {% if size == 16 %}selected{% endif %}>16</option>
+                </select>
+
+                <div class="pagination-buttons">
+                    <a
+                        class="pagination-btn pagination-btn--nav {% if page <= 1 %}is-disabled{% endif %}"
+                        href="/bikes?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}"
+                    >Poprzednia</a>
+
+                    <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
+
+                    <a
+                        class="pagination-btn pagination-btn--nav {% if page >= pages %}is-disabled{% endif %}"
+                        href="/bikes?page={{ page + 1 if page < pages else pages }}&size={{ size }}"
+                    >Następna</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

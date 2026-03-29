@@ -1,0 +1,95 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Szczegóły użytkownika{% endblock %}
+
+{% block nav_users_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/users/admin_create_user.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Szczegóły użytkownika</h2>
+        <p>Podgląd danych użytkownika w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/user/list">← Wróć do listy</a>
+        <a class="btn btn-primary" href="/admin/user/{{ user.id }}/edit">Edytuj</a>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Dane użytkownika</h3>
+        <span class="badge badge-neutral">ID: {{ user.id }}</span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <span class="detail-label">Nazwa użytkownika</span>
+            <span class="detail-value">{{ user.username }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">E-mail</span>
+            <span class="detail-value">{{ user.email }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Imię</span>
+            <span class="detail-value">{{ user.name }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Nazwisko</span>
+            <span class="detail-value">{{ user.surname }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Rola</span>
+            <span class="detail-value">{{ user.role_name }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Aktywny</span>
+            <span class="detail-value">
+                {% if user.is_active %}
+                    Tak
+                {% else %}
+                    Nie
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">E-mail zweryfikowany</span>
+            <span class="detail-value">
+                {% if user.email_verified %}
+                    Tak
+                {% else %}
+                    Nie
+                {% endif %}
+            </span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Ostatnie logowanie</span>
+            <span class="detail-value">{{ user.last_login or '—' }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Utworzono</span>
+            <span class="detail-value">{{ user.created_at }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Aktualizacja</span>
+            <span class="detail-value">{{ user.updated_at }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

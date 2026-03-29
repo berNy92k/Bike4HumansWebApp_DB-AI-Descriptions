@@ -1,0 +1,35 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Producenci{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/front/homepage/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="section__heading">
+        <span class="section__label">Producenci</span>
+        <h2>Lista producentów</h2>
+        <p>Wybierz markę, aby zobaczyć jej szczegóły i dostępne rowery.</p>
+    </div>
+
+    <div class="products-grid">
+        {% for manufacturer in manufacturers %}
+        <a class="product-card" href="/manufacturers/{{ manufacturer.id }}">
+            <div class="product-card__body">
+                <div class="badge">{{ manufacturer.country }}</div>
+                <h3 style="margin: 12px 0 8px;">{{ manufacturer.name }}</h3>
+                <p style="margin: 0; color: var(--muted); line-height: 1.6;">
+                    {{ manufacturer.description }}
+                </p>
+                <div class="product-card__footer">
+                    <strong>{{ manufacturer.bike_count }} modeli</strong>
+                    <span class="muted">Kliknij, aby przejść</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

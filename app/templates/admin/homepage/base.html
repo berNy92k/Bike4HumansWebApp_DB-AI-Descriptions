@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bike4Humans | Panel administracyjny{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/admin/homepage/admin_style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-badge">🚴</div>
+            <div>
+                <h1>Bike4Humans</h1>
+                <p>Panel administracyjny</p>
+            </div>
+        </div>
+
+        <div class="nav-section-title">Nawigacja</div>
+        <nav class="nav-list">
+            <a class="nav-item {% block nav_dashboard_active %}{% endblock %}" href="/admin">
+                <span class="nav-icon">🏠</span>
+                <span>Dashboard</span>
+            </a>
+            <a class="nav-item {% block nav_bikes_active %}{% endblock %}" href="/admin/bikes/list?page=1&size=5">
+                <span class="nav-icon">🚲</span>
+                <span>Rowery</span>
+            </a>
+            <a class="nav-item {% block nav_manufacturers_active %}{% endblock %}" href="/admin/manufacturer/list?page=1&size=5">
+                <span class="nav-icon">🏭</span>
+                <span>Producenci</span>
+            </a>
+            <a class="nav-item {% block nav_orders_active %}{% endblock %}" href="/admin/orders/list?page=1&size=5">
+                <span class="nav-icon">🧾</span>
+                <span>Zamówienia</span>
+            </a>
+            <a class="nav-item {% block nav_checkouts_active %}{% endblock %}" href="/admin/checkouts/list?page=1&size=5">
+                <span class="nav-icon">🧾</span>
+                <span>Checkouty</span>
+            </a>
+            <a class="nav-item {% block nav_carts_active %}{% endblock %}" href="/admin/carts/list?page=1&size=5">
+                <span class="nav-icon">🧾</span>
+                <span>Koszyki zakupowe</span>
+            </a>
+            <a class="nav-item {% block nav_users_active %}{% endblock %}" href="/admin/user/list?page=1&size=5">
+                <span class="nav-icon">👤</span>
+                <span>Użytkownicy</span>
+            </a>
+            <a class="nav-item {% block nav_roles_active %}{% endblock %}" href="/admin/user/role/list?page=1&size=5">
+                <span class="nav-icon">🪪</span>
+                <span>Role</span>
+            </a>
+            <a class="nav-item" href="#">
+                <span class="nav-icon">⚙️</span>
+                <span>Ustawienia</span>
+            </a>
+        </nav>
+
+        <div class="nav-section-title">Szybkie opcje</div>
+        <nav class="nav-list">
+            <a class="nav-item" href="/admin/bikes/create">
+                <span class="nav-icon">➕</span>
+                <span>Dodaj rower</span>
+            </a>
+            <a class="nav-item" href="/admin/manufacturer/create">
+                <span class="nav-icon">➕</span>
+                <span>Dodaj producenta</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div><strong>Status:</strong> aktywny</div>
+            <div style="margin-top: 6px;">Wersja panelu: 1.0</div>
+        </div>
+    </aside>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% block extra_body %}{% endblock %}
+</body>
+</html>

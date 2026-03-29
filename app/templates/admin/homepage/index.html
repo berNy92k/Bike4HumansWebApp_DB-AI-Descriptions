@@ -1,0 +1,232 @@
+{% extends 'admin/homepage/base.html' %}
+
+{% block nav_dashboard_active %}active{% endblock %}
+
+{% block title %}Bike4Humans | Dashboard administracyjny{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <div class="topbar-left">
+        <h2>Witaj w panelu admina 👋</h2>
+        <p>Masz pełną kontrolę nad produktami, producentami i zawartością sklepu.</p>
+    </div>
+
+    <div class="topbar-actions">
+        <div class="search">
+            <span>🔎</span>
+            <input type="text" placeholder="Szukaj produktu, marki, modelu...">
+        </div>
+
+        <div class="avatar-menu">
+            <button class="avatar" id="avatarToggle" type="button" aria-haspopup="true" aria-expanded="false">
+                A
+            </button>
+
+            <div class="avatar-dropdown" id="avatarDropdown" role="menu" aria-hidden="true">
+                <a class="avatar-dropdown-item danger" href="/auth/logout" role="menuitem">
+                    🚪 Wyloguj
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="grid-stats">
+    <div class="card stat-card">
+        <div class="stat-label">
+            <span>Rowery</span>
+            <span class="nav-icon">🚲</span>
+        </div>
+        <p class="stat-value">{{ bikeSize }}</p>
+        <p class="stat-note">Liczba wszystkich rowerów w bazie</p>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">
+            <span>Producenci</span>
+            <span class="nav-icon">🏭</span>
+        </div>
+        <p class="stat-value">{{ manufacturerSize }}</p>
+        <p class="stat-note">Ilość producentów w systemie</p>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">
+            <span>Użytkownicy</span>
+            <span class="nav-icon">👤</span>
+        </div>
+        <p class="stat-value">{{ userSize }}</p>
+        <p class="stat-note">Ilość użytkowników w systemie</p>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-label">
+            <span>Role</span>
+            <span class="nav-icon">⚙️</span>
+        </div>
+        <p class="stat-value">{{ roleSize }}</p>
+        <p class="stat-note">Ilość roli w systemie</p>
+    </div>
+</section>
+
+<section class="main-grid">
+    <div class="card panel">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">Szybkie akcje</h3>
+                <p class="panel-subtitle">Najczęściej używane operacje w jednym miejscu.</p>
+            </div>
+            <span class="badge blue">Admin tools</span>
+        </div>
+
+        <div class="action-grid">
+            <a class="action-btn" href="/admin/bikes/create">
+                <div class="action-icon bg-blue">🚲</div>
+                <div>
+                    <strong>Dodaj rower</strong>
+                    <span>Utwórz nowy produkt i przypisz go do producenta.</span>
+                </div>
+            </a>
+
+            <a class="action-btn" href="/admin/manufacturer/create">
+                <div class="action-icon bg-orange">🏭</div>
+                <div>
+                    <strong>Dodaj producenta</strong>
+                    <span>Rozszerz bazę marek i dostawców.</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="card panel">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">Stan katalogu</h3>
+                <p class="panel-subtitle">Krótki podgląd jakości danych.</p>
+            </div>
+        </div>
+
+        <div class="progress-list">
+            <div class="progress-row">
+                <div class="progress-top">
+                    <span>Produkty kompletne</span>
+                    <span>84%</span>
+                </div>
+                <div class="progress-bar"><span style="width: 84%"></span></div>
+            </div>
+
+            <div class="progress-row">
+                <div class="progress-top">
+                    <span>Zdjęcia dodane</span>
+                    <span>71%</span>
+                </div>
+                <div class="progress-bar"><span style="width: 71%"></span></div>
+            </div>
+
+            <div class="progress-row">
+                <div class="progress-top">
+                    <span>Opisy uzupełnione</span>
+                    <span>92%</span>
+                </div>
+                <div class="progress-bar"><span style="width: 92%"></span></div>
+            </div>
+
+            <div class="progress-row">
+                <div class="progress-top">
+                    <span>Producenci aktywni</span>
+                    <span>95%</span>
+                </div>
+                <div class="progress-bar"><span style="width: 95%"></span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="main-grid">
+    <div class="card panel">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">Ostatnio dodane rowery</h3>
+            </div>
+            <a class="badge green" href="/admin/bikes/list">Zobacz wszystkie</a>
+        </div>
+
+        <div class="list">
+            {% if bikesShortList %}
+                {% for bike in bikesShortList %}
+                    <a href="/">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <img
+                                    class="bike-thumb"
+                                    src="{{ bike.image_url or url_for('static', path='images/admin/bike-placeholder.png') }}"
+                                    alt="{{ bike.name }}"
+                                >
+                                <div>
+                                    <p class="list-title">{{ bike.name }}</p>
+                                    <p class="list-meta">ID: {{ bike.id }} • {{ bike.created_at }}</p>
+                                </div>
+                            </div>
+                            <div class="price">{{ bike.price }} zł</div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="hint-box">
+                    <h3>Brak danych do wyświetlenia</h3>
+                    <p>
+                        Tutaj możesz pokazać ostatnio dodane produkty, rowery albo rekordy wymagające edycji.
+                        Na ten moment to bezpieczny placeholder.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card panel mini-panel">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">Szybka uwaga</h3>
+                <p class="panel-subtitle">Co warto sprawdzić podczas pracy w panelu.</p>
+            </div>
+        </div>
+
+        <div class="hint-box">
+            <h3>Sprawdzaj kompletność danych</h3>
+            <p>
+                Zanim zapiszesz produkt, upewnij się, że ma nazwę, producenta, cenę i sensowny opis.
+                Braki w tych polach najszybciej psują jakość katalogu.
+            </p>
+        </div>
+
+        <div class="hint-box">
+            <h3>Dbaj o zdjęcia i opisy</h3>
+            <p>
+                Produkty bez zdjęć albo z bardzo krótkim opisem warto uzupełniać w pierwszej kolejności.
+                To właśnie one najbardziej wpływają na odbiór oferty.
+            </p>
+        </div>
+
+        <div class="hint-box">
+            <h3>Uważaj na poprawność przypisań</h3>
+            <p>
+                Sprawdź, czy rower jest przypisany do właściwego producenta i czy dane nie dublują się
+                pod podobnymi nazwami. To później oszczędza dużo ręcznej poprawy.
+            </p>
+        </div>
+
+        <div class="hint-box">
+            <h3>Porządkuj katalog regularnie</h3>
+            <p>
+                Jeśli widzisz nieaktualne, niepełne albo przypadkowe rekordy, poprawiaj je na bieżąco.
+                Panel najlepiej działa wtedy, gdy dane są czyste i spójne.
+            </p>
+        </div>
+    </div>
+</section>
+
+<div class="footer-note">
+    Bike4Humans admin dashboard • zbudowany jako lekka, czytelna baza.
+</div>
+<script defer src="{{ url_for('static', path='js/admin/homepage/avatar_dropdown.js') }}"></script>
+{% endblock %}

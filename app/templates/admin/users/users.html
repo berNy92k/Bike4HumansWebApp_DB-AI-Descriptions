@@ -1,0 +1,131 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Użytkownicy{% endblock %}
+
+{% block nav_users_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/users/admin_users.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/admin_pagination.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/users/admin_delete_user.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Użytkownicy</h2>
+        <p>Przegląd wszystkich użytkowników w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/user/list?page={{ page }}&size={{ size }}">Odśwież</a>
+        <a class="btn btn-primary" href="/admin/user/create">+ Dodaj użytkownika</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Łącznie użytkowników</div>
+        <div class="stat-value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Strona</div>
+        <div class="stat-value">{{ page }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Na stronie</div>
+        <div class="stat-value">{{ size }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Wszystkie strony</div>
+        <div class="stat-value">{{ pages }}</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Lista użytkowników</h3>
+        <span class="badge badge-neutral">{{ users|length if users is defined else 0 }} rekordów</span>
+    </div>
+
+    {% if users and users|length > 0 %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Użytkownik</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Utworzono</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <div class="bike-cell">
+                            <div class="bike-thumb-placeholder">👤</div>
+                            <div>
+                                <p class="bike-title">{{ user.username or user.name or 'Bez nazwy' }}</p>
+                                <div class="bike-meta">ID: {{ user.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ user.email or '—' }}</td>
+                    <td>
+                        {% if user is defined and user.is_active %}
+                            <span class="badge badge-success">Aktywny</span>
+                        {% else %}
+                            <span class="badge badge-danger">Nieaktywny</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at or '—' }}</td>
+                    <td>
+                        <div class="actions">
+                            <a class="action-link action-view" href="/admin/user/{{ user.id }}/details">Szczegóły</a>
+                            <a class="action-link action-edit" href="/admin/user/{{ user.id }}/edit">Edytuj</a>
+                            <a class="action-link action-delete" href="#" data-user-id="{{ user.id }}">Usuń</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-card">
+        <div class="pagination-info">
+            Pokazano {{ users|length }} z {{ total }} rekordów
+        </div>
+
+        <div class="pagination-controls">
+            <label class="page-size-label" for="page-size">Na stronie:</label>
+            <select id="page-size" class="page-size-select">
+                <option value="5" {% if size == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if size == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if size == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if size == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if size == 100 %}selected{% endif %}>100</option>
+            </select>
+
+            <div class="pagination-buttons">
+                <a class="btn btn-secondary {% if page <= 1 %}is-disabled{% endif %}"
+                   href="/admin/user/list?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}">Poprzednia</a>
+
+                <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
+
+                <a class="btn btn-secondary {% if page >= pages %}is-disabled{% endif %}"
+                   href="/admin/user/list?page={{ page + 1 if page < pages else pages }}&size={{ size }}">Następna</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>Brak użytkowników do wyświetlenia</h3>
+        <p>Dodaj pierwszego użytkownika, aby zobaczyć go na liście.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends "front/homepage/layout.html" %}
+
+{% block title %}Bike4Humans | Koszyk - krok 2{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Koszyk</span>
+            <h2>Krok 2: kwota całkowita, podatki, rabat i płatność</h2>
+            <p>Sprawdź podsumowanie zamówienia, wybierz metodę płatności i opcjonalnie dodaj kod zniżkowy oraz tax.</p>
+        </div>
+
+        {% set ns = namespace(selected_payment_method=None) %}
+        {% for payment_method in payment_methods %}
+            {% if payment_method.id == checkout.payment_method_id %}
+                {% set ns.selected_payment_method = payment_method %}
+            {% endif %}
+        {% endfor %}
+
+        <div class="checkout-step2">
+            <div class="checkout-step2__main">
+                <div class="checkout-summary product-card">
+                    <div class="checkout-summary__header">
+                        <h3>Podsumowanie checkouta</h3>
+                        <span class="checkout-summary__badge">Wyliczone wcześniej</span>
+                    </div>
+
+                    <div class="checkout-summary__grid">
+                        <div class="checkout-summary__item">
+                            <span>Suma</span>
+                            <strong>{{ checkout.total_price }} {{ checkout.currency }}</strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Dostawa</span>
+                            <strong> Darmowa </strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Opłata serwisowa</span>
+                            <strong>
+                                {% if ns.selected_payment_method %}
+                                    ${{ "%.2f"|format(ns.selected_payment_method.price) }}
+                                {% else %}
+                                    $0.00
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="checkout-summary__item">
+                            <span>Rabat</span>
+                            <strong>-$0.00</strong>
+                        </div>
+                        <div class="checkout-summary__item checkout-summary__item--total">
+                            <span>Razem</span>
+                            {% if ns.selected_payment_method %}
+                                <strong>{{ checkout.total_price + ns.selected_payment_method.price }} {{ checkout.currency }}</strong>
+                            {% else %}
+                                <strong>{{ checkout.total_price }} {{ checkout.currency }}</strong>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card payment-methods">
+                    <div class="checkout-summary__header">
+                        <h3>Metody płatności</h3>
+                        <span class="checkout-summary__badge">Dostępne opcje</span>
+                    </div>
+
+                    <div class="payment-methods__list">
+                        {% for payment_method in payment_methods %}
+                        <label class="payment-tile" for="payment_method_{{ payment_method.id }}">
+                            <input
+                                id="payment_method_{{ payment_method.id }}"
+                                name="payment_method"
+                                type="radio"
+                                value="{{ payment_method.id }}"
+                                {% if payment_method.id == checkout.payment_method_id %}checked{% elif loop.first and not checkout.payment_method_id %}checked{% endif %}
+                            >
+                            <div class="payment-tile__content">
+                                <div class="payment-tile__top">
+                                    <span class="payment-tile__icon {% if payment_method.id == checkout.payment_method_id %}payment-tile__icon--alt{% endif %}">
+                                        {% if payment_method.id == checkout.payment_method_id %}✓{% else %}!{% endif %}
+                                    </span>
+                                    <strong>{{ payment_method.name }}</strong>
+                                </div>
+                                <p>Cena metody: ${{ "%.2f"|format(payment_method.price) }}</p>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <aside class="checkout-step2__side">
+                <div class="checkout-sidebar product-card">
+                    <h3>Kod zniżkowy i tax</h3>
+
+                    <form id="checkout-step2-form" class="checkout-sidebar__form">
+                        <input type="hidden" name="payment_method_id" id="payment_method_id" value="{{ checkout.payment_method_id }}">
+
+                        <div class="checkout-field">
+                            <label for="discount_code">Kod zniżkowy</label>
+                            <input
+                                id="discount_code"
+                                name="discount_code"
+                                type="text"
+                                placeholder="Wpisz kod"
+                                disabled
+                                title="Dla tego zamówienia nie da się wpisać zniżki"
+                                aria-disabled="true"
+                            >
+                        </div>
+
+                        <div class="checkout-field">
+                            <label for="tax">Tax</label>
+                            <select id="tax" name="tax">
+                                <option value="0" selected>0% — brak taxu</option>
+                                <option value="5">5% — przykładowo kraj A</option>
+                                <option value="8">8% — przykładowo kraj B</option>
+                                <option value="23">23% — przykładowo kraj C</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="site-btn site-btn--primary checkout-sidebar__button">Opłać i złóż zamówienie</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const hiddenPaymentMethodId = document.getElementById("payment_method_id");
+    const checkoutForm = document.getElementById("checkout-step2-form");
+
+    const getCookieValue = (name) => {
+        const cookie = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith(`${name}=`));
+
+        return cookie ? decodeURIComponent(cookie.split("=").slice(1).join("=")) : "";
+    };
+
+    const syncSelectedPaymentMethod = () => {
+        const selected = document.querySelector('input[name="payment_method"]:checked');
+        if (!selected || !hiddenPaymentMethodId) return;
+        hiddenPaymentMethodId.value = selected.value;
+    };
+
+    radios.forEach((radio) => {
+        radio.addEventListener("change", syncSelectedPaymentMethod);
+    });
+
+    if (checkoutForm) {
+        checkoutForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            syncSelectedPaymentMethod();
+
+            const token = getCookieValue("access_token");
+
+            try {
+                const response = await fetch("/order", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token ? `Bearer ${token}` : ""
+                    },
+                    body: JSON.stringify({
+                        payment_method_id: hiddenPaymentMethodId ? hiddenPaymentMethodId.value : null,
+                        tax: document.getElementById("tax") ? document.getElementById("tax").value : 0,
+                        discount_code: document.getElementById("discount_code") ? document.getElementById("discount_code").value : ""
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`POST /order failed with status ${response.status}`);
+                }
+
+                window.location.href = "/cart/payment-provider";
+            } catch (error) {
+                console.error("Order request failed:", error);
+            }
+        });
+    }
+
+    syncSelectedPaymentMethod();
+});
+</script>
+{% endblock %}

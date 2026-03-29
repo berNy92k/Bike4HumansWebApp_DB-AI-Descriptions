@@ -1,0 +1,53 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Szczegóły roli{% endblock %}
+
+{% block nav_roles_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/users/admin_create_user.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Szczegóły roli</h2>
+        <p>Podgląd danych roli w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/user/role/list">← Wróć do listy</a>
+        <a class="btn btn-primary" href="/admin/user/role/{{ role.id }}/edit">Edytuj</a>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Dane roli</h3>
+        <span class="badge badge-neutral">ID: {{ role.id }}</span>
+    </div>
+
+    <div class="details-grid">
+        <div class="detail-item">
+            <span class="detail-label">Nazwa</span>
+            <span class="detail-value">{{ role.name }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Opis</span>
+            <span class="detail-value">{{ role.description or '—' }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Utworzono</span>
+            <span class="detail-value">{{ role.created_at }}</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">Aktualizacja</span>
+            <span class="detail-value">{{ role.updated_at }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

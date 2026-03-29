@@ -1,0 +1,524 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Zamówienia{% endblock %}
+
+{% block nav_orders_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/manufacturers/admin_manufacturers.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/admin_pagination.js') }}"></script>
+<style>
+    .cart-row {
+        cursor: pointer;
+    }
+
+    .cart-row:hover {
+        background: #f8fafc;
+    }
+
+    .cart-items-row {
+        display: none;
+        background: #f9fafb;
+    }
+
+    .cart-items-row.is-open {
+        display: table-row;
+    }
+
+    .cart-items-box {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .cart-items-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .cart-item-card {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .cart-item-image {
+        width: 120px;
+        height: 84px;
+        border-radius: 12px;
+        background: #f3f4f6;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-meta {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .cart-item-meta span {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        white-space: nowrap;
+    }
+
+    .cart-item-price {
+        text-align: right;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+        margin-bottom: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .filter-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        background: #fff;
+        font: inherit;
+    }
+
+    .filters-actions {
+        display: flex;
+        gap: 10px;
+        align-items: end;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+
+    .filters-card {
+        margin-top: 16px;
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        background: #fff;
+    }
+
+    @media (max-width: 1100px) {
+        .filters-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 640px) {
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const getAccessToken = () => {
+            const match = document.cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
+            return match ? decodeURIComponent(match[1]) : null;
+        };
+
+        const buildUrlWithParams = (baseUrl, params) => {
+            const url = new URL(baseUrl, window.location.origin);
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== null && value !== undefined && String(value).trim() !== "") {
+                    url.searchParams.set(key, value);
+                }
+            });
+            return url.toString();
+        };
+
+        document.querySelectorAll("[data-cart-row]").forEach((row) => {
+            row.addEventListener("click", () => {
+                const targetId = row.getAttribute("data-cart-target");
+                const target = document.getElementById(targetId);
+                if (!target) return;
+                target.classList.toggle("is-open");
+            });
+        });
+
+        document.querySelectorAll("[data-delete-order]").forEach((button) => {
+            button.addEventListener("click", async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const orderId = button.getAttribute("data-order-id");
+                if (!orderId) return;
+
+                const confirmed = confirm("Na pewno usunąć to zamówienie?");
+                if (!confirmed) return;
+
+                const token = getAccessToken();
+                if (!token) {
+                    alert("Brak tokenu logowania.");
+                    return;
+                }
+
+                const response = await fetch(`/admin/orders/${orderId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                    return;
+                }
+
+                alert("Nie udało się usunąć zamówienia.");
+            });
+        });
+
+        document.querySelectorAll("[data-delivered-order]").forEach((button) => {
+            button.addEventListener("click", async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const orderId = button.getAttribute("data-order-id");
+                if (!orderId) return;
+
+                const confirmed = confirm("Na pewno zmienić status na COMPLETED?");
+                if (!confirmed) return;
+
+                const token = getAccessToken();
+                if (!token) {
+                    alert("Brak tokenu logowania.");
+                    return;
+                }
+
+                const status = "completed";
+                const updateResponse = await fetch(`/admin/orders/${orderId}?status=${encodeURIComponent(status)}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    }
+                });
+
+                if (updateResponse.ok) {
+                    window.location.reload();
+                    return;
+                }
+
+                alert("Nie udało się zmienić statusu.");
+            });
+        });
+
+        const applyFiltersButton = document.querySelector("[data-apply-order-filters]");
+        if (applyFiltersButton) {
+            applyFiltersButton.addEventListener("click", () => {
+                const params = {
+                    page: 1,
+                    size: document.getElementById("page-size")?.value,
+                    order_id: document.getElementById("filter-order-id")?.value,
+                    user_id: document.getElementById("filter-user-id")?.value,
+                    status: document.getElementById("filter-status")?.value,
+                    total_price_min: document.getElementById("filter-total-price-min")?.value,
+                    total_price_max: document.getElementById("filter-total-price-max")?.value,
+                    created_at_min: document.getElementById("filter-created-at-min")?.value,
+                    created_at_max: document.getElementById("filter-created-at-max")?.value,
+                    sort_by: document.getElementById("filter-sort-by")?.value,
+                    sort_direction: document.getElementById("filter-sort-direction")?.value,
+                };
+
+                window.location.href = buildUrlWithParams("/admin/orders/list", params);
+            });
+        }
+
+        const resetFiltersButton = document.querySelector("[data-reset-order-filters]");
+        if (resetFiltersButton) {
+            resetFiltersButton.addEventListener("click", () => {
+                window.location.href = "/admin/orders/list?page=1&size=5";
+            });
+        }
+
+        const pageSizeSelect = document.getElementById("page-size");
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener("change", () => {
+                const params = new URLSearchParams(window.location.search);
+                params.set("page", "1");
+                params.set("size", pageSizeSelect.value);
+                window.location.href = `${window.location.pathname}?${params.toString()}`;
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Zamówienia</h2>
+        <p>Przegląd wszystkich zamówień w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/orders/list?page={{ page }}&size={{ size }}">Odśwież</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Łącznie zamówień</div>
+        <div class="stat-value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Strona</div>
+        <div class="stat-value">{{ page }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Na stronie</div>
+        <div class="stat-value">{{ size }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Wszystkie strony</div>
+        <div class="stat-value">{{ pages }}</div>
+    </div>
+</div>
+
+<div class="filters-card">
+    <div class="table-header" style="margin-bottom: 12px;">
+        <h3 style="margin: 0;">Filtry i sortowanie</h3>
+        <span class="badge badge-neutral">Wyszukiwanie zamówień</span>
+    </div>
+
+    <div class="filters-grid">
+        <div class="filter-group">
+            <label for="filter-order-id">Order ID</label>
+            <input id="filter-order-id" type="text" value="{{ request.query_params.get('order_id', '') }}" placeholder="np. ORD-123">
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-user-id">User ID</label>
+            <input id="filter-user-id" type="number" min="1" value="{{ request.query_params.get('user_id', '') }}" placeholder="np. 1">
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-status">Status</label>
+            <select id="filter-status">
+                <option value="" {% if not request.query_params.get('status') %}selected{% endif %}>Wszystkie</option>
+                <option value="pending" {% if request.query_params.get('status') == 'pending' %}selected{% endif %}>pending</option>
+                <option value="delivery" {% if request.query_params.get('status') == 'delivery' %}selected{% endif %}>delivery</option>
+                <option value="canceled" {% if request.query_params.get('status') == 'canceled' %}selected{% endif %}>canceled</option>
+                <option value="failed" {% if request.query_params.get('status') == 'failed' %}selected{% endif %}>failed</option>
+                <option value="completed" {% if request.query_params.get('status') == 'completed' %}selected{% endif %}>completed</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-sort-by">Sortuj po</label>
+            <select id="filter-sort-by">
+                <option value="created_at" {% if request.query_params.get('sort_by', 'created_at') == 'created_at' %}selected{% endif %}>Data stworzenia</option>
+                <option value="status" {% if request.query_params.get('sort_by') == 'status' %}selected{% endif %}>Status</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-sort-direction">Kierunek sortowania</label>
+            <select id="filter-sort-direction">
+                <option value="desc" {% if request.query_params.get('sort_direction', 'desc') == 'desc' %}selected{% endif %}>Malejąco</option>
+                <option value="asc" {% if request.query_params.get('sort_direction') == 'asc' %}selected{% endif %}>Rosnąco</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-total-price-min">Total price min</label>
+            <input id="filter-total-price-min" type="number" step="0.01" min="0" value="{{ request.query_params.get('total_price_min', '') }}" placeholder="np. 100">
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-total-price-max">Total price max</label>
+            <input id="filter-total-price-max" type="number" step="0.01" min="0" value="{{ request.query_params.get('total_price_max', '') }}" placeholder="np. 500">
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-created-at-min">Data stworzenia od</label>
+            <input id="filter-created-at-min" type="datetime-local" value="{{ request.query_params.get('created_at_min', '') }}">
+        </div>
+
+        <div class="filter-group">
+            <label for="filter-created-at-max">Data stworzenia do</label>
+            <input id="filter-created-at-max" type="datetime-local" value="{{ request.query_params.get('created_at_max', '') }}">
+        </div>
+    </div>
+
+    <div class="filters-actions">
+        <button type="button" class="btn btn-primary" data-apply-order-filters>Filtruj</button>
+        <button type="button" class="btn btn-secondary" data-reset-order-filters>Wyczyść filtry</button>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Lista zamówień</h3>
+        <span class="badge badge-neutral">{{ orders|length }} rekordów</span>
+    </div>
+
+    {% if orders and orders|length > 0 %}
+    <div class="table-wrapper">
+        <table class="manufacturers-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Order Id</th>
+                    <th>User ID</th>
+                    <th>Total Price</th>
+                    <th>Waluta</th>
+                    <th>Payment Method Id</th>
+                    <th>Status</th>
+                    <th>Data stworzenia</th>
+                    <th>Data zaktualizowania</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="cart-row" data-cart-row data-cart-target="cart-items-{{ order.id }}">
+                    <td>
+                        <div class="bike-cell">
+                            <div>
+                                <div class="bike-meta">ID: {{ order.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ order.order_id }}</td>
+                    <td>{{ order.user_id }}</td>
+                    <td>{{ order.total_price }}</td>
+                    <td>{{ order.currency }}</td>
+                    <td>{{ order.payment_method_id }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>{{ order.updated_at }}</td>
+                    <td>
+                        <div class="actions">
+                            <button
+                                type="button"
+                                class="action-link action-delete"
+                                data-delete-order
+                                data-order-id="{{ order.id }}"
+                                style="background: none; border: 0; padding: 0; cursor: pointer;"
+                            >
+                                Usuń
+                            </button>
+                            <button
+                                type="button"
+                                class="action-link action-delivered"
+                                data-delivered-order
+                                data-order-id="{{ order.id }}"
+                                style="background: none; border: 0; padding: 0; cursor: pointer;"
+                            >
+                                Dostarczono
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="cart-items-{{ order.id }}" class="cart-items-row">
+                    <td colspan="8">
+                        <div class="cart-items-box">
+                            <div class="table-header" style="margin-bottom: 12px;">
+                                <h3 style="margin: 0;">Elementy zamówienia #{{ order.id }}</h3>
+                                <span class="badge badge-neutral">
+                                    {{ order.items|length if order.items else 0 }} produktów
+                                </span>
+                            </div>
+
+                            {% if order.items and order.items|length > 0 %}
+                            <div class="cart-items-list">
+                                {% for item in order.items %}
+                                <div class="cart-item-card">
+                                    <div class="cart-item-meta" style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; white-space: nowrap;">
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Id: <strong style="color: #111827;">{{ item.id }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Bike Id: <strong style="color: #111827;">{{ item.bike_id }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Created At: <strong style="color: #111827;">{{ item.created_at }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Updated At: <strong style="color: #111827;">{{ item.updated_at }}</strong></span>
+                                    </div>
+
+                                    <div class="cart-item-price">
+                                        <span>Ilość: <strong style="color: #111827;">{{ item.quantity }}</strong></span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="empty-state" style="margin: 0;">
+                                <h3>Brak pozycji w zamówieniu</h3>
+                                <p>To zamówienie nie zawiera jeszcze żadnych produktów.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-card">
+        <div class="pagination-info">
+            Pokazano {{ orders|length }} z {{ total }} rekordów
+        </div>
+
+        <div class="pagination-controls">
+            <label class="page-size-label" for="page-size">Na stronie:</label>
+            <select id="page-size" class="page-size-select">
+                <option value="5" {% if size == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if size == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if size == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if size == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if size == 100 %}selected{% endif %}>100</option>
+            </select>
+
+            <div class="pagination-buttons">
+                <a class="btn btn-secondary {% if page <= 1 %}is-disabled{% endif %}"
+                   href="/admin/orders/list?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}">Poprzednia</a>
+
+                <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
+
+                <a class="btn btn-secondary {% if page >= pages %}is-disabled{% endif %}"
+                   href="/admin/orders/list?page={{ page + 1 if page < pages else pages }}&size={{ size }}">Następna</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>Brak zamówień do wyświetlenia</h3>
+        <p>W tej chwili nie ma żadnych zamówień w systemie.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

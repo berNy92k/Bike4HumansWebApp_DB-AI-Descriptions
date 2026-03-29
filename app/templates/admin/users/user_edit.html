@@ -1,0 +1,85 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Edycja użytkownika{% endblock %}
+
+{% block nav_users_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/users/admin_create_user.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/users/admin_edit_user.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Edytuj użytkownika</h2>
+        <p>Zmodyfikuj dane użytkownika w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/user/{{ user.id }}/details">← Wróć do szczegółów</a>
+        <a class="btn btn-secondary" href="/admin/user/list">Wróć do listy</a>
+    </div>
+</div>
+
+<div class="form-card">
+    <form id="user-edit-form" class="bike-form" autocomplete="off">
+        <div id="form-message" class="form-message" aria-live="polite"></div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="username">Nazwa użytkownika</label>
+                <input id="username" name="username" type="text" value="{{ user.username }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" value="{{ user.email }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Imię</label>
+                <input id="name" name="name" type="text" value="{{ user.name }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Nazwisko</label>
+                <input id="surname" name="surname" type="text" value="{{ user.surname }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="role_id">Rola</label>
+                <select id="role_id" name="role_id" required>
+                    {% for role in roles %}
+                    <option value="{{ role.id }}" {% if role.id == user.role_id %}selected{% endif %}>
+                        {{ role.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="is_active">Status konta</label>
+                <select id="is_active" name="is_active" required>
+                    <option value="true" {% if user.is_active %}selected{% endif %}>Aktywny</option>
+                    <option value="false" {% if not user.is_active %}selected{% endif %}>Nieaktywny</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email_verified">Weryfikacja e-mail</label>
+                <select id="email_verified" name="email_verified" required>
+                    <option value="true" {% if user.email_verified %}selected{% endif %}>Zweryfikowany</option>
+                    <option value="false" {% if not user.email_verified %}selected{% endif %}>Nieweryfikowany</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+            <a class="btn btn-secondary" href="/admin/user/{{ user.id }}/details">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

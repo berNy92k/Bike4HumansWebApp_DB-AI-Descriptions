@@ -1,0 +1,300 @@
+{% extends "admin/homepage/base.html" %}
+
+{% block title %}Bike4Humans | Checkouty{% endblock %}
+
+{% block nav_checkouts_active %}active{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/admin/manufacturers/admin_manufacturers.css') }}">
+<script defer src="{{ url_for('static', path='js/utils/cookie_auth.js') }}"></script>
+<script defer src="{{ url_for('static', path='js/admin/admin_pagination.js') }}"></script>
+<style>
+    .cart-row {
+        cursor: pointer;
+    }
+
+    .cart-row:hover {
+        background: #f8fafc;
+    }
+
+    .cart-items-row {
+        display: none;
+        background: #f9fafb;
+    }
+
+    .cart-items-row.is-open {
+        display: table-row;
+    }
+
+    .cart-items-box {
+        padding: 16px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .cart-items-list {
+        display: grid;
+        gap: 12px;
+    }
+
+    .cart-item-card {
+        display: grid;
+        grid-template-columns: 120px 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .cart-item-image {
+        width: 120px;
+        height: 84px;
+        border-radius: 12px;
+        background: #f3f4f6;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cart-item-meta {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 8px;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .cart-item-meta span {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        white-space: nowrap;
+    }
+
+    .cart-item-price {
+        text-align: right;
+        font-weight: 700;
+        color: #111827;
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const getAccessToken = () => {
+            const match = document.cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
+            return match ? decodeURIComponent(match[1]) : null;
+        };
+
+        document.querySelectorAll("[data-cart-row]").forEach((row) => {
+            row.addEventListener("click", () => {
+                const targetId = row.getAttribute("data-cart-target");
+                const target = document.getElementById(targetId);
+                if (!target) return;
+                target.classList.toggle("is-open");
+            });
+        });
+
+        document.querySelectorAll("[data-delete-checkout]").forEach((button) => {
+            button.addEventListener("click", async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const checkoutId = button.getAttribute("data-checkout-id");
+                if (!checkoutId) return;
+
+                const confirmed = confirm("Na pewno usunąć ten koszyk?");
+                if (!confirmed) return;
+
+                const token = getAccessToken();
+                if (!token) {
+                    alert("Brak tokenu logowania.");
+                    return;
+                }
+
+                const response = await fetch(`/admin/checkouts/${checkoutId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                    return;
+                }
+
+                alert("Nie udało się usunąć koszyka.");
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-title">
+        <h2>Checkouty</h2>
+        <p>Przegląd wszystkich checkoutów zakupowych w panelu administracyjnym.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-secondary" href="/admin/checkouts/list?page={{ page }}&size={{ size }}">Odśwież</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-label">Łącznie koszyków</div>
+        <div class="stat-value">{{ total }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Strona</div>
+        <div class="stat-value">{{ page }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Na stronie</div>
+        <div class="stat-value">{{ size }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Wszystkie strony</div>
+        <div class="stat-value">{{ pages }}</div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-header">
+        <h3>Lista koszyków</h3>
+        <span class="badge badge-neutral">{{ checkouts|length }} rekordów</span>
+    </div>
+
+    {% if checkouts and checkouts|length > 0 %}
+    <div class="table-wrapper">
+        <table class="manufacturers-table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>User ID</th>
+                    <th>Total Price</th>
+                    <th>Waluta</th>
+                    <th>Payment Method Id</th>
+                    <th>Status</th>
+                    <th>Data stworzenia</th>
+                    <th>Data zaktualizowania</th>
+                    <th>Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for checkout in checkouts %}
+                <tr class="cart-row" data-cart-row data-cart-target="cart-items-{{ checkout.id }}">
+                    <td>
+                        <div class="bike-cell">
+                            <div>
+                                <div class="bike-meta">ID: {{ checkout.id }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ checkout.user_id }}</td>
+                    <td>{{ checkout.total_price }}</td>
+                    <td>{{ checkout.currency }}</td>
+                    <td>{{ checkout.payment_method_id }}</td>
+                    <td>{{ checkout.status }}</td>
+                    <td>{{ checkout.created_at }}</td>
+                    <td>{{ checkout.updated_at }}</td>
+                    <td>
+                        <div class="actions">
+                            <button
+                                type="button"
+                                class="action-link action-delete"
+                                data-delete-checkout
+                                data-checkout-id="{{ checkout.id }}"
+                                style="background: none; border: 0; padding: 0; cursor: pointer;"
+                            >
+                                Usuń
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr id="cart-items-{{ checkout.id }}" class="cart-items-row">
+                    <td colspan="8">
+                        <div class="cart-items-box">
+                            <div class="table-header" style="margin-bottom: 12px;">
+                                <h3 style="margin: 0;">Elementy koszyka #{{ checkout.id }}</h3>
+                                <span class="badge badge-neutral">
+                                    {{ checkout.items|length if checkout.items else 0 }} produktów
+                                </span>
+                            </div>
+
+                            {% if checkout.items and checkout.items|length > 0 %}
+                            <div class="cart-items-list">
+                                {% for item in checkout.items %}
+                                <div class="cart-item-card">
+                                    <div class="cart-item-meta" style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; white-space: nowrap;">
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Id: <strong style="color: #111827;">{{ item.id }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Bike Id: <strong style="color: #111827;">{{ item.bike_id }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Created At: <strong style="color: #111827;">{{ item.created_at }}</strong></span>
+                                        <span style="padding: 4px 10px; border-radius: 999px; background: #f3f4f6;">Updated At: <strong style="color: #111827;">{{ item.updated_at }}</strong></span>
+                                    </div>
+
+                                    <div class="cart-item-price">
+                                        <span>Ilość: <strong style="color: #111827;">{{ item.quantity }}</strong></span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="empty-state" style="margin: 0;">
+                                <h3>Brak pozycji w koszyku</h3>
+                                <p>Ten koszyk nie zawiera jeszcze żadnych produktów.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-card">
+        <div class="pagination-info">
+            Pokazano {{ checkouts|length }} z {{ total }} rekordów
+        </div>
+
+        <div class="pagination-controls">
+            <label class="page-size-label" for="page-size">Na stronie:</label>
+            <select id="page-size" class="page-size-select">
+                <option value="5" {% if size == 5 %}selected{% endif %}>5</option>
+                <option value="10" {% if size == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if size == 20 %}selected{% endif %}>20</option>
+                <option value="50" {% if size == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if size == 100 %}selected{% endif %}>100</option>
+            </select>
+
+            <div class="pagination-buttons">
+                <a class="btn btn-secondary {% if page <= 1 %}is-disabled{% endif %}"
+                   href="/admin/checkouts/list?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}">Poprzednia</a>
+
+                <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
+
+                <a class="btn btn-secondary {% if page >= pages %}is-disabled{% endif %}"
+                   href="/admin/checkouts/list?page={{ page + 1 if page < pages else pages }}&size={{ size }}">Następna</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>Brak koszyków do wyświetlenia</h3>
+        <p>W tej chwili nie ma żadnych koszyków w systemie.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

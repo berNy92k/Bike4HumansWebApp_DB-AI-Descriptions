@@ -1,0 +1,156 @@
+{% extends 'front/homepage/layout.html' %}
+
+{% block title %}Bike4Humans | Sklep rowerowy{% endblock %}
+
+{% block content %}
+<div class="homepage-shell">
+    <section class="hero">
+        <div class="hero__content">
+            <span class="hero__badge">🚴 Sklep rowerowy premium</span>
+            <h1>Rower i części, które naprawdę pasują do Twojej jazdy</h1>
+            <p>
+                Wybierz sprzęt, który łączy jakość, wygodę i dobry wygląd.
+                Bez przypadkowych ofert. Bez bałaganu. Tylko sprawdzone produkty.
+            </p>
+
+            <div class="hero__actions">
+                <a href="#products" class="site-btn site-btn--primary">Zobacz produkty</a>
+                <a href="#about" class="site-btn site-btn--secondary">Dowiedz się więcej</a>
+            </div>
+
+            <div class="hero__stats">
+                <div class="hero__stat">
+                    <strong>{{ bikeSize }}</strong>
+                    <span>rowerów</span>
+                </div>
+                <div class="hero__stat">
+                    <strong>{{ manufacturerSize }}</strong>
+                    <span>producentów</span>
+                </div>
+                <div class="hero__stat">
+                    <strong>48h</strong>
+                    <span>realizacji</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero__visual">
+            <img src="{{ url_for('static', path='images/bikemainlogo.png') }}" alt="Bike4Humans hero bike">
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <strong>{{ bikeSize }}</strong>
+                <span>rowerów w ofercie</span>
+            </div>
+            <div class="stat-card">
+                <strong>{{ manufacturerSize }}</strong>
+                <span>sprawdzonych marek</span>
+            </div>
+            <div class="stat-card">
+                <strong>48h</strong>
+                <span>szybka realizacja</span>
+            </div>
+            <div class="stat-card">
+                <strong>99%</strong>
+                <span>satysfakcji klientów</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="categories">
+        <div class="section__heading">
+            <span class="section__label">Kategorie</span>
+            <h2>Wszystko, czego potrzebujesz do jazdy</h2>
+            <p>Wybierz kategorię i przejdź od razu do sensownych produktów.</p>
+        </div>
+
+        <div class="categories-grid">
+            <article class="category-card">
+                <a href="/bikes" class="category-card__link">
+                    <div class="category-card__icon">🚲</div>
+                    <h3>Rowery</h3>
+                    <p>Modele miejskie, trekkingowe i sportowe.</p>
+                </a>
+            </article>
+            <article class="category-card">
+                <a href="/manufacturers" class="category-card__link">
+                    <div class="category-card__icon">🏭</div>
+                    <h3>Producenci</h3>
+                    <p>Sprawdzone marki i renomowani dostawcy.</p>
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="section__heading">
+            <span class="section__label">Dlaczego my</span>
+            <h2>Prosto, przejrzyście i bez zbędnego chaosu</h2>
+        </div>
+
+        <div class="benefits-grid">
+            <article class="benefit-card">
+                <h3>Selekcja produktów</h3>
+                <p>Pokazujemy tylko oferty, które mają sens i dobrze wyglądają w katalogu.</p>
+            </article>
+            <article class="benefit-card">
+                <h3>Łatwa nawigacja</h3>
+                <p>Strona prowadzi klienta szybko do tego, czego naprawdę szuka.</p>
+            </article>
+            <article class="benefit-card">
+                <h3>Gotowe pod rozwój</h3>
+                <p>Układ jest prosty do rozbudowy o koszyk, filtry i szczegóły produktów.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="section" id="products">
+        <div class="section__heading">
+            <span class="section__label">Polecane produkty</span>
+            <h2>Przykładowe pozycje z oferty</h2>
+        </div>
+
+        <div class="homepage-products-grid">
+            {% if equipmentShortList and equipmentShortList.items %}
+                {% for bike in equipmentShortList.items %}
+                    <a class="product-card" href="/bikes/{{ bike.id }}">
+                        <div class="product-card__image">
+                            <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
+                        </div>
+                        <div class="product-card__body">
+                            <div class="badge">{{ bike.manufacturer_name }}</div>
+                            <h3 style="margin: 12px 0 8px;">{{ bike.name }}</h3>
+                            <p style="margin: 0; color: var(--muted); line-height: 1.6;">
+                                {{ bike.short_description }}
+                            </p>
+                            <div class="product-card__footer">
+                                <strong>{{ bike.price }} zł</strong>
+                                <span>Szczegóły →</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <h3>Brak produktów do wyświetlenia</h3>
+                    <p>Gdy podłączysz dane z bazy, tutaj pojawią się polecane rowery.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="cta-box">
+            <div>
+                <span class="section__label">Gotowy?</span>
+                <h2>Sprawdź ofertę i wybierz sprzęt dla siebie</h2>
+                <p>To może być bardzo mocna strona główna, jeśli później podłączysz dynamiczne kategorie i filtry.</p>
+            </div>
+            <a href="#products" class="site-btn site-btn--primary">Przejdź do produktów</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
