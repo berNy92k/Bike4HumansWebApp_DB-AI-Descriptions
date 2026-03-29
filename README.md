@@ -1,7 +1,9 @@
 # 🚴 Bike Shop API
 
-Backend for an online bike and accessories store, built with **Python and FastAPI**.  
-This project was created as a practical portfolio piece to demonstrate skills in **backend development**, API design, data modeling, modular application architecture, and a simple server-rendered frontend.
+Backend for an online bike store built with **Python** and **FastAPI**.
+
+This project started as a 1:1 copy of my previous repository -> https://github.com/berNy92k/Bike4HumansWebApp_DB, but it is now being developed further in a more focused direction:
+the next step is adding **AI-based content generation**, first for **bike descriptions**, and later potentially for other sections in the **admin panel**.
 
 The application combines:
 - **REST API / backend**
@@ -9,27 +11,24 @@ The application combines:
 - **authentication flow**
 - **shopping cart / checkout flow**
 - **orders with custom `order_id`**
-- **payment provider**
+- **payment provider integration**
 - **simple Jinja-based frontend**
 - **layered architecture** with clear separation of `routers`, `services`, `repositories`, `schemas`, and `models`
 
-Admin panel:
-![admin_homepage.png](app/static/images/readme/admin_homepage.png)
+---
 
-Admin panel -> Orders (filters/ sort by):
-![img.png](app/static/images/readme/admin_orders.png)
+## ✨ Current direction
 
-Homepage:
-![homepage.png](app/static/images/readme/homepage.png)
+The main idea behind this repository is to extend the existing bike shop with AI-assisted features.
 
-Bikes:
-![homepage_bikes.png](app/static/images/readme/homepage_bikes.png)
+Planned AI use cases:
+- generating **product descriptions for bikes**
+- assisting with content creation in **admin panel sections**
+- supporting faster and more consistent data entry
+- making the admin workflow more useful and scalable
 
-Shopping cart:
-![homepage_shopping_cart.png](app/static/images/readme/homepage_shopping_cart.png)
+This means the project is no longer just a standard shop backend — it is becoming a base for experimenting with **AI in e-commerce administration**.
 
-Order page:
-![homepage_orders.png](app/static/images/readme/homepage_orders.png)
 ---
 
 ## 🛠 Technologies
@@ -62,7 +61,7 @@ Order page:
 - **Seeded starter data** for easier development and testing
 - **Simple frontend** for presenting store content and validating functionality
 - **Clean project structure** designed for easy extension
-- **Shared `BaseModel`** for common ORM fields like `id`, `created_at`, and `updated_at`
+- **Prepared for AI expansion** in content generation workflows
 
 ---
 
@@ -97,20 +96,7 @@ The admin order list supports:
 - filtering by `total_price` range
 - filtering by `created_at` range
 - sorting by `created_at` or `status`
----
 
-## 🛠 Technologies
-
-- **Backend:** Python + FastAPI
-- **Database:** SQLite
-- **ORM:** SQLAlchemy
-- **Migrations:** Alembic
-- **Validation / DTOs:** Pydantic
-- **Testing:** pytest
-- **Server:** Uvicorn
-- **Frontend for basic UI:** Jinja templates
-- **Styling:** CSS, Bootstrap
-- **Development environment:** local virtual environment
 ---
 
 ## 🔑 Features
@@ -209,9 +195,14 @@ This makes it easier to run the project locally and keep the database structure 
 - Building a project that looks strong in a portfolio and is easy to extend
 - Practicing filtering, sorting, and admin data management patterns
 - Expand automated tests
+- Adding AI features for content generation in admin workflows
 
 ---
 
-## 📌 Possible Next Improvements in next repositories
+## 📌 Next Improvements
+
+- Add AI-based generation of bike descriptions
+- Extend AI support to other admin sections
+- Improve admin content workflows
 - Add Docker-based deployment
-- Add AI logic / RAG features
+- Add RAG or other AI-related features
