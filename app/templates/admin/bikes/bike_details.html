@@ -232,7 +232,16 @@
     </div>
 
     <div class="bike-description-card">
-        <h3>Opis</h3>
+        <h3>
+            Opis -
+            <span>
+                {% if bike.is_description_ai_generated %}
+                    <span class="badge badge-success">AI</span>
+                {% else %}
+                    <span class="badge badge-danger">Ręcznie</span>
+                {% endif %}
+            </span>
+        </h3>
         <div class="bike-description-content">
             {{ bike.description or 'Brak opisu' }}
         </div>

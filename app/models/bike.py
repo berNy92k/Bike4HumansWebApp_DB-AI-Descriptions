@@ -11,6 +11,7 @@ class Bike(BaseModel):
 
     name: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_description_ai_generated: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     bike_type: Mapped[str | None] = mapped_column(String(100), nullable=True)
     frame_material: Mapped[str | None] = mapped_column(String(100), nullable=True)

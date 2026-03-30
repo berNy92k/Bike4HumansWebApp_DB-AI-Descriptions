@@ -8,6 +8,7 @@ class BikeReadDto(BaseModel):
     id: int
     name: str
     description: str | None = None
+    is_description_ai_generated: bool
 
     price: Decimal
     stock_quantity: int

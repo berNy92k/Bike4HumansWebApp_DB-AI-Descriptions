@@ -55,6 +55,7 @@
             <thead>
                 <tr>
                     <th>Rower</th>
+                    <th>Opis wygenerowany przez AI</th>
                     <th>Producent</th>
                     <th>Cena</th>
                     <th>Zdjęcie</th>
@@ -78,6 +79,7 @@
                             </div>
                         </div>
                     </td>
+                    <td>{% if bike.is_description_ai_generated %}<span class="badge badge-success">AI</span>{% else %}<span class="badge badge-danger">Ręcznie</span>{% endif %}</td>
                     <td>
                         {% for manufacturer in manufacturers %}
                             {% if manufacturer.id == bike.brand_id %}
