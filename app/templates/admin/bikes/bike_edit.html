@@ -14,11 +14,12 @@
 <div class="page-header">
     <div class="page-title">
         <h2>Edytuj rower</h2>
-        <p>Zmodyfikuj dane wybranego roweru.</p>
+        <p>Zaktualizuj dane wybranego roweru w panelu administracyjnym.</p>
     </div>
 
     <div class="toolbar">
         <a class="btn btn-secondary" href="/admin/bikes/{{ bike.id }}/details">← Wróć do szczegółów</a>
+        <a class="btn btn-secondary" href="/admin/bikes/list">Lista rowerów</a>
     </div>
 </div>
 
@@ -59,9 +60,79 @@
                 <input id="stock_quantity" name="stock_quantity" type="number" step="1" min="0" value="{{ bike.stock_quantity }}">
             </div>
 
+            <div class="form-group">
+                <label for="bike_type">Typ roweru</label>
+                <input id="bike_type" name="bike_type" type="text" value="{{ bike.bike_type or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="frame_material">Materiał ramy</label>
+                <input id="frame_material" name="frame_material" type="text" value="{{ bike.frame_material or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="frame_size">Rozmiar ramy</label>
+                <input id="frame_size" name="frame_size" type="text" value="{{ bike.frame_size or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="wheel_size">Rozmiar koła</label>
+                <input id="wheel_size" name="wheel_size" type="text" value="{{ bike.wheel_size or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="tire_width">Szerokość opony</label>
+                <input id="tire_width" name="tire_width" type="text" value="{{ bike.tire_width or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="gear_count">Liczba biegów</label>
+                <input id="gear_count" name="gear_count" type="number" min="0" step="1" value="{{ bike.gear_count or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="brake_type">Hamulce</label>
+                <input id="brake_type" name="brake_type" type="text" value="{{ bike.brake_type or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="suspension_type">Amortyzacja</label>
+                <input id="suspension_type" name="suspension_type" type="text" value="{{ bike.suspension_type or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="color">Kolor</label>
+                <input id="color" name="color" type="text" value="{{ bike.color or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="weight_kg">Waga (kg)</label>
+                <input id="weight_kg" name="weight_kg" type="number" step="0.01" min="0" value="{{ bike.weight_kg if bike.weight_kg is not none else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="recommended_height_min">Rekomendowany wzrost od (cm)</label>
+                <input id="recommended_height_min" name="recommended_height_min" type="number" step="1" min="0" value="{{ bike.recommended_height_min if bike.recommended_height_min is not none else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="recommended_height_max">Rekomendowany wzrost do (cm)</label>
+                <input id="recommended_height_max" name="recommended_height_max" type="number" step="1" min="0" value="{{ bike.recommended_height_max if bike.recommended_height_max is not none else '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="usage">Przeznaczenie</label>
+                <input id="usage" name="usage" type="text" value="{{ bike.usage or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="target_user">Grupa docelowa</label>
+                <input id="target_user" name="target_user" type="text" value="{{ bike.target_user or '' }}">
+            </div>
+
             <div class="form-group form-group-full">
                 <label for="image_url">Zdjęcie</label>
-                <input id="image_url" name="image_url" type="text" value="{{ bike.image_url or '' }}">
+                <input id="image_url" type="text" value="{{ bike.image_url or 'Uzupełniane automatycznie' }}" readonly class="gray-input">
             </div>
 
             <div class="form-group form-group-full checkbox-row">
