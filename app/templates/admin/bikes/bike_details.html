@@ -22,39 +22,219 @@
     </div>
 </div>
 
-<div class="table-card">
-    <div class="table-header">
-        <h3>{{ bike.name }}</h3>
-        <a href="/admin/user/{{ bike.created_by }}/details"><span class="badge badge-neutral">created by: {{ bike.created_by }}</span></a>
-        <span class="badge badge-neutral">ID: {{ bike.id }}</span>
-    </div>
+<style>
+    .bike-details-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.95fr);
+        gap: 24px;
+        align-items: start;
+    }
 
-    <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;">
-        <div>
-            {% if bike.image_url %}
-                <img src="{{ bike.image_url }}" alt="{{ bike.name }}" style="width: 100%; border-radius: 12px; object-fit: cover;">
-            {% else %}
-                <div style="width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #f2f4f7; font-size: 48px;">
-                    🚲
+    .bike-details-card,
+    .bike-description-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .bike-details-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .bike-details-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 20px;
+        margin-top: 18px;
+    }
+
+    .meta-item {
+        padding: 10px 12px;
+        background: #f9fafb;
+        border-radius: 12px;
+        border: 1px solid #eef2f7;
+    }
+
+    .meta-item strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #374151;
+    }
+
+    .bike-image {
+        width: 100%;
+        border-radius: 14px;
+        object-fit: cover;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .bike-description-card h3 {
+        margin-top: 0;
+        margin-bottom: 14px;
+    }
+
+    .bike-description-content {
+        line-height: 1.65;
+        color: #374151;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    @media (max-width: 1100px) {
+        .bike-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .bike-details-meta {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="bike-details-grid">
+    <div class="bike-details-card">
+        <div class="bike-details-header">
+            <div>
+                <h3 style="margin: 0;">{{ bike.name }}</h3>
+                <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <span class="badge badge-neutral">ID: {{ bike.id }}</span>
+                    <a href="/admin/user/{{ bike.created_by }}/details">
+                        <span class="badge badge-neutral">created by: {{ bike.created_by }}</span>
+                    </a>
+                    <span class="badge badge-neutral">
+                        {% if bike.is_active %}Aktywny{% else %}Nieaktywny{% endif %}
+                    </span>
                 </div>
-            {% endif %}
+            </div>
         </div>
 
-        <div>
-            <p><strong>Nazwa:</strong> {{ bike.name }}</p>
-            <p><strong>Producent:</strong>
-                {% for manufacturer in manufacturers %}
-                    {% if manufacturer.id == bike.brand_id %}
-                        <a href="/admin/manufacturer/{{ manufacturer.id }}/details">{{ manufacturer.name }}</a>
-                    {% endif %}
-                {% endfor %}
-            </p>
-            <p><strong>Cena:</strong> {{ "%.2f"|format(bike.price) }} zł</p>
-            <p><strong>Stan magazynowy:</strong> {{ bike.stock_quantity }}</p>
-            <p><strong>Status:</strong> {% if bike.is_active %}Aktywny{% else %}Nieaktywny{% endif %}</p>
-            <p><strong>Utworzono:</strong> {{ bike.created_at }}</p>
-            <p><strong>Aktualizacja:</strong> {{ bike.updated_at }}</p>
-            <p><strong>Opis:</strong> {{ bike.description or 'Brak opisu' }}</p>
+        <div style="display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start;">
+            <div>
+                {% if bike.image_url %}
+                    <img class="bike-image" src="{{ bike.image_url }}" alt="{{ bike.name }}">
+                {% else %}
+                    <div style="width: 100%; aspect-ratio: 1 / 1; border-radius: 14px; display: flex; align-items: center; justify-content: center; background: #f2f4f7; font-size: 48px; border: 1px solid #e5e7eb;">
+                        🚲
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <div class="bike-details-meta">
+                    <div class="meta-item">
+                        <strong>Producent</strong>
+                        {% for manufacturer in manufacturers %}
+                            {% if manufacturer.id == bike.brand_id %}
+                                <a href="/admin/manufacturer/{{ manufacturer.id }}/details">{{ manufacturer.name }}</a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Cena</strong>
+                        {{ "%.2f"|format(bike.price) }} zł
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Stan magazynowy</strong>
+                        {{ bike.stock_quantity }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Typ roweru</strong>
+                        {{ bike.bike_type or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Materiał ramy</strong>
+                        {{ bike.frame_material or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Rozmiar ramy</strong>
+                        {{ bike.frame_size_label or bike.frame_size or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Rozmiar koła</strong>
+                        {{ bike.wheel_size or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Szerokość opony</strong>
+                        {{ bike.tire_width or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Liczba biegów</strong>
+                        {{ bike.gear_count or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Hamulce</strong>
+                        {{ bike.brake_type or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Amortyzacja</strong>
+                        {{ bike.suspension_type or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Kolor</strong>
+                        {{ bike.color or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Waga</strong>
+                        {% if bike.weight_kg is not none %}{{ bike.weight_kg }} kg{% else %}Brak danych{% endif %}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Rekomendowany wzrost</strong>
+                        {% if bike.recommended_height_min and bike.recommended_height_max %}
+                            {{ bike.recommended_height_min }} - {{ bike.recommended_height_max }} cm
+                        {% else %}
+                            Brak danych
+                        {% endif %}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Przeznaczenie</strong>
+                        {{ bike.usage or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Grupa docelowa</strong>
+                        {{ bike.target_user or 'Brak danych' }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Utworzono</strong>
+                        {{ bike.created_at }}
+                    </div>
+
+                    <div class="meta-item">
+                        <strong>Aktualizacja</strong>
+                        {{ bike.updated_at }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bike-description-card">
+        <h3>Opis</h3>
+        <div class="bike-description-content">
+            {{ bike.description or 'Brak opisu' }}
         </div>
     </div>
 </div>
