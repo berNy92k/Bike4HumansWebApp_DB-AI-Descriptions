@@ -6,7 +6,7 @@ from app.models import Role
 from app.models.user import User
 from app.repositories.role_repository import RoleRepository
 from app.repositories.user_repository import UserRepository
-from app.schemas.admin.user.admin_user_create_dto import UserCreateDto
+from app.schemas.auth.user_create_dto import UserCreateDto
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,7 +17,7 @@ class UserService:
         self.user_repository = UserRepository(db)
         self.role_repository = RoleRepository(db)
 
-    def create_user(self, user_dto: UserCreateDto):
+    def create_user(self, user_dto: UserCreateDto) -> None:
         user_role: Role = self.role_repository.get_role_by_id(4)
         if not user_role:
             raise HTTPException(status_code= 404, detail="Role not found.")

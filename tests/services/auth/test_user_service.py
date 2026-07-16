@@ -4,8 +4,7 @@ from fastapi import HTTPException
 from app.models.role import Role
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.admin.user.admin_user_create_dto import UserCreateDto
-from app.schemas.auth.user_create_dto import UserCreateDto as RegisterUserDto
+from app.schemas.auth.user_create_dto import UserCreateDto
 from app.services.auth.user_service import UserService
 from tests.database.database import override_get_db
 
@@ -97,8 +96,8 @@ def seeded_users(db_session, clean_users_table, seeded_roles):
 def test_create_user(db_session, seeded_roles):
     # Given
     user_service = UserService(db_session)
-    dto = RegisterUserDto(username="newuser", email="newuser@example.com", name="New", surname="User",
-                           password="secret123")
+    dto = UserCreateDto(username="newuser", email="newuser@example.com", name="New", surname="User",
+                        password="secret123")
 
     # When
     user_service.create_user(dto)
@@ -116,8 +115,8 @@ def test_create_user(db_session, seeded_roles):
 def test_create_user_role_missing(db_session, clean_roles_table, clean_users_table):
     # Given
     user_service = UserService(db_session)
-    dto = RegisterUserDto(username="newuser", email="newuser@example.com", name="New", surname="User",
-                           password="secret123")
+    dto = UserCreateDto(username="newuser", email="newuser@example.com", name="New", surname="User",
+                        password="secret123")
 
     # When / Then
     with pytest.raises(HTTPException) as exc:
