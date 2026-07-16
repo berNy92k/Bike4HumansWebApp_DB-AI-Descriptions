@@ -64,6 +64,7 @@ class AdminBikeService:
             stock_quantity=bike_create_dto.stock_quantity,
             image_url=self._pick_random_image(),
             is_active=bike_create_dto.is_active,
+            is_description_ai_generated=bike_create_dto.is_description_ai_generated,
             created_by=current_user["user_id"],
             brand_id=bike_create_dto.brand_id,
         )

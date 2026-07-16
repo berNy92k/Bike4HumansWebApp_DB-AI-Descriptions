@@ -182,6 +182,29 @@ def test_update_bike_all_fields(client, seeded_data, db_session):
     assert updated_bike.brand_id == 2
 
 
+def test_update_bike_all_fields_sets_is_description_ai_generated(client, seeded_data, db_session):
+    # Given
+    bike_id = seeded_data[0].id
+    payload = {
+        "name": "Trek Updated",
+        "description": "Opis wygenerowany przez AI",
+        "price": 4999.99,
+        "stock_quantity": 10,
+        "is_active": True,
+        "is_description_ai_generated": True,
+        "brand_id": 2,
+    }
+
+    # When
+    response = client.put(f"/admin/bikes/{bike_id}", json=payload)
+
+    # Then
+    assert response.status_code == 204
+    db_session.expire_all()
+    updated_bike = db_session.query(Bike).filter(Bike.id == bike_id).first()
+    assert updated_bike.is_description_ai_generated is True
+
+
 def test_update_bike_separate_fields(client, seeded_data, db_session):
     # Given
     bike_id = seeded_data[1].id

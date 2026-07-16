@@ -34,12 +34,13 @@
 
             <div class="form-group form-group-full">
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
-                    <label for="description" style="margin: 0;">Opis</label>
+                    <label for="description" style="margin: 0;">Opis - <span id="description-status-badge" class="badge badge-danger">Ręcznie</span></label>
                     <button type="button" class="btn btn-success" id="ai-generate-description-btn">
                         AI GENERATE
                     </button>
                 </div>
                 <textarea id="description" name="description" rows="5" placeholder="Krótki opis roweru..."></textarea>
+                <input type="hidden" id="is_description_ai_generated" value="false">
             </div>
 
             <div class="form-group">

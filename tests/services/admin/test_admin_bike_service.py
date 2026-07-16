@@ -133,6 +133,30 @@ def test_create_bike(db_session, seeded_bikes):
     assert len(bikes_before) < len(bikes_after)
 
 
+def test_create_bike_persists_is_description_ai_generated(db_session, seeded_bikes):
+    # Given
+    bike_service = AdminBikeService(db_session)
+    bike_repository = BikeRepository(db_session)
+    bike_create_dto = BikeCreateDto(
+        name="Trek",
+        description="Opis wygenerowany przez AI",
+        price=Decimal("3999.99"),
+        stock_quantity=5,
+        is_active=True,
+        is_description_ai_generated=True,
+        brand_id=2,
+    )
+    current_user = {"user_id": 10}
+
+    with patch.object(bike_service, "_pick_random_image", return_value="/static/test.png"):
+        # When
+        bike_service.create_bike(bike_create_dto, current_user)
+
+    # Then
+    created_bike = next(bike for bike in bike_repository.get_all_bikes() if bike.name == "Trek")
+    assert created_bike.is_description_ai_generated is True
+
+
 def test_delete_bike_by_id(db_session, seeded_bikes):
     # Given
     bike_service = AdminBikeService(db_session)

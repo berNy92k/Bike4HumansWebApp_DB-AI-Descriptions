@@ -935,6 +935,10 @@ main {
     font-size: 0.98rem;
 }
 
+.detail-text--description {
+    white-space: pre-wrap;
+}
+
 .detail-grid {
     display: grid;
     gap: 12px;

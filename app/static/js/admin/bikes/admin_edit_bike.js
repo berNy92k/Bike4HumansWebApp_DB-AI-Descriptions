@@ -1,8 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
     const aiButton = document.getElementById("ai-generate-description-btn");
     const description = document.getElementById("description");
+    const isAiGeneratedInput = document.getElementById("is_description_ai_generated");
+    const descriptionStatusBadge = document.getElementById("description-status-badge");
 
     if (!aiButton || !description) return;
+
+    const setDescriptionAiGenerated = (isAiGenerated) => {
+        if (isAiGeneratedInput) isAiGeneratedInput.value = isAiGenerated ? "true" : "false";
+        if (descriptionStatusBadge) {
+            descriptionStatusBadge.textContent = isAiGenerated ? "AI" : "Ręcznie";
+            descriptionStatusBadge.className = `badge ${isAiGenerated ? "badge-success" : "badge-danger"}`;
+        }
+    };
+
+    description.addEventListener("input", () => setDescriptionAiGenerated(false));
 
     aiButton.addEventListener("click", async () => {
         aiButton.disabled = true;
@@ -60,6 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
             description.value = data.description ?? "";
+            setDescriptionAiGenerated(true);
         } catch (error) {
             alert(error.message || "Wystąpił błąd podczas generowania opisu.");
         } finally {
@@ -111,7 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
             stock_quantity: Number(document.getElementById("stock_quantity").value || 0),
             image_url: toNullableString(document.getElementById("image_url").value),
             is_active: document.getElementById("is_active").checked,
-            brand_id: Number(document.getElementById("brand_id").value)
+            brand_id: Number(document.getElementById("brand_id").value),
+            is_description_ai_generated: document.getElementById("is_description_ai_generated")?.value === "true"
         };
 
         if (!payload.name) {

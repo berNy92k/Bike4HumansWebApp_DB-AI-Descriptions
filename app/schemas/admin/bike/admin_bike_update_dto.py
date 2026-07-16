@@ -10,4 +10,5 @@ class BikeUpdateDto(BaseModel):
     stock_quantity: int = Field(default=0, ge=0)
     image_url: str | None = Field(default=None, max_length=500)
     is_active: bool = Field(default=True)
+    is_description_ai_generated: bool = Field(default=False)
     brand_id: int = Field(...)
