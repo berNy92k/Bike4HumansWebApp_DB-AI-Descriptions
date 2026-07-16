@@ -1,11 +1,12 @@
 from decimal import Decimal
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi import HTTPException
 
 from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
+from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.services.admin.admin_bike_service import AdminBikeService
@@ -142,3 +143,18 @@ def test_delete_bike_by_id(db_session, seeded_bikes):
 
     # Then
     assert bike_repository.get_bike_by_id(1) is None
+
+
+def test_create_ai_description(db_session, seeded_bikes):
+    # Given
+    mock_ai_description_service = MagicMock()
+    mock_ai_description_service.generate_description.return_value = "Wygenerowany opis roweru."
+    bike_service = AdminBikeService(db_session, ai_description_service=mock_ai_description_service)
+    request_dto = BikeAiDescriptionRequestDto(name="Trek Marlin 7", brand_id=1)
+
+    # When
+    result = bike_service.create_ai_description(request_dto)
+
+    # Then
+    assert result.description == "Wygenerowany opis roweru."
+    mock_ai_description_service.generate_description.assert_called_once_with(request_dto)

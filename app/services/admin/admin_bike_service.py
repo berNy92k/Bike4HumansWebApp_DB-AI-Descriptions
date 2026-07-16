@@ -7,18 +7,21 @@ from sqlalchemy.orm import Session
 from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
+from app.schemas.admin.bike.admin_bike_ai_description_response_dto import BikeAiDescriptionResponseDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
 from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
+from app.services.ai.bike_description_ai_service import BikeDescriptionAiService
 
 
 class AdminBikeService:
     PLACEHOLDER_IMAGES_DIR = Path("app/static/images/bikes/placeholders")
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, ai_description_service: BikeDescriptionAiService | None = None):
         self.bike_repository = BikeRepository(db)
+        self.ai_description_service = ai_description_service or BikeDescriptionAiService()
 
     def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
@@ -104,5 +107,7 @@ class AdminBikeService:
         chosen = choice(images)
         return f"/static/images/bikes/placeholders/{chosen.name}"
 
-    def create_ai_description(self, bike_ai_desc_req_dto: BikeAiDescriptionRequestDto):
-        pass
+    def create_ai_description(self, bike_ai_desc_req_dto: BikeAiDescriptionRequestDto) -> BikeAiDescriptionResponseDto:
+
+        description = self.ai_description_service.generate_description(bike_ai_desc_req_dto)
+        return BikeAiDescriptionResponseDto(description=description)

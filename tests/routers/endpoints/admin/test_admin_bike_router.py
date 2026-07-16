@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -213,3 +215,23 @@ def test_delete_bike_by_id(client, seeded_data, db_session):
     assert response.status_code == 204
     deleted_bike = db_session.query(Bike).filter(Bike.id == bike_id).first()
     assert deleted_bike is None
+
+
+def test_create_ai_description_for_bike(client, seeded_data):
+    # Given
+    payload = {
+        "name": "Trek Marlin 7",
+        "bike_type": "MOUNTAIN",
+        "brand_id": 1,
+    }
+
+    with patch(
+        "app.services.admin.admin_bike_service.BikeDescriptionAiService.generate_description",
+        return_value="Wygenerowany opis roweru.",
+    ):
+        # When
+        response = client.post("/admin/bikes/ai-generate-description", json=payload)
+
+    # Then
+    assert response.status_code == 201
+    assert response.json() == {"description": "Wygenerowany opis roweru."}
