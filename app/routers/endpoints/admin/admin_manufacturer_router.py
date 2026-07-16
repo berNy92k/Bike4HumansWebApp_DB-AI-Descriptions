@@ -1,4 +1,4 @@
-from typing import List, Annotated
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -21,7 +21,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[ManufacturerReadDto])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[ManufacturerReadDto])
 async def find_all_manufacturers(db: db_dependency):
     service = AdminManufacturerService(db)
     return service.get_all_manufacturers()

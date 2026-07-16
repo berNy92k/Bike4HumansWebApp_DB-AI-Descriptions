@@ -27,9 +27,9 @@ async def create_order(logged_user: current_user_dependency, db: db_dependency):
 
 @router.put("/", status_code=status.HTTP_201_CREATED)
 async def update_order_status(logged_user: current_user_dependency, db: db_dependency, status: OrderStatus,
-                              statusPrevious: OrderStatus):
+                              previous_status: OrderStatus):
     service = OrderService(db)
-    order: Order = service.update_status(logged_user.get("user_id"), status.upper(), statusPrevious.upper())
+    order: Order = service.update_status(logged_user.get("user_id"), status.upper(), previous_status.upper())
 
     return {
         "order_id": order.order_id

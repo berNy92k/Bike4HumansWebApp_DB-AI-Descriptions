@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi import APIRouter, Query
 from fastapi.params import Depends
@@ -27,7 +27,7 @@ router = APIRouter(
 
 
 ## USERS ##
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[UserReadDto])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[UserReadDto])
 async def get_all_users(db: db_dependency):
     service = AdminUserService(db)
     return service.get_all_users()

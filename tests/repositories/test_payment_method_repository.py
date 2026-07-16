@@ -1,7 +1,7 @@
 import pytest
 
 from app.models.payment_method import PaymentMethod
-from app.repositories.payment_methods_repository import PaymentMethodRepository
+from app.repositories.payment_method_repository import PaymentMethodRepository
 from tests.database.database import override_get_db
 
 

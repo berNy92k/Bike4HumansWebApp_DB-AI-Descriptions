@@ -29,7 +29,7 @@ class AdminCartService:
             pages=pages,
         )
 
-    def delete_cart_by_id(self, cart_id):
+    def delete_cart_by_id(self, cart_id: int) -> None:
         cart = self.cart_repository.get_cart_by_id(cart_id)
         if not cart:
             raise HTTPException(status_code=404, detail="Cart not found")

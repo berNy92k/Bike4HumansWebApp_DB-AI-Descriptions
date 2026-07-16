@@ -8,12 +8,12 @@ from starlette.templating import Jinja2Templates
 from app.database.database import get_db
 from app.models import User, PaymentMethod
 from app.models.order import Order
-from app.routers.utils.admin_utils_router import redirect_to_login
+from app.routers.utils.redirect_utils import redirect_to_login
 from app.services.auth.auth_service import AuthService
 from app.services.front.cart_service import CartService
 from app.services.front.checkout_service import CheckoutService
 from app.services.front.order_service import OrderService
-from app.services.front.payment_methods_service import PaymentMethodService
+from app.services.front.payment_method_service import PaymentMethodService
 
 router = APIRouter(
     prefix="/order",
@@ -25,11 +25,11 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get("/details", status_code=status.HTTP_200_OK)
-async def render_payment_result(db: db_dependency, request: Request, orderId: str):
+async def render_payment_result(db: db_dependency, request: Request, order_id: str):
     try:
         user: User = await AuthService(db).validate_access(request)
 
-        order: Order = OrderService(db).get_order_by_user_id_and_order_id(user.id, orderId)
+        order: Order = OrderService(db).get_order_by_user_id_and_order_id(user.id, order_id)
         method: PaymentMethod = PaymentMethodService(db).get_method_by_id(order.payment_method_id)
         logged_user = None
         has_cart = False

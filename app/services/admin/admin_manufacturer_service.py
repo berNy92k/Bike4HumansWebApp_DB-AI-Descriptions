@@ -19,7 +19,7 @@ class AdminManufacturerService:
     def __init__(self, db: Session):
         self.manufacturer_repository = ManufacturerRepository(db)
 
-    def get_all_manufacturers(self):
+    def get_all_manufacturers(self) -> list[Manufacturer]:
         return self.manufacturer_repository.get_all_manufacturers()
 
     def get_manufacturers_paginated(self, request_dto: ManufacturerListRequestDto) -> ManufacturerListResponseDto:
@@ -39,7 +39,7 @@ class AdminManufacturerService:
             pages=pages,
         )
 
-    def get_manufacturer_by_id(self, manufacturer_id):
+    def get_manufacturer_by_id(self, manufacturer_id: int) -> Manufacturer:
         manufacturer = self.manufacturer_repository.get_manufacturer_by_id(manufacturer_id)
 
         if not manufacturer:
@@ -47,7 +47,7 @@ class AdminManufacturerService:
 
         return manufacturer
 
-    def create_manufacturer(self, manufacturer_create_dto: ManufacturerCreateDto, current_user: dict):
+    def create_manufacturer(self, manufacturer_create_dto: ManufacturerCreateDto, current_user: dict) -> None:
         manufacturer = Manufacturer(
             name=manufacturer_create_dto.name,
             description=manufacturer_create_dto.description,
@@ -57,7 +57,7 @@ class AdminManufacturerService:
 
         self.manufacturer_repository.create_manufacturer(manufacturer)
 
-    def update_manufacturer_all_fields(self, manufacturer_id: int, manufacturer_update_dto: ManufacturerUpdateDto):
+    def update_manufacturer_all_fields(self, manufacturer_id: int, manufacturer_update_dto: ManufacturerUpdateDto) -> None:
         manufacturer = self.get_manufacturer_by_id(manufacturer_id)
         update_manufacturer_data = manufacturer_update_dto.model_dump()
 
@@ -66,7 +66,7 @@ class AdminManufacturerService:
 
         self.manufacturer_repository.update_manufacturer(manufacturer)
 
-    def update_manufacturer_separate_fields(self, manufacturer_id, manufacturer_update_dto):
+    def update_manufacturer_separate_fields(self, manufacturer_id: int, manufacturer_update_dto: ManufacturerUpdateDto) -> None:
         manufacturer = self.get_manufacturer_by_id(manufacturer_id)
         update_manufacturer_data = manufacturer_update_dto.model_dump(exclude_unset=True)
 
@@ -75,7 +75,7 @@ class AdminManufacturerService:
 
         self.manufacturer_repository.update_manufacturer(manufacturer)
 
-    def delete_manufacturer_by_id(self, manufacturer_id):
+    def delete_manufacturer_by_id(self, manufacturer_id: int) -> None:
         manufacturer = self.get_manufacturer_by_id(manufacturer_id)
 
         self.manufacturer_repository.delete(manufacturer)

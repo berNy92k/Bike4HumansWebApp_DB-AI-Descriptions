@@ -39,7 +39,7 @@ class AdminOrderService:
             pages=pages,
         )
 
-    def update_status_by_id(self, user_id: int, status: OrderStatus, order_id: int):
+    def update_status_by_id(self, user_id: int, status: OrderStatus, order_id: int) -> None:
         order: Order = self.order_repository.get_order_by_user_id_and_order_id(user_id, order_id)
         if not order or not order.items or len(order.items) == 0:
             raise HTTPException(status_code=404, detail="Order not found or empty")
@@ -47,7 +47,7 @@ class AdminOrderService:
         order.status = status
         self.order_repository.create_or_update(order)
 
-    def delete_order_by_id(self, order_id):
+    def delete_order_by_id(self, order_id: int) -> None:
         order = self.order_repository.get_order_by_id(order_id)
         if not order:
             raise HTTPException(status_code=404, detail="Order not found")

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from starlette.templating import Jinja2Templates
 
 from app.database.database import get_db
-from app.routers.utils.admin_utils_router import redirect_to_login
+from app.routers.utils.redirect_utils import redirect_to_login
 from app.services.admin.admin_bike_service import AdminBikeService
 from app.services.admin.admin_manufacturer_service import AdminManufacturerService
 from app.services.admin.admin_user_service import AdminUserService

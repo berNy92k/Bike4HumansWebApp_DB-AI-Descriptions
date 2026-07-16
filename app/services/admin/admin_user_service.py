@@ -30,7 +30,7 @@ class AdminUserService:
         self.role_repository = RoleRepository(db)
         self.permission_repository = PermissionRepository(db)
 
-    def _ensure_super_admin(self, current_user: dict):
+    def _ensure_super_admin(self, current_user: dict) -> None:
         role = self.role_repository.get_role_by_id(int(current_user["role_id"]))
         if not role or not role.has_permission(PermissionCode.SUPER_ADMIN):
             raise HTTPException(status_code=403, detail="Only super admin can perform this action")
@@ -63,7 +63,7 @@ class AdminUserService:
             updated_at=role.updated_at,
         )
 
-    def get_all_users(self):
+    def get_all_users(self) -> list[User]:
         return self.user_repository.get_all_users()
 
     def get_users_paginated(self, request_dto: UserListRequestDto) -> UserListResponseDto:
@@ -107,7 +107,7 @@ class AdminUserService:
             updated_at=user.updated_at,
         )
 
-    def create_user(self, user_dto: UserCreateDto, current_user: dict):
+    def create_user(self, user_dto: UserCreateDto, current_user: dict) -> None:
         self._ensure_role_assignment_allowed(user_dto.role_id, current_user)
 
         user = User(
@@ -122,7 +122,7 @@ class AdminUserService:
         )
         self.user_repository.create_user(user)
 
-    def update_user_all_fields(self, user_id: int, user_update_dto: UserUpdateDto, current_user: dict):
+    def update_user_all_fields(self, user_id: int, user_update_dto: UserUpdateDto, current_user: dict) -> None:
         self._ensure_role_assignment_allowed(user_update_dto.role_id, current_user)
 
         user = self.user_repository.get_user_by_id(user_id)
@@ -136,14 +136,14 @@ class AdminUserService:
 
         self.user_repository.update_user(user)
 
-    def delete_user_by_id(self, user_id):
+    def delete_user_by_id(self, user_id: int) -> None:
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
         self.user_repository.delete_user(user)
 
-    def get_all_roles(self):
+    def get_all_roles(self) -> list[Role]:
         return self.role_repository.get_all_roles()
 
     def get_roles_paginated(self, request_dto: RoleListRequestDto) -> RoleListResponseDto:
@@ -160,7 +160,7 @@ class AdminUserService:
             pages=pages,
         )
 
-    def get_role_by_id(self, role_id: int):
+    def get_role_by_id(self, role_id: int) -> Role:
         role = self.role_repository.get_role_by_id(role_id)
 
         if not role:
@@ -168,7 +168,7 @@ class AdminUserService:
 
         return role
 
-    def create_role(self, role_dto: RoleCreateDto, current_user: dict):
+    def create_role(self, role_dto: RoleCreateDto, current_user: dict) -> None:
         self._ensure_super_admin(current_user)
 
         role = Role(
@@ -178,7 +178,7 @@ class AdminUserService:
         )
         self.role_repository.create_role(role)
 
-    def update_role_by_id(self, role_id: int, role_dto: RoleUpdateDto, current_user: dict):
+    def update_role_by_id(self, role_id: int, role_dto: RoleUpdateDto, current_user: dict) -> None:
         self._ensure_super_admin(current_user)
 
         role = self.get_role_by_id(role_id)
@@ -189,7 +189,7 @@ class AdminUserService:
 
         self.role_repository.update_role(role)
 
-    def delete_role_by_id(self, role_id, current_user: dict):
+    def delete_role_by_id(self, role_id: int, current_user: dict) -> None:
         self._ensure_super_admin(current_user)
 
         role = self.get_role_by_id(role_id)

@@ -13,7 +13,7 @@ class CartService:
         self.cart_repository = CartRepository(db)
         self.bike_repository = BikeRepository(db)
 
-    def add_item_to_cart(self, user_id: int, bike_id: int):
+    def add_item_to_cart(self, user_id: int, bike_id: int) -> None:
         bike = self.bike_repository.get_bike_by_id(bike_id)
         if not bike:
             raise HTTPException(status_code=404, detail="Bike not found")
@@ -38,7 +38,7 @@ class CartService:
 
         self.cart_repository.create_or_update(cart)
 
-    def get_cart_by_user_id_and_pending_status(self, user_id: int):
+    def get_cart_by_user_id_and_pending_status(self, user_id: int) -> Cart:
         cart = self.cart_repository.get_cart_by_user_id_and_status(user_id, CartStatus.PENDING)
 
         if not cart:

@@ -29,7 +29,7 @@ class AdminCheckoutService:
             pages=pages,
         )
 
-    def delete_checkout_by_id(self, checkout_id):
+    def delete_checkout_by_id(self, checkout_id: int) -> None:
         checkout = self.checkout_repository.get_checkout_by_id(checkout_id)
         if not checkout:
             raise HTTPException(status_code=404, detail="Checkout not found")

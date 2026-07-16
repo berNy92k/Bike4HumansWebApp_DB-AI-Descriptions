@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -23,7 +23,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[BikeReadDto])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=list[BikeReadDto])
 async def find_all_bikes(db: db_dependency):
     service = AdminBikeService(db)
     return service.get_all_bikes()

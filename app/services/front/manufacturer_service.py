@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.models.manufacturer import Manufacturer
 from app.repositories.manufacturer_repository import ManufacturerRepository
 from app.schemas.admin.manufacturers.admin_manufacturer_list_request_dto import ManufacturerListRequestDto
 from app.schemas.admin.manufacturers.admin_manufacturer_list_response_dto import ManufacturerListResponseDto
@@ -12,7 +13,7 @@ class ManufacturerService:
     def __init__(self, db: Session):
         self.manufacturer_repository = ManufacturerRepository(db)
 
-    def get_all_manufacturers(self):
+    def get_all_manufacturers(self) -> list[Manufacturer]:
         return self.manufacturer_repository.get_all_manufacturers()
 
     def get_manufacturers_paginated(self, request_dto: ManufacturerListRequestDto) -> ManufacturerListResponseDto:
@@ -32,7 +33,7 @@ class ManufacturerService:
             pages=pages,
         )
 
-    def get_manufacturer_by_id(self, manufacturer_id):
+    def get_manufacturer_by_id(self, manufacturer_id: int) -> Manufacturer:
         manufacturer = self.manufacturer_repository.get_manufacturer_by_id(manufacturer_id)
 
         if not manufacturer:

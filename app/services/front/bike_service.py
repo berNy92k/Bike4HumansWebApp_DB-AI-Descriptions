@@ -1,8 +1,7 @@
-from typing import List
-
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
+from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
@@ -14,10 +13,10 @@ class BikeService:
     def __init__(self, db: Session):
         self.bike_repository = BikeRepository(db)
 
-    def get_all_bikes(self):
+    def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
 
-    def get_last_x_bikes(self, size: int) -> List[BikeReadDto]:
+    def get_last_x_bikes(self, size: int) -> list[BikeReadDto]:
         bikes = self.bike_repository.get_last_x_bikes(size)
 
         return [BikeReadDto.model_validate(bike) for bike in bikes]
@@ -39,7 +38,7 @@ class BikeService:
             pages=pages,
         )
 
-    def get_bike_by_id(self, bike_id):
+    def get_bike_by_id(self, bike_id: int) -> Bike:
         bike = self.bike_repository.get_bike_by_id(bike_id)
 
         if not bike:

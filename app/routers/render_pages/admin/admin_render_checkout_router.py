@@ -7,7 +7,7 @@ from starlette import status
 from starlette.templating import Jinja2Templates
 
 from app.database.database import get_db
-from app.routers.utils.admin_utils_router import redirect_to_login
+from app.routers.utils.redirect_utils import redirect_to_login
 from app.schemas.admin.checkout.admin_checkout_list_request_dto import CheckoutListRequestDto
 from app.services.admin.admin_checkout_service import AdminCheckoutService
 from app.services.auth.auth_service import AuthService

@@ -18,7 +18,7 @@ class CheckoutService:
         self.cart_repository = CartRepository(db)
         self.checkout_repository = CheckoutRepository(db)
 
-    def create_checkout(self, user_id: int):
+    def create_checkout(self, user_id: int) -> None:
         cart: Cart = self.cart_repository.get_cart_by_user_id_and_status(user_id, CartStatus.PENDING)
         if not cart or not cart.items or len(cart.items) == 0:
             raise HTTPException(status_code=404, detail="Cart not found or empty")
@@ -48,7 +48,7 @@ class CheckoutService:
         cart.status = CartStatus.COMPLETED.name
         self.cart_repository.create_or_update(cart)
 
-    def get_cart_by_user_id_and_status_pending(self, user_id: int):
+    def get_cart_by_user_id_and_status_pending(self, user_id: int) -> Checkout:
         checkout: Checkout = self.checkout_repository.get_cart_by_user_id_and_status(user_id, CheckoutStatus.PENDING)
 
         if not checkout:
@@ -56,7 +56,7 @@ class CheckoutService:
 
         return checkout
 
-    def get_cart_by_user_id_and_status_completed(self, user_id: int):
+    def get_cart_by_user_id_and_status_completed(self, user_id: int) -> Checkout:
         checkout: Checkout = self.checkout_repository.get_cart_by_user_id_and_status(user_id, CheckoutStatus.COMPLETED)
 
         if not checkout:

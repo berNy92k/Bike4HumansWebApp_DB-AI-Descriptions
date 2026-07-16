@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             const previousStatus = "pending"
-            const updateResponse = await fetch(`/order?status=${encodeURIComponent(status)}&statusPrevious=${encodeURIComponent(previousStatus)}`, {
+            const updateResponse = await fetch(`/order?status=${encodeURIComponent(status)}&previous_status=${encodeURIComponent(previousStatus)}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const data = await updateResponse.json();
-            window.location.href = `/order/details?orderId=${encodeURIComponent(data.order_id)}`;
+            window.location.href = `/order/details?order_id=${encodeURIComponent(data.order_id)}`;
         } catch (error) {
             console.error("Payment provider flow failed:", error);
         }

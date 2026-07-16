@@ -22,7 +22,7 @@ class OrderService:
         alphabet = string.ascii_uppercase + string.digits
         return "".join(secrets.choice(alphabet) for _ in range(length))
 
-    def create_order(self, user_id: int):
+    def create_order(self, user_id: int) -> None:
         checkout: Checkout = self.checkout_repository.get_cart_by_user_id_and_status(user_id, CheckoutStatus.PENDING)
         if not checkout or not checkout.items or len(checkout.items) == 0:
             raise HTTPException(status_code=404, detail="Checkout not found or empty")
@@ -48,8 +48,8 @@ class OrderService:
         checkout.status = CheckoutStatus.COMPLETED.name
         self.checkout_repository.create_or_update(checkout)
 
-    def update_status(self, user_id: int, status: OrderStatus, statusPrevious: OrderStatus):
-        order: Order = self.order_repository.get_order_by_user_id_and_status(user_id, statusPrevious)
+    def update_status(self, user_id: int, status: OrderStatus, previous_status: OrderStatus) -> Order:
+        order: Order = self.order_repository.get_order_by_user_id_and_status(user_id, previous_status)
         if not order or not order.items or len(order.items) == 0:
             raise HTTPException(status_code=404, detail="Order not found or empty")
 
@@ -57,8 +57,8 @@ class OrderService:
         self.order_repository.create_or_update(order)
         return order
 
-    def get_order_by_user_id_and_order_id(self, user_id: int, orderId: str):
-        order: Order = self.order_repository.get_order_by_order_id_and_user_id(orderId, user_id)
+    def get_order_by_user_id_and_order_id(self, user_id: int, order_id: str) -> Order:
+        order: Order = self.order_repository.get_order_by_order_id_and_user_id(order_id, user_id)
 
         if not order:
             raise HTTPException(status_code=404, detail="Checkout not found")

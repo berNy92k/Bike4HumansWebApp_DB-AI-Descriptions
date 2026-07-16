@@ -1,6 +1,5 @@
 from pathlib import Path
 from random import choice
-from typing import List
 
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
@@ -21,10 +20,10 @@ class AdminBikeService:
     def __init__(self, db: Session):
         self.bike_repository = BikeRepository(db)
 
-    def get_all_bikes(self):
+    def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
 
-    def get_last_x_bikes(self, size: int) -> List[BikeReadDto]:
+    def get_last_x_bikes(self, size: int) -> list[BikeReadDto]:
         bikes = self.bike_repository.get_last_x_bikes(size)
 
         return [BikeReadDto.model_validate(bike) for bike in bikes]
@@ -46,7 +45,7 @@ class AdminBikeService:
             pages=pages,
         )
 
-    def get_bike_by_id(self, bike_id):
+    def get_bike_by_id(self, bike_id: int) -> Bike:
         bike = self.bike_repository.get_bike_by_id(bike_id)
 
         if not bike:
@@ -54,7 +53,7 @@ class AdminBikeService:
 
         return bike
 
-    def create_bike(self, bike_create_dto: BikeCreateDto, current_user: dict):
+    def create_bike(self, bike_create_dto: BikeCreateDto, current_user: dict) -> None:
         bike = Bike(
             name=bike_create_dto.name,
             description=bike_create_dto.description,
@@ -67,7 +66,7 @@ class AdminBikeService:
         )
         self.bike_repository.create_bike(bike)
 
-    def update_bike_all_fields(self, bike_id: int, bike_update_dto: BikeUpdateDto):
+    def update_bike_all_fields(self, bike_id: int, bike_update_dto: BikeUpdateDto) -> None:
         bike = self.get_bike_by_id(bike_id)
         update_bike_data = bike_update_dto.model_dump()
 
@@ -76,7 +75,7 @@ class AdminBikeService:
 
         self.bike_repository.update_bike(bike)
 
-    def update_bike_separate_fields(self, bike_id, bike_update_dto):
+    def update_bike_separate_fields(self, bike_id: int, bike_update_dto: BikeUpdateDto) -> None:
         bike = self.get_bike_by_id(bike_id)
         update_bike_data = bike_update_dto.model_dump(exclude_unset=True)
 
@@ -85,7 +84,7 @@ class AdminBikeService:
 
         self.bike_repository.update_bike(bike)
 
-    def delete_bike_by_id(self, bike_id):
+    def delete_bike_by_id(self, bike_id: int) -> None:
         bike = self.get_bike_by_id(bike_id)
 
         self.bike_repository.delete(bike)
