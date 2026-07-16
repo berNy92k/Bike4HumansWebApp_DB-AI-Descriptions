@@ -14,14 +14,15 @@ from app.schemas.admin.user.role.admin_role_list_request_dto import RoleListRequ
 from app.schemas.admin.user.role.admin_role_list_response_dto import RoleListResponseDto
 from app.schemas.admin.user.role.admin_role_update_dto import RoleUpdateDto
 from app.services.admin.admin_user_service import AdminUserService
-from app.services.auth.auth_service import get_current_user
+from app.services.auth.auth_service import get_current_admin_user
 
 db_dependency = Annotated[Session, Depends(get_db)]
+current_user_dependency = Annotated[dict, Depends(get_current_admin_user)]
 
 router = APIRouter(
     prefix="/admin/user",
     tags=["Admin - user"],
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(get_current_admin_user)],
 )
 
 
@@ -33,15 +34,16 @@ async def get_all_users(db: db_dependency):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_new_user(user: UserCreateDto, db: db_dependency):
+async def create_new_user(user: UserCreateDto, db: db_dependency, current_user: current_user_dependency):
     service = AdminUserService(db)
-    service.create_user(user)
+    service.create_user(user, current_user)
 
 
 @router.put("/{user_id}", status_code=status.HTTP_200_OK)
-async def update_new_user(user_id: int, user_update_dto: UserUpdateDto, db: db_dependency):
+async def update_new_user(user_id: int, user_update_dto: UserUpdateDto, db: db_dependency,
+                          current_user: current_user_dependency):
     service = AdminUserService(db)
-    service.update_user_all_fields(user_id, user_update_dto)
+    service.update_user_all_fields(user_id, user_update_dto, current_user)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -58,18 +60,19 @@ async def get_all_roles(db: db_dependency, page: int = Query(1, ge=1), size: int
 
 
 @router.post("/role", status_code=status.HTTP_201_CREATED)
-async def create_new_role(role: RoleCreateDto, db: db_dependency):
+async def create_new_role(role: RoleCreateDto, db: db_dependency, current_user: current_user_dependency):
     service = AdminUserService(db)
-    service.create_role(role)
+    service.create_role(role, current_user)
 
 
 @router.patch("/role/{role_id}", status_code=status.HTTP_200_OK)
-async def update_role_by_id(role_id: int, role: RoleUpdateDto, db: db_dependency):
+async def update_role_by_id(role_id: int, role: RoleUpdateDto, db: db_dependency,
+                            current_user: current_user_dependency):
     service = AdminUserService(db)
-    service.update_role_by_id(role_id, role)
+    service.update_role_by_id(role_id, role, current_user)
 
 
 @router.delete("/role/{role_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_role_by_id(role_id: int, db: db_dependency):
+async def delete_role_by_id(role_id: int, db: db_dependency, current_user: current_user_dependency):
     service = AdminUserService(db)
-    service.delete_role_by_id(role_id)
+    service.delete_role_by_id(role_id, current_user)

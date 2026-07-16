@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.repositories.cart_repository import CartRepository
@@ -30,5 +31,7 @@ class AdminCartService:
 
     def delete_cart_by_id(self, cart_id):
         cart = self.cart_repository.get_cart_by_id(cart_id)
+        if not cart:
+            raise HTTPException(status_code=404, detail="Cart not found")
 
         self.cart_repository.delete(cart)

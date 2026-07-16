@@ -7,14 +7,14 @@ from starlette import status
 from app.database.database import get_db
 from app.models.order import OrderStatus, Order
 from app.services.admin.admin_order_service import AdminOrderService
-from app.services.auth.auth_service import get_current_user
+from app.services.auth.auth_service import get_current_admin_user
 
-current_user_dependency = Annotated[dict, Depends(get_current_user)]
+current_user_dependency = Annotated[dict, Depends(get_current_admin_user)]
 db_dependency = Annotated[Session, Depends(get_db)]
 
 router = APIRouter(
     prefix="/admin/orders",
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(get_current_admin_user)],
     include_in_schema=False
 )
 

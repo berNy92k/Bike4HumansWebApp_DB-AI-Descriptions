@@ -1,9 +1,10 @@
 import pytest
 from fastapi import HTTPException
 
+from app.models.permission import Permission, PermissionCode, role_permission
 from app.models.role import Role
 from app.models.user import User
-from app.services.auth.auth_service import AuthService, bcrypt_context
+from app.services.auth.auth_service import AuthService, bcrypt_context, get_current_admin_user
 from tests.database.database import override_get_db
 
 
@@ -42,12 +43,31 @@ def clean_users_table(db_session):
 
 
 @pytest.fixture
-def seeded_roles(db_session, clean_roles_table):
+def clean_permission_tables(db_session):
     # Given
+    db_session.execute(role_permission.delete())
+    db_session.query(Permission).delete()
+    db_session.commit()
+
+    yield
+
+    db_session.execute(role_permission.delete())
+    db_session.query(Permission).delete()
+    db_session.commit()
+
+
+@pytest.fixture
+def seeded_roles(db_session, clean_roles_table, clean_permission_tables):
+    # Given
+    admin_panel_access = Permission(code=PermissionCode.ADMIN_PANEL_ACCESS)
+    super_admin = Permission(code=PermissionCode.SUPER_ADMIN)
+    db_session.add_all([admin_panel_access, super_admin])
+    db_session.flush()
+
     roles = [
-        Role(id=1, name="Admin", description="Admin role"),
-        Role(id=2, name="Moderator", description="Moderator role"),
-        Role(id=3, name="Manager", description="Manager role"),
+        Role(id=1, name="Admin", description="Admin role", permissions=[admin_panel_access, super_admin]),
+        Role(id=2, name="Moderator", description="Moderator role", permissions=[admin_panel_access]),
+        Role(id=3, name="Manager", description="Manager role", permissions=[admin_panel_access]),
         Role(id=4, name="User", description="User role"),
     ]
 
@@ -169,6 +189,30 @@ async def test_validate_access_forbidden(db_session, seeded_users, monkeypatch):
 
     assert exc.value.status_code == 403
     assert exc.value.detail == "User is forbidden"
+
+
+@pytest.mark.asyncio
+async def test_get_current_admin_user_allowed(db_session, seeded_roles):
+    # Given
+    current_user = {"user_id": 1, "username": "admin", "role_id": 1}
+
+    # When
+    result = await get_current_admin_user(current_user=current_user, db=db_session)
+
+    # Then
+    assert result == current_user
+
+
+@pytest.mark.asyncio
+async def test_get_current_admin_user_forbidden(db_session, seeded_roles):
+    # Given
+    current_user = {"user_id": 4, "username": "john", "role_id": 4}
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc:
+        await get_current_admin_user(current_user=current_user, db=db_session)
+
+    assert exc.value.status_code == 403
 
 
 @pytest.mark.asyncio

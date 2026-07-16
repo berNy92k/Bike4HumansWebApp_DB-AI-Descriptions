@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.bike import Bike
+from app.models.permission import Permission, PermissionCode, role_permission
 from app.models.user import User, Address
 from app.models.role import Role
 from app.services.auth.auth_service import get_current_user
@@ -36,6 +37,8 @@ def clean_tables(db_session):
     db_session.query(Bike).delete()
     db_session.query(User).delete()
     db_session.query(Address).delete()
+    db_session.execute(role_permission.delete())
+    db_session.query(Permission).delete()
     db_session.query(Role).delete()
     db_session.commit()
 
@@ -44,6 +47,8 @@ def clean_tables(db_session):
     db_session.query(Bike).delete()
     db_session.query(User).delete()
     db_session.query(Address).delete()
+    db_session.execute(role_permission.delete())
+    db_session.query(Permission).delete()
     db_session.query(Role).delete()
     db_session.commit()
 
@@ -51,8 +56,12 @@ def clean_tables(db_session):
 @pytest.fixture
 def seeded_data(db_session, clean_tables):
     # Given
+    admin_panel_access = Permission(code=PermissionCode.ADMIN_PANEL_ACCESS)
+    db_session.add(admin_panel_access)
+    db_session.flush()
+
     roles = [
-        Role(id=1, name="Admin", description="Admin role"),
+        Role(id=1, name="Admin", description="Admin role", permissions=[admin_panel_access]),
     ]
     address = Address(
         id=1,

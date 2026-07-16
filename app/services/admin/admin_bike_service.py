@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
+from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
@@ -103,3 +104,6 @@ class AdminBikeService:
 
         chosen = choice(images)
         return f"/static/images/bikes/placeholders/{chosen.name}"
+
+    def create_ai_description(self, bike_ai_desc_req_dto: BikeAiDescriptionRequestDto):
+        pass

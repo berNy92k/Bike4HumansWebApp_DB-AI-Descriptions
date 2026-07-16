@@ -1,4 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const aiButton = document.getElementById("ai-generate-description-btn");
+    const description = document.getElementById("description");
+
+    if (!aiButton || !description) return;
+
+    aiButton.addEventListener("click", async () => {
+        aiButton.disabled = true;
+        const originalText = aiButton.textContent;
+        aiButton.textContent = "Generuję...";
+
+        try {
+            const token = window.getCookieValue?.("access_token");
+            if (!token) {
+                alert("Brak tokenu logowania.");
+                return;
+            }
+
+            const payload = {
+                name: document.getElementById("name")?.value?.trim() || "",
+                brand_id: document.getElementById("brand_id")?.value || "",
+                bike_type: document.getElementById("bike_type")?.value?.trim() || "",
+                frame_material: document.getElementById("frame_material")?.value?.trim() || "",
+                frame_size: document.getElementById("frame_size")?.value?.trim() || "",
+                wheel_size: document.getElementById("wheel_size")?.value?.trim() || "",
+                tire_width: document.getElementById("tire_width")?.value?.trim() || "",
+                gear_count: document.getElementById("gear_count")?.value || "",
+                brake_type: document.getElementById("brake_type")?.value?.trim() || "",
+                suspension_type: document.getElementById("suspension_type")?.value?.trim() || "",
+                color: document.getElementById("color")?.value?.trim() || "",
+                usage: document.getElementById("usage")?.value?.trim() || "",
+                target_user: document.getElementById("target_user")?.value?.trim() || "",
+            };
+
+            const response = await fetch("/admin/bikes/ai-generate-description", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                credentials: "include",
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Nie udało się wygenerować opisu.");
+            }
+
+            const data = await response.json();
+            description.value = data.description ?? "";
+        } catch (error) {
+            alert(error.message || "Wystąpił błąd podczas generowania opisu.");
+        } finally {
+            aiButton.disabled = false;
+            aiButton.textContent = originalText;
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("bike-create-form");
     const messageBox = document.getElementById("form-message");
 

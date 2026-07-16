@@ -49,5 +49,7 @@ class AdminOrderService:
 
     def delete_order_by_id(self, order_id):
         order = self.order_repository.get_order_by_id(order_id)
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
 
         self.order_repository.delete(order)

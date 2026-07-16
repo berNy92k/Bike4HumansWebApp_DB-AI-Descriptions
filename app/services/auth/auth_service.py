@@ -10,7 +10,10 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
+from app.database.database import get_db
 from app.models import User
+from app.models.permission import PermissionCode
+from app.repositories.role_repository import RoleRepository
 from app.services.auth.user_service import UserService
 
 load_dotenv()
@@ -21,6 +24,16 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     return _decode_jwt_token(token)
+
+
+async def get_current_admin_user(current_user: Annotated[dict, Depends(get_current_user)],
+                                 db: Annotated[Session, Depends(get_db)], ) -> dict:
+
+    role = RoleRepository(db).get_role_by_id(int(current_user["role_id"]))
+    if not role or not role.has_permission(PermissionCode.ADMIN_PANEL_ACCESS):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is forbidden")
+
+    return current_user
 
 
 async def get_current_user_from_cookie(request: Request):
@@ -59,6 +72,7 @@ class AuthService:
 
     def __init__(self, db: Session):
         self.user_service = UserService(db)
+        self.role_repository = RoleRepository(db)
 
     def authenticate_user(self, username: str, password: str) -> User:
         user: User = self.user_service.find_user_by_username(username)
@@ -75,7 +89,8 @@ class AuthService:
         if not user:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User is not found")
 
-        if not (user.role_id == 1 or user.role_id == 2 or user.role_id == 3):
+        role = self.role_repository.get_role_by_id(user.role_id)
+        if not role or not role.has_permission(PermissionCode.ADMIN_PANEL_ACCESS):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is forbidden")
 
         return user

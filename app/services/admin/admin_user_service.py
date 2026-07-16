@@ -2,8 +2,10 @@ from fastapi import HTTPException
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from app.models.permission import Permission, PermissionCode
 from app.models.role import Role
 from app.models.user import User
+from app.repositories.permission_repository import PermissionRepository
 from app.repositories.role_repository import RoleRepository
 from app.repositories.user_repository import UserRepository
 from app.schemas.admin.user.admin_user_create_dto import UserCreateDto
@@ -26,6 +28,40 @@ class AdminUserService:
     def __init__(self, db: Session):
         self.user_repository = UserRepository(db)
         self.role_repository = RoleRepository(db)
+        self.permission_repository = PermissionRepository(db)
+
+    def _ensure_super_admin(self, current_user: dict):
+        role = self.role_repository.get_role_by_id(int(current_user["role_id"]))
+        if not role or not role.has_permission(PermissionCode.SUPER_ADMIN):
+            raise HTTPException(status_code=403, detail="Only super admin can perform this action")
+
+    def _resolve_permissions(self, codes: list[str]) -> list[Permission]:
+        permissions = self.permission_repository.get_by_codes(codes)
+        if len(permissions) != len(set(codes)):
+            raise HTTPException(status_code=400, detail="Unknown permission code(s)")
+
+        return permissions
+
+    def _ensure_role_assignment_allowed(self, role_id: int, current_user: dict) -> Role:
+        target_role = self.role_repository.get_role_by_id(role_id)
+        if not target_role:
+            raise HTTPException(status_code=404, detail="Role not found")
+
+        if target_role.has_permission(PermissionCode.ADMIN_PANEL_ACCESS):
+            self._ensure_super_admin(current_user)
+
+        return target_role
+
+    @staticmethod
+    def _to_role_read_dto(role: Role) -> RoleReadDto:
+        return RoleReadDto(
+            id=role.id,
+            name=role.name,
+            description=role.description,
+            permission_codes=[permission.code for permission in role.permissions],
+            created_at=role.created_at,
+            updated_at=role.updated_at,
+        )
 
     def get_all_users(self):
         return self.user_repository.get_all_users()
@@ -71,7 +107,9 @@ class AdminUserService:
             updated_at=user.updated_at,
         )
 
-    def create_user(self, user_dto: UserCreateDto):
+    def create_user(self, user_dto: UserCreateDto, current_user: dict):
+        self._ensure_role_assignment_allowed(user_dto.role_id, current_user)
+
         user = User(
             username=user_dto.username,
             email=user_dto.email,
@@ -84,7 +122,9 @@ class AdminUserService:
         )
         self.user_repository.create_user(user)
 
-    def update_user_all_fields(self, user_id: int, user_update_dto: UserUpdateDto):
+    def update_user_all_fields(self, user_id: int, user_update_dto: UserUpdateDto, current_user: dict):
+        self._ensure_role_assignment_allowed(user_update_dto.role_id, current_user)
+
         user = self.user_repository.get_user_by_id(user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
@@ -110,7 +150,7 @@ class AdminUserService:
         items, total = self.role_repository.get_roles_paginated(page=request_dto.page, size=request_dto.size)
         pages = (total + request_dto.size - 1) // request_dto.size if total > 0 else 0
 
-        role_items = [RoleReadDto.model_validate(role) for role in items]
+        role_items = [self._to_role_read_dto(role) for role in items]
 
         return RoleListResponseDto(
             items=role_items,
@@ -128,18 +168,29 @@ class AdminUserService:
 
         return role
 
-    def create_role(self, role_dto: RoleCreateDto):
-        role = Role(**role_dto.model_dump())
+    def create_role(self, role_dto: RoleCreateDto, current_user: dict):
+        self._ensure_super_admin(current_user)
+
+        role = Role(
+            name=role_dto.name,
+            description=role_dto.description,
+            permissions=self._resolve_permissions(role_dto.permission_codes),
+        )
         self.role_repository.create_role(role)
 
-    def update_role_by_id(self, role_id: int, role_dto: RoleUpdateDto):
+    def update_role_by_id(self, role_id: int, role_dto: RoleUpdateDto, current_user: dict):
+        self._ensure_super_admin(current_user)
+
         role = self.get_role_by_id(role_id)
 
         role.name = role_dto.name
         role.description = role_dto.description
+        role.permissions = self._resolve_permissions(role_dto.permission_codes)
 
         self.role_repository.update_role(role)
 
-    def delete_role_by_id(self, role_id):
+    def delete_role_by_id(self, role_id, current_user: dict):
+        self._ensure_super_admin(current_user)
+
         role = self.get_role_by_id(role_id)
         self.role_repository.delete_role(role)

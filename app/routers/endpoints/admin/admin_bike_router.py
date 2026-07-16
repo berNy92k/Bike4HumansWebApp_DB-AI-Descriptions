@@ -5,19 +5,21 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.database.database import get_db
+from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
+from app.schemas.admin.bike.admin_bike_ai_description_response_dto import BikeAiDescriptionResponseDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
 from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
 from app.services.admin.admin_bike_service import AdminBikeService
-from app.services.auth.auth_service import get_current_user
+from app.services.auth.auth_service import get_current_admin_user
 
 db_dependency = Annotated[Session, Depends(get_db)]
-current_user_dependency = Annotated[dict, Depends(get_current_user)]
+current_user_dependency = Annotated[dict, Depends(get_current_admin_user)]
 
 router = APIRouter(
     prefix="/admin/bikes",
     tags=["Admin - bikes"],
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(get_current_admin_user)],
 )
 
 
@@ -55,3 +57,10 @@ async def update_bike_separate_fields(bike_id: int, bike_update_dto: BikeUpdateD
 async def delete_bike_by_id(bike_id: int, db: db_dependency):
     service = AdminBikeService(db)
     service.delete_bike_by_id(bike_id)
+
+
+@router.post("/ai-generate-description", status_code=status.HTTP_201_CREATED)
+async def create_ai_description_for_bike(bike_ai_desc_req_dto: BikeAiDescriptionRequestDto,
+                                         db: db_dependency) -> BikeAiDescriptionResponseDto:
+    service = AdminBikeService(db)
+    return service.create_ai_description(bike_ai_desc_req_dto)

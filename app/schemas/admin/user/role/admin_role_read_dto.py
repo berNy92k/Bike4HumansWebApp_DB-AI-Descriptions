@@ -7,6 +7,7 @@ class RoleReadDto(BaseModel):
     id: int
     name: str
     description: str | None
+    permission_codes: list[str]
     created_at: datetime
     updated_at: datetime
 

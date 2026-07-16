@@ -9,15 +9,15 @@ from app.schemas.admin.manufacturers.admin_manufacturer_create_dto import Manufa
 from app.schemas.admin.manufacturers.admin_manufacturer_read_dto import ManufacturerReadDto
 from app.schemas.admin.manufacturers.admin_manufacturer_update_dto import ManufacturerUpdateDto
 from app.services.admin.admin_manufacturer_service import AdminManufacturerService
-from app.services.auth.auth_service import get_current_user
+from app.services.auth.auth_service import get_current_admin_user
 
 db_dependency = Annotated[Session, Depends(get_db)]
-current_user_dependency = Annotated[dict, Depends(get_current_user)]
+current_user_dependency = Annotated[dict, Depends(get_current_admin_user)]
 
 router = APIRouter(
     prefix="/admin/manufacturer",
     tags=["Admin - manufacturer"],
-    dependencies=[Depends(get_current_user)],
+    dependencies=[Depends(get_current_admin_user)],
 )
 
 

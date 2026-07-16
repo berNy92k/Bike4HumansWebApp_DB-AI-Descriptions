@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.repositories.checkout_repository import CheckoutRepository
@@ -30,5 +31,7 @@ class AdminCheckoutService:
 
     def delete_checkout_by_id(self, checkout_id):
         checkout = self.checkout_repository.get_checkout_by_id(checkout_id)
+        if not checkout:
+            raise HTTPException(status_code=404, detail="Checkout not found")
 
         self.checkout_repository.delete(checkout)
