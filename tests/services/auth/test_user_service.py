@@ -5,6 +5,7 @@ from app.models.role import Role
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.schemas.admin.user.admin_user_create_dto import UserCreateDto
+from app.schemas.auth.user_create_dto import UserCreateDto as RegisterUserDto
 from app.services.auth.user_service import UserService
 from tests.database.database import override_get_db
 
@@ -91,6 +92,38 @@ def seeded_users(db_session, clean_users_table, seeded_roles):
     db_session.commit()
 
     return users
+
+
+def test_create_user(db_session, seeded_roles):
+    # Given
+    user_service = UserService(db_session)
+    dto = RegisterUserDto(username="newuser", email="newuser@example.com", name="New", surname="User",
+                           password="secret123")
+
+    # When
+    user_service.create_user(dto)
+
+    # Then
+    repository = UserRepository(db_session)
+    created = repository.find_user_by_username("newuser")
+    assert created is not None
+    assert created.address_id is None
+    assert created.role_id == 4
+    assert created.is_active is False
+    assert created.email_verified is False
+
+
+def test_create_user_role_missing(db_session, clean_roles_table, clean_users_table):
+    # Given
+    user_service = UserService(db_session)
+    dto = RegisterUserDto(username="newuser", email="newuser@example.com", name="New", surname="User",
+                           password="secret123")
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc:
+        user_service.create_user(dto)
+
+    assert exc.value.status_code == 404
 
 
 def test_find_user_by_id(db_session, seeded_users):

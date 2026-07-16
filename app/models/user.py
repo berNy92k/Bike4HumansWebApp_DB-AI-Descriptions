@@ -21,7 +21,7 @@ class User(BaseModel):
     last_login: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     role_id: Mapped[int] = mapped_column(ForeignKey("role.id"), nullable=False, index=True)
-    address_id: Mapped[int] = mapped_column(ForeignKey("addresses.id"), nullable=False, index=True)
+    address_id: Mapped[int | None] = mapped_column(ForeignKey("addresses.id"), nullable=True, index=True)
 
     cart: Mapped[Cart] = relationship("Cart", back_populates="user")
     address: Mapped[Cart] = relationship("Address", back_populates="users")

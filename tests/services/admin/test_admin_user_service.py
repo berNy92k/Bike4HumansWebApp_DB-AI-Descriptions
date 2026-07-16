@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from app.models.permission import Permission, PermissionCode, role_permission
 from app.models.role import Role
 from app.models.user import User, Address
+from app.schemas.admin.user.admin_user_create_dto import UserCreateDto
 from app.schemas.admin.user.admin_user_update_dto import UserUpdateDto
 from app.schemas.admin.user.role.admin_role_create_dto import RoleCreateDto
 from app.services.admin.admin_user_service import AdminUserService
@@ -100,6 +101,37 @@ def _user_update_dto(role_id: int) -> UserUpdateDto:
         is_active=True,
         email_verified=True,
     )
+
+
+def test_create_user_by_super_admin_allowed(db_session, seeded_roles):
+    # Given
+    service = AdminUserService(db_session)
+    current_user = {"user_id": 1, "role_id": 1}
+    dto = UserCreateDto(username="newuser", email="newuser@example.com", name="New", surname="User",
+                        password="secret123", role_id=4)
+
+    # When
+    service.create_user(dto, current_user)
+
+    # Then
+    users = service.get_all_users()
+    created = next(u for u in users if u.username == "newuser")
+    assert created.address_id is None
+    assert created.role_id == 4
+
+
+def test_create_user_admin_role_by_manager_forbidden(db_session, seeded_roles):
+    # Given
+    service = AdminUserService(db_session)
+    current_user = {"user_id": 99, "role_id": 3}
+    dto = UserCreateDto(username="newadmin", email="newadmin@example.com", name="New", surname="Admin",
+                        password="secret123", role_id=1)
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc:
+        service.create_user(dto, current_user)
+
+    assert exc.value.status_code == 403
 
 
 def test_update_user_role_to_admin_role_by_manager_forbidden(db_session, seeded_target_user):

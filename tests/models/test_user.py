@@ -31,7 +31,12 @@ def test_user_required_columns_are_not_nullable():
     assert columns["is_active"].nullable is False
     assert columns["email_verified"].nullable is False
     assert columns["role_id"].nullable is False
-    assert columns["address_id"].nullable is False
+
+
+def test_user_address_id_is_nullable():
+    columns = User.__table__.columns
+
+    assert columns["address_id"].nullable is True
 
 
 def test_user_can_be_created():
