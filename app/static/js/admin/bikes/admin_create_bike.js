@@ -16,6 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            const parseDecimal = (value) => {
+                const trimmed = value?.trim();
+                if (!trimmed) return null;
+                const parsed = Number(trimmed.replace(",", "."));
+                return Number.isFinite(parsed) ? parsed : null;
+            };
+
             const payload = {
                 name: document.getElementById("name")?.value?.trim() || "",
                 brand_id: document.getElementById("brand_id")?.value || "",
@@ -23,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 frame_material: document.getElementById("frame_material")?.value?.trim() || "",
                 frame_size: document.getElementById("frame_size")?.value?.trim() || "",
                 wheel_size: document.getElementById("wheel_size")?.value?.trim() || "",
-                tire_width: document.getElementById("tire_width")?.value?.trim() || "",
+                tire_width: parseDecimal(document.getElementById("tire_width")?.value),
                 gear_count: document.getElementById("gear_count")?.value || "",
                 brake_type: document.getElementById("brake_type")?.value?.trim() || "",
                 suspension_type: document.getElementById("suspension_type")?.value?.trim() || "",

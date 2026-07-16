@@ -11,7 +11,7 @@ class BikeAiDescriptionRequestDto(BaseModel):
     frame_size: int | None = Field(default=None, ge=0)
     frame_size_label: str | None = Field(default=None, max_length=20)
     wheel_size: int | None = Field(default=None, ge=0)
-    tire_width: int | None = Field(default=None, ge=0)
+    tire_width: Decimal | None = Field(default=None, ge=0, max_digits=5, decimal_places=2)
     gear_count: int | None = Field(default=None, ge=0)
     brake_type: str | None = Field(default=None, max_length=100)
     suspension_type: str | None = Field(default=None, max_length=100)
