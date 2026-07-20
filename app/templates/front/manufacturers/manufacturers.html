@@ -7,29 +7,41 @@
 {% endblock %}
 
 {% block content %}
-<section class="section">
-    <div class="section__heading">
-        <span class="section__label">Producenci</span>
-        <h2>Lista producentów</h2>
-        <p>Wybierz markę, aby zobaczyć jej szczegóły i dostępne rowery.</p>
-    </div>
+<div class="homepage-shell">
+    <section class="section">
+        <div class="section__heading">
+            <span class="section__label">Producenci</span>
+            <h2>Lista producentów</h2>
+            <p>Wybierz markę, aby zobaczyć jej szczegóły i dostępne rowery.</p>
+        </div>
 
-    <div class="products-grid">
-        {% for manufacturer in manufacturers %}
-        <a class="product-card" href="/manufacturers/{{ manufacturer.id }}">
-            <div class="product-card__body">
-                <div class="badge">{{ manufacturer.country }}</div>
-                <h3 style="margin: 12px 0 8px;">{{ manufacturer.name }}</h3>
-                <p style="margin: 0; color: var(--muted); line-height: 1.6;">
-                    {{ manufacturer.description }}
-                </p>
-                <div class="product-card__footer">
-                    <strong>{{ manufacturer.bike_count }} modeli</strong>
-                    <span class="muted">Kliknij, aby przejść</span>
+        {% if manufacturers and manufacturers|length > 0 %}
+        <div class="products-grid">
+            {% for manufacturer in manufacturers %}
+            <a class="product-card" href="/manufacturers/{{ manufacturer.id }}">
+                <div class="product-card__image product-card__image--logo">
+                    {% if manufacturer.image_url %}
+                    <img src="{{ manufacturer.image_url }}" alt="{{ manufacturer.name }}">
+                    {% endif %}
                 </div>
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-</section>
+                <div class="product-card__body">
+                    <h3 style="margin: 0 0 8px;">{{ manufacturer.name }}</h3>
+                    <p style="margin: 0; color: var(--muted); line-height: 1.6;">
+                        {{ manufacturer.description|truncate(140, True, '…') if manufacturer.description else 'Brak opisu' }}
+                    </p>
+                    <div class="product-card__footer">
+                        <strong>{{ bike_counts.get(manufacturer.id, 0) }} modeli</strong>
+                        <span class="muted">Kliknij, aby przejść</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>Brak producentów do wyświetlenia</h3>
+        </div>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}

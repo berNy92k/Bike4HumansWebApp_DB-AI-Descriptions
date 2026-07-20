@@ -23,6 +23,9 @@ class BikeRepository:
     def get_bike_by_id(self, bike_id):
         return self.db.query(Bike).where(Bike.id == bike_id).first()
 
+    def get_bikes_by_manufacturer_id(self, manufacturer_id: int):
+        return self.db.query(Bike).where(Bike.brand_id == manufacturer_id).order_by(Bike.created_at.desc()).all()
+
     def create_bike(self, bike):
         self.db.add(bike)
         self.db.commit()

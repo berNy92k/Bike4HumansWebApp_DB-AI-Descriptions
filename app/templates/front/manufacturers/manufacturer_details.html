@@ -7,42 +7,56 @@
 {% endblock %}
 
 {% block content %}
-<section class="section">
-    <div class="section__heading">
-        <span class="section__label">Producent</span>
-        <h2>{{ manufacturer.name }}</h2>
-        <p style="white-space: pre-wrap;">{{ manufacturer.description }}</p>
-    </div>
-
-    <div class="hero" style="grid-template-columns: 1fr 0.9fr; background: #fff; color: var(--text);">
-        <div class="product-card" style="padding: 22px;">
-            <h3 style="margin-top: 0;">O producencie</h3>
-            <p style="color: var(--muted); line-height: 1.7;">
-                {{ manufacturer.long_description }}
-            </p>
-
-            <ul class="info-list">
-                <li><strong>Kraj</strong><span>{{ manufacturer.country }}</span></li>
-                <li><strong>Rok założenia</strong><span>{{ manufacturer.founded_year }}</span></li>
-                <li><strong>Liczba modeli</strong><span>{{ manufacturer.bike_count }}</span></li>
-            </ul>
-
-            <div class="hero__actions">
-                <a href="/manufacturers" class="site-btn site-btn--secondary">Wróć do listy</a>
-            </div>
+<div class="homepage-shell">
+    <section class="section bike-detail-section">
+        <div class="section__heading">
+            <a href="/manufacturers"><span class="section__label">Producenci</span></a>
+            <h2>{{ manufacturer.name }}</h2>
         </div>
 
-        <aside class="product-card" style="padding: 22px;">
-            <h3 style="margin-top: 0;">Rowery tej marki</h3>
-            <div style="display: grid; gap: 12px; margin-top: 16px;">
-                {% for bike in bikes %}
-                <a class="mini-item" href="/bikes/{{ bike.id }}">
-                    <span>{{ bike.name }}</span>
-                    <span class="muted">{{ bike.price }} zł</span>
-                </a>
-                {% endfor %}
+        <div class="bike-detail-layout">
+            <div class="bike-detail-main product-card">
+                <div class="bike-detail-image bike-detail-image--logo">
+                    {% if manufacturer.image_url %}
+                    <img src="{{ manufacturer.image_url }}" alt="{{ manufacturer.name }}">
+                    {% endif %}
+                </div>
+
+                <div class="detail-block">
+                    <h3>O producencie</h3>
+                    <p class="detail-text detail-text--description">{{ manufacturer.description or 'Brak opisu' }}</p>
+                </div>
+
+                <div class="detail-block">
+                    <div class="detail-grid detail-grid--side">
+                        <div class="detail-item">
+                            <span class="detail-label">Liczba modeli</span>
+                            <span class="detail-value">{{ bikes|length }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </aside>
-    </div>
-</section>
+
+            <aside class="bike-detail-side product-card">
+                <div class="detail-block">
+                    <h3>Rowery tej marki</h3>
+                    <div style="display: grid; gap: 12px;">
+                        {% for bike in bikes %}
+                        <a class="mini-item" href="/bikes/{{ bike.id }}">
+                            <span>{{ bike.name }}</span>
+                            <span class="muted">{{ bike.price }} zł</span>
+                        </a>
+                        {% else %}
+                        <p class="detail-text">Brak rowerów tej marki.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="hero__actions">
+                    <a href="/manufacturers" class="site-btn site-btn--secondary">Wróć do listy</a>
+                </div>
+            </aside>
+        </div>
+    </section>
+</div>
 {% endblock %}

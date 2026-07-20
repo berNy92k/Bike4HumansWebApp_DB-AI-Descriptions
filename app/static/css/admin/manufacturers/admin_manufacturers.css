@@ -163,7 +163,9 @@ tbody tr:hover {
     width: 72px;
     height: 56px;
     border-radius: 14px;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 6px;
+    box-sizing: border-box;
     background: #e2e8f0;
     flex-shrink: 0;
     border: 1px solid #cbd5e1;

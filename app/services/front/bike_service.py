@@ -45,3 +45,6 @@ class BikeService:
             raise HTTPException(status_code=404, detail="Bike not found")
 
         return bike
+
+    def get_bikes_by_manufacturer_id(self, manufacturer_id: int) -> list[Bike]:
+        return self.bike_repository.get_bikes_by_manufacturer_id(manufacturer_id)

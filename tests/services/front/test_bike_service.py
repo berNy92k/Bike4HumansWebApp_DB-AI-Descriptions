@@ -103,3 +103,18 @@ def test_get_bike_by_id_not_found(db_session, seeded_bikes):
         service.get_bike_by_id(999999)
 
     assert exc.value.status_code == 404
+
+
+def test_get_bikes_by_manufacturer_id(db_session, seeded_bikes):
+    # Given
+    service = BikeService(db_session)
+    other_brand_bike = Bike(name="Cannondale Trail", price=2999.00, stock_quantity=1, created_by=1, brand_id=2)
+    db_session.add(other_brand_bike)
+    db_session.commit()
+
+    # When
+    result = service.get_bikes_by_manufacturer_id(1)
+
+    # Then
+    assert len(result) == 3
+    assert all(bike.brand_id == 1 for bike in result)

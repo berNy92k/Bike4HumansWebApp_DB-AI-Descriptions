@@ -9,7 +9,7 @@ from app.routers.render_pages.admin import admin_render_router, admin_render_use
     admin_render_manufacturer_router, admin_render_cart_router, admin_render_checkout_router, admin_render_order_router
 from app.routers.render_pages.auth import auth_render_router
 from app.routers.render_pages.front import homepage_render_router, homepage_render_bike_router, \
-    cart_steps_render_router, order_steps_render_router
+    homepage_render_manufacturer_router, cart_steps_render_router, order_steps_render_router
 
 
 def init_pre_requested_methods(app: FastAPI):
@@ -40,6 +40,7 @@ def init_pages(app: FastAPI):
     # front
     app.include_router(homepage_render_router.router)
     app.include_router(homepage_render_bike_router.router)
+    app.include_router(homepage_render_manufacturer_router.router)
     app.include_router(cart_steps_render_router.router)
     app.include_router(order_steps_render_router.router)
 
