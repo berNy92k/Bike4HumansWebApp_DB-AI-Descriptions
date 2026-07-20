@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.database.database import get_db
+from app.schemas.admin.manufacturers.admin_manufacturer_ai_description_request_dto import ManufacturerAiDescriptionRequestDto
+from app.schemas.admin.manufacturers.admin_manufacturer_ai_description_response_dto import ManufacturerAiDescriptionResponseDto
 from app.schemas.admin.manufacturers.admin_manufacturer_create_dto import ManufacturerCreateDto
 from app.schemas.admin.manufacturers.admin_manufacturer_read_dto import ManufacturerReadDto
 from app.schemas.admin.manufacturers.admin_manufacturer_update_dto import ManufacturerUpdateDto
@@ -58,3 +60,9 @@ async def update_manufacturer(manufacturer_id: int, manufacturer_update_dto: Man
 async def delete_manufacturer_by_id(manufacturer_id: int, db: db_dependency):
     service = AdminManufacturerService(db)
     service.delete_manufacturer_by_id(manufacturer_id)
+
+
+@router.post("/ai-generate-description", status_code=status.HTTP_201_CREATED)
+async def create_ai_description_for_manufacturer(manufacturer_ai_desc_req_dto: ManufacturerAiDescriptionRequestDto, db: db_dependency) -> ManufacturerAiDescriptionResponseDto:
+    service = AdminManufacturerService(db)
+    return service.create_ai_description(manufacturer_ai_desc_req_dto)

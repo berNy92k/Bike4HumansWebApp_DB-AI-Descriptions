@@ -42,7 +42,11 @@
 
         <div>
             <p><strong>Nazwa:</strong> {{ manufacturer.name }}</p>
-            <p><strong>Opis:</strong> {{ manufacturer.description or 'Brak opisu' }}</p>
+            <p>
+                <strong>Opis:</strong>
+                {% if manufacturer.is_description_ai_generated %}<span class="badge badge-success">AI</span>{% else %}<span class="badge badge-danger">Ręcznie</span>{% endif %}
+            </p>
+            <p style="white-space: pre-wrap;">{{ manufacturer.description or 'Brak opisu' }}</p>
             <p><strong>Zdjęcie:</strong> {{ manufacturer.image_url or 'Brak zdjęcia' }}</p>
             <p><strong>Utworzono:</strong> {{ manufacturer.created_at }}</p>
             <p><strong>Aktualizacja:</strong> {{ manufacturer.updated_at }}</p>

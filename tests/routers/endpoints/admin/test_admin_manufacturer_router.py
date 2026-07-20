@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -173,6 +175,41 @@ def test_update_manufacturer_separate_fields(client, seeded_data, db_session):
     db_session.expire_all()
     updated = db_session.query(Manufacturer).filter(Manufacturer.id == manufacturer_id).first()
     assert updated.name == "Giant Updated"
+
+
+def test_update_manufacturer_all_fields_sets_is_description_ai_generated(client, seeded_data, db_session):
+    # Given
+    manufacturer_id = seeded_data[0].id
+    payload = {
+        "name": "Trek Updated",
+        "description": "Opis wygenerowany przez AI",
+        "is_description_ai_generated": True,
+    }
+
+    # When
+    response = client.put(f"/admin/manufacturer/{manufacturer_id}", json=payload)
+
+    # Then
+    assert response.status_code == 204
+    db_session.expire_all()
+    updated = db_session.query(Manufacturer).filter(Manufacturer.id == manufacturer_id).first()
+    assert updated.is_description_ai_generated is True
+
+
+def test_create_ai_description_for_manufacturer(client, seeded_data):
+    # Given
+    payload = {"name": "Trek"}
+
+    with patch(
+        "app.services.admin.admin_manufacturer_service.ManufacturerDescriptionAiService.generate_description",
+        return_value="Wygenerowany opis producenta.",
+    ):
+        # When
+        response = client.post("/admin/manufacturer/ai-generate-description", json=payload)
+
+    # Then
+    assert response.status_code == 201
+    assert response.json() == {"description": "Wygenerowany opis producenta."}
 
 
 def test_delete_manufacturer_by_id(client, seeded_data, db_session):

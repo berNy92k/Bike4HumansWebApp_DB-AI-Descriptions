@@ -6,18 +6,22 @@ from sqlalchemy.orm import Session
 
 from app.models.manufacturer import Manufacturer
 from app.repositories.manufacturer_repository import ManufacturerRepository
+from app.schemas.admin.manufacturers.admin_manufacturer_ai_description_request_dto import ManufacturerAiDescriptionRequestDto
+from app.schemas.admin.manufacturers.admin_manufacturer_ai_description_response_dto import ManufacturerAiDescriptionResponseDto
 from app.schemas.admin.manufacturers.admin_manufacturer_create_dto import ManufacturerCreateDto
 from app.schemas.admin.manufacturers.admin_manufacturer_list_request_dto import ManufacturerListRequestDto
 from app.schemas.admin.manufacturers.admin_manufacturer_list_response_dto import ManufacturerListResponseDto
 from app.schemas.admin.manufacturers.admin_manufacturer_read_dto import ManufacturerReadDto
 from app.schemas.admin.manufacturers.admin_manufacturer_update_dto import ManufacturerUpdateDto
+from app.services.ai.manufacturer_description_ai_service import ManufacturerDescriptionAiService
 
 
 class AdminManufacturerService:
     PLACEHOLDER_IMAGES_DIR = Path("app/static/images/manufacturers/placeholders")
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, ai_description_service: ManufacturerDescriptionAiService | None = None):
         self.manufacturer_repository = ManufacturerRepository(db)
+        self.ai_description_service = ai_description_service or ManufacturerDescriptionAiService()
 
     def get_all_manufacturers(self) -> list[Manufacturer]:
         return self.manufacturer_repository.get_all_manufacturers()
@@ -51,6 +55,7 @@ class AdminManufacturerService:
         manufacturer = Manufacturer(
             name=manufacturer_create_dto.name,
             description=manufacturer_create_dto.description,
+            is_description_ai_generated=manufacturer_create_dto.is_description_ai_generated,
             image_url=self._pick_random_image(),
             created_by=current_user["user_id"]
         )
@@ -94,3 +99,8 @@ class AdminManufacturerService:
 
         chosen = choice(images)
         return f"/static/images/manufacturers/placeholders/{chosen.name}"
+
+    def create_ai_description(self, manufacturer_ai_desc_req_dto: ManufacturerAiDescriptionRequestDto) -> ManufacturerAiDescriptionResponseDto:
+        description = self.ai_description_service.generate_description(manufacturer_ai_desc_req_dto)
+
+        return ManufacturerAiDescriptionResponseDto(description=description)

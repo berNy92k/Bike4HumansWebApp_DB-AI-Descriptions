@@ -196,6 +196,7 @@ tbody tr:hover {
 
 .description {
     width: auto;
+    max-width: 280px;
     word-break: break-word;
     white-space: normal;
 }

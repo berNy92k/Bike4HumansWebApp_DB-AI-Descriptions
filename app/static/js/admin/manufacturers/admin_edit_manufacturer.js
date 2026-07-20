@@ -1,4 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const aiButton = document.getElementById("ai-generate-description-btn");
+    const description = document.getElementById("description");
+    const isAiGeneratedInput = document.getElementById("is_description_ai_generated");
+    const descriptionStatusBadge = document.getElementById("description-status-badge");
+
+    if (!aiButton || !description) return;
+
+    const setDescriptionAiGenerated = (isAiGenerated) => {
+        if (isAiGeneratedInput) isAiGeneratedInput.value = isAiGenerated ? "true" : "false";
+        if (descriptionStatusBadge) {
+            descriptionStatusBadge.textContent = isAiGenerated ? "AI" : "Ręcznie";
+            descriptionStatusBadge.className = `badge ${isAiGenerated ? "badge-success" : "badge-danger"}`;
+        }
+    };
+
+    description.addEventListener("input", () => setDescriptionAiGenerated(false));
+
+    aiButton.addEventListener("click", async () => {
+        aiButton.disabled = true;
+        const originalText = aiButton.textContent;
+        aiButton.textContent = "Generuję...";
+
+        try {
+            const token = window.getCookieValue?.("access_token");
+            if (!token) {
+                alert("Brak tokenu logowania.");
+                return;
+            }
+
+            const payload = {
+                name: document.getElementById("name")?.value?.trim() || "",
+                description: document.getElementById("description")?.value || "",
+            };
+
+            const response = await fetch("/admin/manufacturer/ai-generate-description", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Nie udało się wygenerować opisu.");
+            }
+
+            const data = await response.json();
+            description.value = data.description ?? "";
+            setDescriptionAiGenerated(true);
+        } catch (error) {
+            alert(error.message || "Wystąpił błąd podczas generowania opisu.");
+        } finally {
+            aiButton.disabled = false;
+            aiButton.textContent = originalText;
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("manufacturer-edit-form");
     const messageBox = document.getElementById("form-message");
 
@@ -36,7 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const payload = {
             name: document.getElementById("name").value.trim(),
-            description: toNullableString(document.getElementById("description").value)
+            description: toNullableString(document.getElementById("description").value),
+            is_description_ai_generated: document.getElementById("is_description_ai_generated")?.value === "true"
         };
 
         if (!payload.name) {

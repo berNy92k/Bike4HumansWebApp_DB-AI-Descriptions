@@ -109,6 +109,5 @@ class AdminBikeService:
         return f"/static/images/bikes/placeholders/{chosen.name}"
 
     def create_ai_description(self, bike_ai_desc_req_dto: BikeAiDescriptionRequestDto) -> BikeAiDescriptionResponseDto:
-
         description = self.ai_description_service.generate_description(bike_ai_desc_req_dto)
         return BikeAiDescriptionResponseDto(description=description)
