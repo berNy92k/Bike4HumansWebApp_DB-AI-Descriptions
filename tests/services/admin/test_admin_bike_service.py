@@ -9,6 +9,7 @@ from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
+from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
 from app.services.admin.admin_bike_service import AdminBikeService
 from tests.database.database import override_get_db
 
@@ -155,6 +156,47 @@ def test_create_bike_persists_is_description_ai_generated(db_session, seeded_bik
     # Then
     created_bike = next(bike for bike in bike_repository.get_all_bikes() if bike.name == "Trek")
     assert created_bike.is_description_ai_generated is True
+
+
+def test_update_bike_all_fields_invalidates_similar_bikes_note_on_price_change(db_session, seeded_bikes):
+    # Given
+    bike_service = AdminBikeService(db_session)
+    bike_repository = BikeRepository(db_session)
+    bike = bike_repository.get_bike_by_id(seeded_bikes[0].id)
+    bike.similar_bikes_ai_note = "Stara notatka."
+    bike_repository.update_bike(bike)
+
+    update_dto = BikeUpdateDto(name=bike.name, price=Decimal("4999.99"), stock_quantity=1, brand_id=bike.brand_id)
+
+    # When
+    bike_service.update_bike_all_fields(bike.id, update_dto)
+
+    # Then
+    db_session.expire_all()
+    updated = bike_repository.get_bike_by_id(bike.id)
+    assert updated.similar_bikes_ai_note is None
+    assert updated.similar_bikes_ai_note_generated_at is None
+
+
+def test_update_bike_all_fields_keeps_similar_bikes_note_when_price_unchanged(db_session, seeded_bikes):
+    # Given
+    bike_service = AdminBikeService(db_session)
+    bike_repository = BikeRepository(db_session)
+    bike = bike_repository.get_bike_by_id(seeded_bikes[0].id)
+    bike.similar_bikes_ai_note = "Stara notatka."
+    bike_repository.update_bike(bike)
+
+    update_dto = BikeUpdateDto(
+        name="Nowa nazwa", price=bike.price, stock_quantity=1, brand_id=bike.brand_id
+    )
+
+    # When
+    bike_service.update_bike_all_fields(bike.id, update_dto)
+
+    # Then
+    db_session.expire_all()
+    updated = bike_repository.get_bike_by_id(bike.id)
+    assert updated.similar_bikes_ai_note == "Stara notatka."
 
 
 def test_delete_bike_by_id(db_session, seeded_bikes):

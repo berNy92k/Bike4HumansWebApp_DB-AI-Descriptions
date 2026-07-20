@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -6,12 +8,15 @@ from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
+from app.schemas.front.bike.bike_similar_response_dto import BikeSimilarRecommendationResponseDto, SimilarBikeDto
+from app.services.ai.bike_recommendation_ai_service import BikeRecommendationAiService
 
 
 class BikeService:
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, ai_recommendation_service: BikeRecommendationAiService | None = None):
         self.bike_repository = BikeRepository(db)
+        self.ai_recommendation_service = ai_recommendation_service or BikeRecommendationAiService()
 
     def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
@@ -48,3 +53,21 @@ class BikeService:
 
     def get_bikes_by_manufacturer_id(self, manufacturer_id: int) -> list[Bike]:
         return self.bike_repository.get_bikes_by_manufacturer_id(manufacturer_id)
+
+    def get_similar_bikes_recommendation(self, bike_id: int) -> BikeSimilarRecommendationResponseDto:
+        bike = self.get_bike_by_id(bike_id)
+        similar_bikes = self.bike_repository.get_similar_bikes(bike)
+
+        note = None
+        if similar_bikes:
+            note = bike.similar_bikes_ai_note
+            if note is None:
+                note = self.ai_recommendation_service.generate_recommendation_note(bike, similar_bikes)
+                bike.similar_bikes_ai_note = note
+                bike.similar_bikes_ai_note_generated_at = datetime.now(timezone.utc)
+                self.bike_repository.update_bike(bike)
+
+        return BikeSimilarRecommendationResponseDto(
+            note=note,
+            bikes=[SimilarBikeDto.model_validate(similar) for similar in similar_bikes],
+        )

@@ -74,6 +74,9 @@ class AdminBikeService:
         bike = self.get_bike_by_id(bike_id)
         update_bike_data = bike_update_dto.model_dump()
 
+        if update_bike_data.get("price") != bike.price:
+            self._invalidate_similar_bikes_note(bike)
+
         for f, v in update_bike_data.items():
             setattr(bike, f, v)
 
@@ -83,10 +86,17 @@ class AdminBikeService:
         bike = self.get_bike_by_id(bike_id)
         update_bike_data = bike_update_dto.model_dump(exclude_unset=True)
 
+        if "price" in update_bike_data and update_bike_data["price"] != bike.price:
+            self._invalidate_similar_bikes_note(bike)
+
         for f, v in update_bike_data.items():
             setattr(bike, f, v)
 
         self.bike_repository.update_bike(bike)
+
+    def _invalidate_similar_bikes_note(self, bike: Bike) -> None:
+        bike.similar_bikes_ai_note = None
+        bike.similar_bikes_ai_note_generated_at = None
 
     def delete_bike_by_id(self, bike_id: int) -> None:
         bike = self.get_bike_by_id(bike_id)

@@ -104,3 +104,42 @@ def test_create_update_delete_bike(db_session, seeded_bikes):
     assert len(result_before) > len(result_after)
     assert 3 == len(result_before)
     assert 2 == len(result_after)
+
+
+def test_get_similar_bikes_prefers_same_type(db_session, clean_bikes_table):
+    # Given
+    repo = BikeRepository(db_session)
+    target = Bike(name="Trek Marlin 7", price=4000, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN")
+    same_type = Bike(name="Giant Talon 1", price=4100, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN")
+    other_type = Bike(name="Trek Domane AL 2", price=4050, stock_quantity=1, created_by=1, brand_id=1, bike_type="ROAD")
+    for bike in (target, same_type, other_type):
+        db_session.add(bike)
+    db_session.commit()
+
+    # When
+    result = repo.get_similar_bikes(target, limit=1)
+
+    # Then
+    assert len(result) == 1
+    assert result[0].id == same_type.id
+
+
+def test_get_similar_bikes_falls_back_when_no_same_type_match(db_session, clean_bikes_table):
+    # Given
+    repo = BikeRepository(db_session)
+    target = Bike(name="Trek Marlin 7", price=4000, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN")
+    other_type = Bike(name="Trek Domane AL 2", price=4050, stock_quantity=1, created_by=1, brand_id=1, bike_type="ROAD")
+    inactive_same_type = Bike(
+        name="Giant Talon 1", price=4100, stock_quantity=1, created_by=1, brand_id=1,
+        bike_type="MOUNTAIN", is_active=False,
+    )
+    for bike in (target, other_type, inactive_same_type):
+        db_session.add(bike)
+    db_session.commit()
+
+    # When
+    result = repo.get_similar_bikes(target, limit=2)
+
+    # Then
+    assert len(result) == 1
+    assert result[0].id == other_type.id

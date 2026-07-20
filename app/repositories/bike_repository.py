@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.bike import Bike
@@ -25,6 +26,31 @@ class BikeRepository:
 
     def get_bikes_by_manufacturer_id(self, manufacturer_id: int):
         return self.db.query(Bike).where(Bike.brand_id == manufacturer_id).order_by(Bike.created_at.desc()).all()
+
+    def get_similar_bikes(self, bike: Bike, limit: int = 3):
+        same_type = []
+        if bike.bike_type:
+            same_type = (
+                self.db.query(Bike)
+                .where(Bike.id != bike.id, Bike.is_active.is_(True), Bike.bike_type == bike.bike_type)
+                .order_by(func.abs(Bike.price - bike.price))
+                .limit(limit)
+                .all()
+            )
+
+        if len(same_type) >= limit:
+            return same_type
+
+        exclude_ids = [bike.id] + [b.id for b in same_type]
+        fallback = (
+            self.db.query(Bike)
+            .where(Bike.id.notin_(exclude_ids), Bike.is_active.is_(True))
+            .order_by(func.abs(Bike.price - bike.price))
+            .limit(limit - len(same_type))
+            .all()
+        )
+
+        return same_type + fallback
 
     def create_bike(self, bike):
         self.db.add(bike)

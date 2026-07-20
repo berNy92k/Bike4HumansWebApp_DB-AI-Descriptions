@@ -1,6 +1,7 @@
 import enum
+from datetime import datetime
 
-from sqlalchemy import String, Text, Numeric, Integer, Boolean, ForeignKey
+from sqlalchemy import String, Text, Numeric, Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models import BaseModel
@@ -41,6 +42,9 @@ class Bike(BaseModel):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_by: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
     brand_id: Mapped[int] = mapped_column(ForeignKey("manufacturer.id"), nullable=False)
+
+    similar_bikes_ai_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    similar_bikes_ai_note_generated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
 class BikeType(str, enum.Enum):

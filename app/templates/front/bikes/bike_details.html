@@ -31,6 +31,15 @@
                     <h3>Opis</h3>
                     <p class="detail-text detail-text--description">{{ bike.description or 'Brak opisu' }}</p>
                 </div>
+
+                <div class="detail-block">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px;">
+                        <h3 style="margin: 0;">Podobne rowery</h3>
+                        <button type="button" class="site-btn site-btn--secondary" id="similar-bikes-btn">Pokaż z AI</button>
+                    </div>
+                    <p class="detail-text" id="similar-bikes-note" style="display: none;"></p>
+                    <div id="similar-bikes-list" style="display: grid; gap: 12px; margin-top: 12px;"></div>
+                </div>
             </div>
 
             <aside class="bike-detail-side product-card">
@@ -136,6 +145,67 @@
         }
 
         window.location.href = "/cart/step1";
+    });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const similarButton = document.getElementById("similar-bikes-btn");
+    const note = document.getElementById("similar-bikes-note");
+    const list = document.getElementById("similar-bikes-list");
+
+    if (!similarButton || !note || !list) return;
+
+    similarButton.addEventListener("click", async () => {
+        similarButton.disabled = true;
+        const originalText = similarButton.textContent;
+        similarButton.textContent = "Szukam...";
+
+        try {
+            const response = await fetch("/bikes/{{ bike.id }}/ai-similar-bikes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Nie udało się pobrać podobnych rowerów.");
+            }
+
+            const data = await response.json();
+
+            if (data.note) {
+                note.textContent = data.note;
+                note.style.display = "block";
+            }
+
+            list.innerHTML = "";
+            (data.bikes || []).forEach((similarBike) => {
+                const link = document.createElement("a");
+                link.className = "mini-item";
+                link.href = `/bikes/${similarBike.id}`;
+
+                const name = document.createElement("span");
+                name.textContent = similarBike.name;
+
+                const price = document.createElement("span");
+                price.className = "muted";
+                price.textContent = `${similarBike.price} zł`;
+
+                link.appendChild(name);
+                link.appendChild(price);
+                list.appendChild(link);
+            });
+
+            if (!data.bikes || data.bikes.length === 0) {
+                list.innerHTML = '<p class="detail-text">Brak podobnych rowerów do pokazania.</p>';
+            }
+        } catch (error) {
+            alert(error.message || "Wystąpił błąd podczas wyszukiwania podobnych rowerów.");
+        } finally {
+            similarButton.disabled = false;
+            similarButton.textContent = originalText;
+        }
     });
 });
 

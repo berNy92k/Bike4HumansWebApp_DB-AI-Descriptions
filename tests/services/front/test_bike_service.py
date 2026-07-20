@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 from fastapi import HTTPException
 
@@ -118,3 +120,58 @@ def test_get_bikes_by_manufacturer_id(db_session, seeded_bikes):
     # Then
     assert len(result) == 3
     assert all(bike.brand_id == 1 for bike in result)
+
+
+def test_get_similar_bikes_recommendation(db_session, seeded_bikes):
+    # Given
+    mock_ai_recommendation_service = MagicMock()
+    mock_ai_recommendation_service.generate_recommendation_note.return_value = "Warto rozważyć te opcje."
+    service = BikeService(db_session, ai_recommendation_service=mock_ai_recommendation_service)
+    bike_id = seeded_bikes[0].id
+
+    # When
+    result = service.get_similar_bikes_recommendation(bike_id)
+
+    # Then
+    assert result.note == "Warto rozważyć te opcje."
+    assert len(result.bikes) == 2
+    mock_ai_recommendation_service.generate_recommendation_note.assert_called_once()
+
+
+def test_get_similar_bikes_recommendation_skips_ai_call_when_no_similar_bikes(db_session, clean_bikes_table):
+    # Given
+    mock_ai_recommendation_service = MagicMock()
+    service = BikeService(db_session, ai_recommendation_service=mock_ai_recommendation_service)
+    only_bike = Bike(name="Trek Marlin 7", price=3999.99, stock_quantity=5, created_by=1, brand_id=1)
+    db_session.add(only_bike)
+    db_session.commit()
+
+    # When
+    result = service.get_similar_bikes_recommendation(only_bike.id)
+
+    # Then
+    assert result.note is None
+    assert result.bikes == []
+    mock_ai_recommendation_service.generate_recommendation_note.assert_not_called()
+
+
+def test_get_similar_bikes_recommendation_caches_note_in_db(db_session, seeded_bikes):
+    # Given
+    mock_ai_recommendation_service = MagicMock()
+    mock_ai_recommendation_service.generate_recommendation_note.return_value = "Warto rozważyć te opcje."
+    service = BikeService(db_session, ai_recommendation_service=mock_ai_recommendation_service)
+    bike_id = seeded_bikes[0].id
+
+    # When
+    service.get_similar_bikes_recommendation(bike_id)
+    service.get_similar_bikes_recommendation(bike_id)
+    result = service.get_similar_bikes_recommendation(bike_id)
+
+    # Then
+    assert result.note == "Warto rozważyć te opcje."
+    mock_ai_recommendation_service.generate_recommendation_note.assert_called_once()
+
+    db_session.expire_all()
+    cached_bike = service.get_bike_by_id(bike_id)
+    assert cached_bike.similar_bikes_ai_note == "Warto rozważyć te opcje."
+    assert cached_bike.similar_bikes_ai_note_generated_at is not None
