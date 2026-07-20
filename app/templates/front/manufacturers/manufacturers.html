@@ -37,6 +37,40 @@
             </a>
             {% endfor %}
         </div>
+
+        <div class="pagination-card">
+            <div class="pagination-info">
+                Pokazano {{ manufacturers|length }} z {{ total }} wyników
+            </div>
+
+            <div class="pagination-controls">
+                <label class="page-size-label" for="page-size">Na stronie:</label>
+                <select
+                    id="page-size"
+                    class="page-size-select"
+                    onchange="window.location.href='/manufacturers?page=1&size=' + this.value"
+                >
+                    <option value="3" {% if size == 3 %}selected{% endif %}>3</option>
+                    <option value="6" {% if size == 6 %}selected{% endif %}>6</option>
+                    <option value="9" {% if size == 9 %}selected{% endif %}>9</option>
+                    <option value="12" {% if size == 12 %}selected{% endif %}>12</option>
+                </select>
+
+                <div class="pagination-buttons">
+                    <a
+                        class="pagination-btn pagination-btn--nav {% if page <= 1 %}is-disabled{% endif %}"
+                        href="/manufacturers?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}"
+                    >Poprzednia</a>
+
+                    <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
+
+                    <a
+                        class="pagination-btn pagination-btn--nav {% if page >= pages %}is-disabled{% endif %}"
+                        href="/manufacturers?page={{ page + 1 if page < pages else pages }}&size={{ size }}"
+                    >Następna</a>
+                </div>
+            </div>
+        </div>
         {% else %}
         <div class="empty-state">
             <h3>Brak producentów do wyświetlenia</h3>

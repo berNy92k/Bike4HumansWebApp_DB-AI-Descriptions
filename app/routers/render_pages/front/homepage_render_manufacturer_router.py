@@ -6,6 +6,7 @@ from starlette import status
 from starlette.templating import Jinja2Templates
 
 from app.database.database import get_db
+from app.schemas.admin.manufacturers.admin_manufacturer_list_request_dto import ManufacturerListRequestDto
 from app.services.front.bike_service import BikeService
 from app.services.front.manufacturer_service import ManufacturerService
 
@@ -21,16 +22,25 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", status_code=status.HTTP_200_OK)
 async def render_manufacturers(request: Request, db: db_dependency):
-    manufacturers = ManufacturerService(db).get_all_manufacturers()
+    page = int(request.query_params.get("page", 1))
+    size = int(request.query_params.get("size", 9))
+
+    pagination = ManufacturerService(db).get_manufacturers_paginated(
+        ManufacturerListRequestDto(page=page, size=size)
+    )
     bike_service = BikeService(db)
-    bike_counts = {m.id: len(bike_service.get_bikes_by_manufacturer_id(m.id)) for m in manufacturers}
+    bike_counts = {m.id: len(bike_service.get_bikes_by_manufacturer_id(m.id)) for m in pagination.items}
 
     return templates.TemplateResponse(
         "front/manufacturers/manufacturers.html",
         {
             "request": request,
-            "manufacturers": manufacturers,
+            "manufacturers": pagination.items,
             "bike_counts": bike_counts,
+            "page": pagination.page,
+            "size": pagination.size,
+            "total": pagination.total,
+            "pages": pagination.pages,
         },
     )
 

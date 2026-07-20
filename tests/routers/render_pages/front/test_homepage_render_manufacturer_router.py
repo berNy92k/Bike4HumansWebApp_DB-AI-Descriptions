@@ -96,3 +96,18 @@ def test_render_manufacturer_details_not_found(client, seeded_data):
 
     # Then
     assert response.status_code == 404
+
+
+def test_render_manufacturers_list_is_paginated(client, seeded_data):
+    # Given
+    manufacturers, _ = seeded_data
+
+    # When
+    response = client.get("/manufacturers/?page=1&size=1")
+
+    # Then
+    assert response.status_code == 200
+    assert "Strona 1 z 2" in response.text
+    assert "Pokazano 1 z 2 wyników" in response.text
+    # ordered by id desc, so the second-created manufacturer (Giant) is on page 1
+    assert "Trek" not in response.text
