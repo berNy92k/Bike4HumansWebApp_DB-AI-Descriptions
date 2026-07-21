@@ -8,20 +8,29 @@ from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
 from app.schemas.admin.bike.admin_bike_ai_description_response_dto import BikeAiDescriptionResponseDto
+from app.schemas.admin.bike.admin_bike_auto_tag_request_dto import BikeAutoTagRequestDto
+from app.schemas.admin.bike.admin_bike_auto_tag_response_dto import BikeAutoTagResponseDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
 from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
+from app.services.ai.bike_auto_tag_ai_service import BikeAutoTagAiService
 from app.services.ai.bike_description_ai_service import BikeDescriptionAiService
 
 
 class AdminBikeService:
     PLACEHOLDER_IMAGES_DIR = Path("app/static/images/bikes/placeholders")
 
-    def __init__(self, db: Session, ai_description_service: BikeDescriptionAiService | None = None):
+    def __init__(
+        self,
+        db: Session,
+        ai_description_service: BikeDescriptionAiService | None = None,
+        ai_auto_tag_service: BikeAutoTagAiService | None = None,
+    ):
         self.bike_repository = BikeRepository(db)
         self.ai_description_service = ai_description_service or BikeDescriptionAiService()
+        self.ai_auto_tag_service = ai_auto_tag_service or BikeAutoTagAiService()
 
     def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
@@ -60,11 +69,26 @@ class AdminBikeService:
         bike = Bike(
             name=bike_create_dto.name,
             description=bike_create_dto.description,
+            is_description_ai_generated=bike_create_dto.is_description_ai_generated,
+            bike_type=bike_create_dto.bike_type,
+            frame_material=bike_create_dto.frame_material,
+            frame_size=bike_create_dto.frame_size,
+            frame_size_label=bike_create_dto.frame_size_label,
+            wheel_size=bike_create_dto.wheel_size,
+            tire_width=bike_create_dto.tire_width,
+            gear_count=bike_create_dto.gear_count,
+            brake_type=bike_create_dto.brake_type,
+            suspension_type=bike_create_dto.suspension_type,
+            color=bike_create_dto.color,
+            weight_kg=bike_create_dto.weight_kg,
+            recommended_height_min=bike_create_dto.recommended_height_min,
+            recommended_height_max=bike_create_dto.recommended_height_max,
+            usage=bike_create_dto.usage,
+            target_user=bike_create_dto.target_user,
             price=bike_create_dto.price,
             stock_quantity=bike_create_dto.stock_quantity,
             image_url=self._pick_random_image(),
             is_active=bike_create_dto.is_active,
-            is_description_ai_generated=bike_create_dto.is_description_ai_generated,
             created_by=current_user["user_id"],
             brand_id=bike_create_dto.brand_id,
         )
@@ -121,3 +145,6 @@ class AdminBikeService:
     def create_ai_description(self, bike_ai_desc_req_dto: BikeAiDescriptionRequestDto) -> BikeAiDescriptionResponseDto:
         description = self.ai_description_service.generate_description(bike_ai_desc_req_dto)
         return BikeAiDescriptionResponseDto(description=description)
+
+    def generate_auto_tags(self, bike_auto_tag_req_dto: BikeAutoTagRequestDto) -> BikeAutoTagResponseDto:
+        return self.ai_auto_tag_service.generate_tags(bike_auto_tag_req_dto)

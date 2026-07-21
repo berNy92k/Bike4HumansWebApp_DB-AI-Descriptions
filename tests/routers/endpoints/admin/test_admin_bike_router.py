@@ -8,6 +8,7 @@ from app.models.bike import Bike
 from app.models.permission import Permission, PermissionCode, role_permission
 from app.models.user import User, Address
 from app.models.role import Role
+from app.schemas.admin.bike.admin_bike_auto_tag_response_dto import BikeAutoTagResponseDto
 from app.services.auth.auth_service import get_current_user
 from tests.database.database import override_get_db
 
@@ -258,3 +259,27 @@ def test_create_ai_description_for_bike(client, seeded_data):
     # Then
     assert response.status_code == 201
     assert response.json() == {"description": "Wygenerowany opis roweru."}
+
+
+def test_generate_auto_tags_for_bike(client, seeded_data):
+    # Given
+    payload = {
+        "name": "Trek Marlin 7",
+        "description": "Lekki rower górski z aluminiową ramą i hydraulicznymi hamulcami tarczowymi.",
+    }
+    ai_response = BikeAutoTagResponseDto(bike_type="MOUNTAIN", frame_material="ALUMINIUM", brake_type="HYDRAULIC_DISC")
+
+    with patch(
+        "app.services.admin.admin_bike_service.BikeAutoTagAiService.generate_tags",
+        return_value=ai_response,
+    ):
+        # When
+        response = client.post("/admin/bikes/ai-auto-tag", json=payload)
+
+    # Then
+    assert response.status_code == 201
+    data = response.json()
+    assert data["bike_type"] == "MOUNTAIN"
+    assert data["frame_material"] == "ALUMINIUM"
+    assert data["brake_type"] == "HYDRAULIC_DISC"
+    assert data["color"] is None

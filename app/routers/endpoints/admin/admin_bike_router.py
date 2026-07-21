@@ -7,6 +7,8 @@ from starlette import status
 from app.database.database import get_db
 from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
 from app.schemas.admin.bike.admin_bike_ai_description_response_dto import BikeAiDescriptionResponseDto
+from app.schemas.admin.bike.admin_bike_auto_tag_request_dto import BikeAutoTagRequestDto
+from app.schemas.admin.bike.admin_bike_auto_tag_response_dto import BikeAutoTagResponseDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
 from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
@@ -64,3 +66,10 @@ async def create_ai_description_for_bike(bike_ai_desc_req_dto: BikeAiDescription
                                          db: db_dependency) -> BikeAiDescriptionResponseDto:
     service = AdminBikeService(db)
     return service.create_ai_description(bike_ai_desc_req_dto)
+
+
+@router.post("/ai-auto-tag", status_code=status.HTTP_201_CREATED)
+async def generate_auto_tags_for_bike(bike_auto_tag_req_dto: BikeAutoTagRequestDto,
+                                      db: db_dependency) -> BikeAutoTagResponseDto:
+    service = AdminBikeService(db)
+    return service.generate_auto_tags(bike_auto_tag_req_dto)

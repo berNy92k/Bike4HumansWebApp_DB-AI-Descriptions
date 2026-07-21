@@ -100,6 +100,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return trimmed === "" ? null : trimmed;
     };
 
+    const toNullableInt = (value) => {
+        const trimmed = value?.trim();
+        if (!trimmed) return null;
+        const parsed = Number(trimmed);
+        return Number.isFinite(parsed) ? parsed : null;
+    };
+
+    const toNullableDecimal = (value) => {
+        const trimmed = value?.trim();
+        if (!trimmed) return null;
+        const parsed = Number(trimmed.replace(",", "."));
+        return Number.isFinite(parsed) ? parsed : null;
+    };
+
     const bikeIdMatch = window.location.pathname.match(/\/admin\/bikes\/(\d+)\/edit$/);
     const bikeId = bikeIdMatch ? bikeIdMatch[1] : null;
 
@@ -125,7 +139,22 @@ document.addEventListener("DOMContentLoaded", () => {
             image_url: toNullableString(document.getElementById("image_url").value),
             is_active: document.getElementById("is_active").checked,
             brand_id: Number(document.getElementById("brand_id").value),
-            is_description_ai_generated: document.getElementById("is_description_ai_generated")?.value === "true"
+            is_description_ai_generated: document.getElementById("is_description_ai_generated")?.value === "true",
+            bike_type: toNullableString(document.getElementById("bike_type").value),
+            frame_material: toNullableString(document.getElementById("frame_material").value),
+            frame_size: toNullableInt(document.getElementById("frame_size").value),
+            frame_size_label: toNullableString(document.getElementById("frame_size_label").value),
+            wheel_size: toNullableInt(document.getElementById("wheel_size").value),
+            tire_width: toNullableDecimal(document.getElementById("tire_width").value),
+            gear_count: toNullableInt(document.getElementById("gear_count").value),
+            brake_type: toNullableString(document.getElementById("brake_type").value),
+            suspension_type: toNullableString(document.getElementById("suspension_type").value),
+            color: toNullableString(document.getElementById("color").value),
+            weight_kg: toNullableDecimal(document.getElementById("weight_kg").value),
+            recommended_height_min: toNullableInt(document.getElementById("recommended_height_min").value),
+            recommended_height_max: toNullableInt(document.getElementById("recommended_height_max").value),
+            usage: toNullableString(document.getElementById("usage").value),
+            target_user: toNullableString(document.getElementById("target_user").value),
         };
 
         if (!payload.name) {
@@ -169,6 +198,72 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = `/admin/bikes/${bikeId}/details`;
         } catch (error) {
             showMessage("Wystąpił błąd sieci podczas zapisu zmian.", "error");
+        }
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const autoTagButton = document.getElementById("ai-auto-tag-btn");
+
+    if (!autoTagButton) return;
+
+    const setSelectValue = (id, value) => {
+        if (!value) return;
+        const select = document.getElementById(id);
+        if (select) select.value = value;
+    };
+
+    autoTagButton.addEventListener("click", async () => {
+        autoTagButton.disabled = true;
+        const originalText = autoTagButton.textContent;
+        autoTagButton.textContent = "Analizuję...";
+
+        try {
+            const token = window.getCookieValue?.("access_token");
+            if (!token) {
+                alert("Brak tokenu logowania.");
+                return;
+            }
+
+            const name = document.getElementById("name")?.value?.trim() || "";
+            const description = document.getElementById("description")?.value?.trim() || "";
+
+            if (!name) {
+                alert("Uzupełnij najpierw nazwę roweru.");
+                return;
+            }
+
+            if (!description) {
+                alert("Uzupełnij najpierw opis roweru.");
+                return;
+            }
+
+            const response = await fetch("/admin/bikes/ai-auto-tag", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name, description }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Nie udało się zaproponować tagów.");
+            }
+
+            const data = await response.json();
+            setSelectValue("bike_type", data.bike_type);
+            setSelectValue("frame_material", data.frame_material);
+            setSelectValue("frame_size_label", data.frame_size_label);
+            setSelectValue("brake_type", data.brake_type);
+            setSelectValue("suspension_type", data.suspension_type);
+            setSelectValue("color", data.color);
+            setSelectValue("usage", data.usage);
+            setSelectValue("target_user", data.target_user);
+        } catch (error) {
+            alert(error.message || "Wystąpił błąd podczas analizy opisu.");
+        } finally {
+            autoTagButton.disabled = false;
+            autoTagButton.textContent = originalText;
         }
     });
 });

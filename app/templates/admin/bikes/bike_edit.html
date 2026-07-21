@@ -67,24 +67,48 @@
                 <input id="stock_quantity" name="stock_quantity" type="number" step="1" min="0" value="{{ bike.stock_quantity }}">
             </div>
 
+            <div class="form-group form-group-full">
+                <button type="button" class="btn btn-success" id="ai-auto-tag-btn">AI PROPONUJE TAGI</button>
+            </div>
+
             <div class="form-group">
                 <label for="bike_type">Typ roweru</label>
-                <input id="bike_type" name="bike_type" type="text" value="{{ bike.bike_type or '' }}">
+                <select id="bike_type" name="bike_type">
+                    <option value="">Wybierz typ</option>
+                    {% for option in ["MOUNTAIN", "ROAD", "GRAVEL", "CITY", "TREKKING", "ELECTRIC", "BMX", "CHILDREN"] %}
+                    <option value="{{ option }}" {% if bike.bike_type == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="frame_material">Materiał ramy</label>
-                <input id="frame_material" name="frame_material" type="text" value="{{ bike.frame_material or '' }}">
+                <select id="frame_material" name="frame_material">
+                    <option value="">Wybierz materiał</option>
+                    {% for option in ["ALUMINIUM", "CARBON", "STEEL", "TITANIUM"] %}
+                    <option value="{{ option }}" {% if bike.frame_material == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
-                <label for="frame_size">Rozmiar ramy</label>
-                <input id="frame_size" name="frame_size" type="text" value="{{ bike.frame_size or '' }}">
+                <label for="frame_size">Rozmiar ramy (cm)</label>
+                <input id="frame_size" name="frame_size" type="number" min="0" step="1" value="{{ bike.frame_size if bike.frame_size is not none else '' }}">
             </div>
 
             <div class="form-group">
-                <label for="wheel_size">Rozmiar koła</label>
-                <input id="wheel_size" name="wheel_size" type="text" value="{{ bike.wheel_size or '' }}">
+                <label for="frame_size_label">Rozmiar ramy (etykieta)</label>
+                <select id="frame_size_label" name="frame_size_label">
+                    <option value="">Wybierz rozmiar</option>
+                    {% for option in ["XS", "S", "M", "L", "XL", "XXL"] %}
+                    <option value="{{ option }}" {% if bike.frame_size_label == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="wheel_size">Rozmiar koła (cale)</label>
+                <input id="wheel_size" name="wheel_size" type="number" min="0" step="1" value="{{ bike.wheel_size if bike.wheel_size is not none else '' }}">
             </div>
 
             <div class="form-group">
@@ -99,17 +123,32 @@
 
             <div class="form-group">
                 <label for="brake_type">Hamulce</label>
-                <input id="brake_type" name="brake_type" type="text" value="{{ bike.brake_type or '' }}">
+                <select id="brake_type" name="brake_type">
+                    <option value="">Wybierz hamulce</option>
+                    {% for option in ["V_BRAKE", "MECHANICAL_DISC", "HYDRAULIC_DISC", "RIM", "COASTER"] %}
+                    <option value="{{ option }}" {% if bike.brake_type == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="suspension_type">Amortyzacja</label>
-                <input id="suspension_type" name="suspension_type" type="text" value="{{ bike.suspension_type or '' }}">
+                <select id="suspension_type" name="suspension_type">
+                    <option value="">Wybierz amortyzację</option>
+                    {% for option in ["NONE", "FRONT", "FULL"] %}
+                    <option value="{{ option }}" {% if bike.suspension_type == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="color">Kolor</label>
-                <input id="color" name="color" type="text" value="{{ bike.color or '' }}">
+                <select id="color" name="color">
+                    <option value="">Wybierz kolor</option>
+                    {% for option in ["BLACK", "WHITE", "RED", "BLUE", "GREEN", "GREY", "YELLOW", "ORANGE", "PINK", "PURPLE"] %}
+                    <option value="{{ option }}" {% if bike.color == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
@@ -129,12 +168,22 @@
 
             <div class="form-group">
                 <label for="usage">Przeznaczenie</label>
-                <input id="usage" name="usage" type="text" value="{{ bike.usage or '' }}">
+                <select id="usage" name="usage">
+                    <option value="">Wybierz przeznaczenie</option>
+                    {% for option in ["CITY", "COMMUTING", "SPORT", "TOURING", "TRAIL", "OFF_ROAD"] %}
+                    <option value="{{ option }}" {% if bike.usage == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="target_user">Grupa docelowa</label>
-                <input id="target_user" name="target_user" type="text" value="{{ bike.target_user or '' }}">
+                <select id="target_user" name="target_user">
+                    <option value="">Wybierz grupę</option>
+                    {% for option in ["BEGINNER", "INTERMEDIATE", "ADVANCED", "PROFESSIONAL"] %}
+                    <option value="{{ option }}" {% if bike.target_user == option %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-group form-group-full">

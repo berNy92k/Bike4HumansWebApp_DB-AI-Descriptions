@@ -7,6 +7,8 @@ from fastapi import HTTPException
 from app.models.bike import Bike
 from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_ai_description_request_dto import BikeAiDescriptionRequestDto
+from app.schemas.admin.bike.admin_bike_auto_tag_request_dto import BikeAutoTagRequestDto
+from app.schemas.admin.bike.admin_bike_auto_tag_response_dto import BikeAutoTagResponseDto
 from app.schemas.admin.bike.admin_bike_create_dto import BikeCreateDto
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_update_dto import BikeUpdateDto
@@ -224,3 +226,21 @@ def test_create_ai_description(db_session, seeded_bikes):
     # Then
     assert result.description == "Wygenerowany opis roweru."
     mock_ai_description_service.generate_description.assert_called_once_with(request_dto)
+
+
+def test_generate_auto_tags(db_session, seeded_bikes):
+    # Given
+    mock_ai_auto_tag_service = MagicMock()
+    mock_ai_auto_tag_service.generate_tags.return_value = BikeAutoTagResponseDto(
+        bike_type="MOUNTAIN", frame_material="ALUMINIUM"
+    )
+    bike_service = AdminBikeService(db_session, ai_auto_tag_service=mock_ai_auto_tag_service)
+    request_dto = BikeAutoTagRequestDto(name="Trek Marlin 7", description="Lekki rower górski.")
+
+    # When
+    result = bike_service.generate_auto_tags(request_dto)
+
+    # Then
+    assert result.bike_type == "MOUNTAIN"
+    assert result.frame_material == "ALUMINIUM"
+    mock_ai_auto_tag_service.generate_tags.assert_called_once_with(request_dto)
