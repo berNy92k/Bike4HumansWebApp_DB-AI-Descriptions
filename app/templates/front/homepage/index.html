@@ -121,10 +121,10 @@
                             <img src="{{ bike.image_url }}" alt="{{ bike.name }}">
                         </div>
                         <div class="product-card__body">
-                            <div class="badge">{{ bike.manufacturer_name }}</div>
+                            <div class="badge">{{ manufacturer_names.get(bike.brand_id, '') }}</div>
                             <h3 style="margin: 12px 0 8px;">{{ bike.name }}</h3>
                             <p style="margin: 0; color: var(--muted); line-height: 1.6;">
-                                {{ bike.short_description }}
+                                {{ bike.description|truncate(90, True, '…') if bike.description else '' }}
                             </p>
                             <div class="product-card__footer">
                                 <strong>{{ bike.price }} zł</strong>

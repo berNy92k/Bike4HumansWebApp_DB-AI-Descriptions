@@ -47,13 +47,16 @@ async def render_homepage(request: Request, db: db_dependency):
     except Exception:
         pass
 
+    manufacturers = AdminManufacturerService(db).get_all_manufacturers()
+
     return templates.TemplateResponse(
         "front/homepage/index.html",
         {
             "request": request,
             "equipmentShortList": BikeService(db).get_bikes_paginated(BikeListRequestDto(page=1, size=4)),
+            "manufacturer_names": {m.id: m.name for m in manufacturers},
             "bikeSize": len(BikeService(db).get_all_bikes()),
-            "manufacturerSize": len(AdminManufacturerService(db).get_all_manufacturers()),
+            "manufacturerSize": len(manufacturers),
             "logged_user": logged_user,
             "has_cart": has_cart,
             "has_checkout": has_checkout,

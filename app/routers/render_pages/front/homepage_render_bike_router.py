@@ -26,11 +26,15 @@ async def render_bikes(request: Request, db: db_dependency):
     size = int(request.query_params.get("size", 16))
 
     pagination = BikeService(db).get_bikes_paginated(BikeListRequestDto(page=page, size=size))
+    manufacturers = ManufacturerService(db).get_all_manufacturers()
+    manufacturer_names = {m.id: m.name for m in manufacturers}
+
     return templates.TemplateResponse(
         "front/bikes/bikes.html",
         {
             "request": request,
             "bikes": pagination.items,
+            "manufacturer_names": manufacturer_names,
             "page": pagination.page,
             "size": pagination.size,
             "total": pagination.total,

@@ -9,6 +9,7 @@ class BikeReadDto(BaseModel):
     name: str
     description: str | None = None
     is_description_ai_generated: bool
+    bike_type: str | None = None
 
     price: Decimal
     stock_quantity: int
