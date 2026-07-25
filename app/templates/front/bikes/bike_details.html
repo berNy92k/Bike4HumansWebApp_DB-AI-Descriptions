@@ -169,7 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (!response.ok) {
-                throw new Error("Nie udało się pobrać podobnych rowerów.");
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.detail || "Nie udało się pobrać podobnych rowerów.");
             }
 
             const data = await response.json();

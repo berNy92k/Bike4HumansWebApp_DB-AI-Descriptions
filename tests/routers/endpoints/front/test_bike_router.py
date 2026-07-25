@@ -1,3 +1,4 @@
+from collections import defaultdict, deque
 from unittest.mock import patch
 
 import pytest
@@ -5,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.bike import Bike
+from app.routers.endpoints.front import bike_router
 from app.schemas.front.bike.bike_search_filters_response_dto import BikeSearchFiltersResponseDto
 from tests.database.database import override_get_db
 
@@ -106,3 +108,22 @@ def test_generate_search_filters_requires_query(client, seeded_bikes):
 
     # Then
     assert response.status_code == 422
+
+
+def test_ai_endpoints_share_a_rate_limit_budget(client, seeded_bikes, monkeypatch):
+    # Given
+    monkeypatch.setattr(bike_router.ai_rate_limiter, "max_requests", 1)
+    monkeypatch.setattr(bike_router.ai_rate_limiter, "_hits", defaultdict(deque))
+    bike_id = seeded_bikes[0].id
+
+    with patch(
+        "app.services.front.bike_service.BikeRecommendationAiService.generate_recommendation_note",
+        return_value="Warto rozważyć te opcje.",
+    ):
+        # When
+        first_response = client.post(f"/bikes/{bike_id}/ai-similar-bikes")
+        second_response = client.post("/bikes/ai-search", json={"query": "cokolwiek"})
+
+    # Then
+    assert first_response.status_code == 201
+    assert second_response.status_code == 429

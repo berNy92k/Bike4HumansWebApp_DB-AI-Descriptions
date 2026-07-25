@@ -127,7 +127,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error("Nie udało się przetworzyć zapytania.");
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.detail || "Nie udało się przetworzyć zapytania.");
                 }
 
                 const filters = await response.json();
