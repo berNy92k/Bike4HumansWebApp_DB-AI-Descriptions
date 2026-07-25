@@ -204,6 +204,24 @@ This makes it easier to run the project locally and keep the database structure 
 
 ---
 
+## 🐳 Running with Docker
+
+The whole app (FastAPI + SQLite + Alembic migrations) can run in a single container.
+
+```bash
+# copy env vars (fill in OPENAI_API_KEY if you want the AI features to work)
+cp .env-example .env
+
+# build and start
+docker compose up --build
+```
+
+The app is then available at `http://localhost:8000`. Migrations (including the seed data) run automatically
+on container startup. The SQLite database lives in a named Docker volume (`bike4humans_data`), so it persists
+across `docker compose down` / `up` cycles — use `docker compose down -v` to also wipe it.
+
+---
+
 ## 🎯 Learning / Portfolio Goals
 
 - Backend development with FastAPI
@@ -221,8 +239,6 @@ This makes it easier to run the project locally and keep the database structure 
 
 ## 📌 Next Improvements
 
-- Add AI-based generation of bike descriptions
 - Extend AI support to other admin sections
 - Improve admin content workflows
-- Add Docker-based deployment
 - Add RAG or other AI-related features
