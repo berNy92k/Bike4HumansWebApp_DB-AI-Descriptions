@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.bike import Bike
+from app.schemas.front.bike.bike_search_filters_response_dto import BikeSearchFiltersResponseDto
 from tests.database.database import override_get_db
 
 
@@ -76,3 +77,32 @@ def test_get_similar_bikes_recommendation_bike_not_found(client, seeded_bikes):
 
     # Then
     assert response.status_code == 404
+
+
+def test_generate_search_filters(client, seeded_bikes):
+    # Given
+    payload = {"query": "szukam czegoś do miasta do 3000 zł"}
+    ai_response = BikeSearchFiltersResponseDto(bike_type="CITY", price_max=3000)
+
+    with patch(
+        "app.services.front.bike_service.BikeSearchAiService.generate_filters",
+        return_value=ai_response,
+    ):
+        # When
+        response = client.post("/bikes/ai-search", json=payload)
+
+    # Then
+    assert response.status_code == 201
+    assert response.json() == {
+        "bike_type": "CITY", "usage": None, "target_user": None, "price_min": None, "price_max": 3000
+    }
+
+
+def test_generate_search_filters_requires_query(client, seeded_bikes):
+    # Given
+
+    # When
+    response = client.post("/bikes/ai-search", json={"query": ""})
+
+    # Then
+    assert response.status_code == 422

@@ -143,3 +143,23 @@ def test_get_similar_bikes_falls_back_when_no_same_type_match(db_session, clean_
     # Then
     assert len(result) == 1
     assert result[0].id == other_type.id
+
+
+def test_get_bikes_paginated_filters_by_bike_type_and_price_range(db_session, clean_bikes_table):
+    # Given
+    repo = BikeRepository(db_session)
+    bikes = [
+        Bike(name="Trek Marlin 7", price=3000, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN"),
+        Bike(name="Giant Talon 1", price=7000, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN"),
+        Bike(name="Trek Domane AL 2", price=3500, stock_quantity=1, created_by=1, brand_id=1, bike_type="ROAD"),
+    ]
+    for bike in bikes:
+        db_session.add(bike)
+    db_session.commit()
+
+    # When
+    items, total = repo.get_bikes_paginated(page=1, size=10, bike_type="MOUNTAIN", price_max=5000)
+
+    # Then
+    assert total == 1
+    assert items[0].name == "Trek Marlin 7"

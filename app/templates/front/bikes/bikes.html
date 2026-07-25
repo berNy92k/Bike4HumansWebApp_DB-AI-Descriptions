@@ -15,6 +15,29 @@
             <p>Przeglądaj dostępne modele i wybierz coś dla siebie.</p>
         </div>
 
+        <div style="background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 20px; margin-bottom: 24px;">
+            <label for="ai-search-input" style="display: block; margin-bottom: 8px; font-weight: 600;">Opisz czego szukasz</label>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <input type="text" id="ai-search-input" placeholder="Np. szukam czegoś do miasta do 3000 zł"
+                       style="flex: 1; min-width: 240px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line);">
+                <button type="button" class="site-btn site-btn--primary" id="ai-search-btn">Szukaj z AI</button>
+                {% if filter_query_string %}
+                <a href="/bikes" class="site-btn site-btn--secondary">Wyczyść filtry</a>
+                {% endif %}
+            </div>
+            {% if filter_query_string %}
+            <p class="muted" style="margin: 10px 0 0;">
+                Aktywne filtry:
+                {%- if active_filters.bike_type %} typ: {{ active_filters.bike_type }};{% endif %}
+                {%- if active_filters.usage %} przeznaczenie: {{ active_filters.usage }};{% endif %}
+                {%- if active_filters.target_user %} dla: {{ active_filters.target_user }};{% endif %}
+                {%- if active_filters.price_min %} cena od: {{ active_filters.price_min }} zł;{% endif %}
+                {%- if active_filters.price_max %} cena do: {{ active_filters.price_max }} zł;{% endif %}
+            </p>
+            {% endif %}
+        </div>
+
+        {% if bikes and bikes|length > 0 %}
         <div class="bikes-grid">
             {% for bike in bikes %}
             <a class="bike-card" href="/bikes/{{ bike.id }}">
@@ -44,7 +67,7 @@
                 <select
                     id="page-size"
                     class="page-size-select"
-                    onchange="window.location.href='/bikes?page=1&size=' + this.value"
+                    onchange="window.location.href='/bikes?page=1&size=' + this.value + '{{ ('&' + filter_query_string) if filter_query_string else '' }}'"
                 >
                     <option value="4" {% if size == 4 %}selected{% endif %}>4</option>
                     <option value="8" {% if size == 8 %}selected{% endif %}>8</option>
@@ -55,18 +78,74 @@
                 <div class="pagination-buttons">
                     <a
                         class="pagination-btn pagination-btn--nav {% if page <= 1 %}is-disabled{% endif %}"
-                        href="/bikes?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}"
+                        href="/bikes?page={{ page - 1 if page > 1 else 1 }}&size={{ size }}{{ ('&' + filter_query_string) if filter_query_string else '' }}"
                     >Poprzednia</a>
 
                     <span class="pagination-current">Strona {{ page }} z {{ pages }}</span>
 
                     <a
                         class="pagination-btn pagination-btn--nav {% if page >= pages %}is-disabled{% endif %}"
-                        href="/bikes?page={{ page + 1 if page < pages else pages }}&size={{ size }}"
+                        href="/bikes?page={{ page + 1 if page < pages else pages }}&size={{ size }}{{ ('&' + filter_query_string) if filter_query_string else '' }}"
                     >Następna</a>
                 </div>
             </div>
         </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>Brak rowerów spełniających wybrane kryteria</h3>
+            <p>Spróbuj zmienić zapytanie albo <a href="/bikes">wyczyść filtry</a>.</p>
+        </div>
+        {% endif %}
     </section>
 </div>
+{% endblock %}
+
+{% block extra_body %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchButton = document.getElementById("ai-search-btn");
+        const searchInput = document.getElementById("ai-search-input");
+
+        if (!searchButton || !searchInput) return;
+
+        searchButton.addEventListener("click", async () => {
+            const query = searchInput.value.trim();
+            if (!query) {
+                alert("Opisz najpierw, czego szukasz.");
+                return;
+            }
+
+            searchButton.disabled = true;
+            const originalText = searchButton.textContent;
+            searchButton.textContent = "Szukam...";
+
+            try {
+                const response = await fetch("/bikes/ai-search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Nie udało się przetworzyć zapytania.");
+                }
+
+                const filters = await response.json();
+                const params = new URLSearchParams({ page: "1" });
+
+                if (filters.bike_type) params.set("bike_type", filters.bike_type);
+                if (filters.usage) params.set("usage", filters.usage);
+                if (filters.target_user) params.set("target_user", filters.target_user);
+                if (filters.price_min !== null && filters.price_min !== undefined) params.set("price_min", filters.price_min);
+                if (filters.price_max !== null && filters.price_max !== undefined) params.set("price_max", filters.price_max);
+
+                window.location.href = `/bikes?${params.toString()}`;
+            } catch (error) {
+                alert(error.message || "Wystąpił błąd podczas wyszukiwania.");
+                searchButton.disabled = false;
+                searchButton.textContent = originalText;
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -175,3 +175,37 @@ def test_get_similar_bikes_recommendation_caches_note_in_db(db_session, seeded_b
     cached_bike = service.get_bike_by_id(bike_id)
     assert cached_bike.similar_bikes_ai_note == "Warto rozważyć te opcje."
     assert cached_bike.similar_bikes_ai_note_generated_at is not None
+
+
+def test_get_bikes_paginated_applies_filters(db_session, clean_bikes_table):
+    # Given
+    service = BikeService(db_session)
+    bikes = [
+        Bike(name="Trek Marlin 7", price=3000, stock_quantity=1, created_by=1, brand_id=1, bike_type="MOUNTAIN"),
+        Bike(name="Trek Domane AL 2", price=3500, stock_quantity=1, created_by=1, brand_id=1, bike_type="ROAD"),
+    ]
+    for bike in bikes:
+        db_session.add(bike)
+    db_session.commit()
+    request_dto = BikeListRequestDto(page=1, size=10, bike_type="ROAD")
+
+    # When
+    result = service.get_bikes_paginated(request_dto)
+
+    # Then
+    assert result.total == 1
+    assert result.items[0].name == "Trek Domane AL 2"
+
+
+def test_generate_search_filters(db_session, seeded_bikes):
+    # Given
+    mock_ai_search_service = MagicMock()
+    mock_ai_search_service.generate_filters.return_value = "filters"
+    service = BikeService(db_session, ai_search_service=mock_ai_search_service)
+
+    # When
+    result = service.generate_search_filters("szukam czegoś do miasta do 3000 zł")
+
+    # Then
+    assert result == "filters"
+    mock_ai_search_service.generate_filters.assert_called_once_with("szukam czegoś do miasta do 3000 zł")

@@ -15,8 +15,29 @@ class BikeRepository:
     def get_last_x_bikes(self, size: int):
         return self.db.query(Bike).order_by(Bike.created_at.desc()).limit(size).all()
 
-    def get_bikes_paginated(self, page: int, size: int):
+    def get_bikes_paginated(
+        self,
+        page: int,
+        size: int,
+        bike_type: str | None = None,
+        usage: str | None = None,
+        target_user: str | None = None,
+        price_min=None,
+        price_max=None,
+    ):
         query = self.db.query(Bike).order_by(Bike.id.desc())
+
+        if bike_type:
+            query = query.where(Bike.bike_type == bike_type)
+        if usage:
+            query = query.where(Bike.usage == usage)
+        if target_user:
+            query = query.where(Bike.target_user == target_user)
+        if price_min is not None:
+            query = query.where(Bike.price >= price_min)
+        if price_max is not None:
+            query = query.where(Bike.price <= price_max)
+
         total = query.count()
         items = query.offset((page - 1) * size).limit(size).all()
         return items, total

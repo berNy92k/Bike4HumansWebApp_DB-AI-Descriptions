@@ -8,15 +8,23 @@ from app.repositories.bike_repository import BikeRepository
 from app.schemas.admin.bike.admin_bike_list_request_dto import BikeListRequestDto
 from app.schemas.admin.bike.admin_bike_list_response_dto import BikeListResponseDto
 from app.schemas.admin.bike.admin_bike_read_dto import BikeReadDto
+from app.schemas.front.bike.bike_search_filters_response_dto import BikeSearchFiltersResponseDto
 from app.schemas.front.bike.bike_similar_response_dto import BikeSimilarRecommendationResponseDto, SimilarBikeDto
 from app.services.ai.bike_recommendation_ai_service import BikeRecommendationAiService
+from app.services.ai.bike_search_ai_service import BikeSearchAiService
 
 
 class BikeService:
 
-    def __init__(self, db: Session, ai_recommendation_service: BikeRecommendationAiService | None = None):
+    def __init__(
+        self,
+        db: Session,
+        ai_recommendation_service: BikeRecommendationAiService | None = None,
+        ai_search_service: BikeSearchAiService | None = None,
+    ):
         self.bike_repository = BikeRepository(db)
         self.ai_recommendation_service = ai_recommendation_service or BikeRecommendationAiService()
+        self.ai_search_service = ai_search_service or BikeSearchAiService()
 
     def get_all_bikes(self) -> list[Bike]:
         return self.bike_repository.get_all_bikes()
@@ -30,6 +38,11 @@ class BikeService:
         items, total = self.bike_repository.get_bikes_paginated(
             page=request_dto.page,
             size=request_dto.size,
+            bike_type=request_dto.bike_type,
+            usage=request_dto.usage,
+            target_user=request_dto.target_user,
+            price_min=request_dto.price_min,
+            price_max=request_dto.price_max,
         )
         pages = (total + request_dto.size - 1) // request_dto.size if total > 0 else 0
 
@@ -71,3 +84,6 @@ class BikeService:
             note=note,
             bikes=[SimilarBikeDto.model_validate(similar) for similar in similar_bikes],
         )
+
+    def generate_search_filters(self, query: str) -> BikeSearchFiltersResponseDto:
+        return self.ai_search_service.generate_filters(query)
