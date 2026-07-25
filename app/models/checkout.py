@@ -1,6 +1,7 @@
 import enum
+from datetime import datetime
 
-from sqlalchemy import Integer, ForeignKey, String, Float
+from sqlalchemy import Integer, ForeignKey, String, Float, Text, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models import BaseModel
@@ -19,6 +20,9 @@ class Checkout(BaseModel):
     status: Mapped[str] = mapped_column(String, default="PENDING", nullable=False)
     total_price: Mapped[float] = mapped_column(Float, default=0, nullable=False)
     payment_method_id: Mapped[int] = mapped_column(ForeignKey("payment_methods.id"), nullable=False)
+
+    ai_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    ai_summary_generated_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     user = relationship("User")
     items = relationship("CheckoutItem", back_populates="checkout", cascade="all, delete-orphan")

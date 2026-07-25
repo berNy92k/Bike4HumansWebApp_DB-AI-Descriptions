@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.database.database import get_db
+from app.schemas.admin.checkout.admin_checkout_summary_response_dto import CheckoutSummaryResponseDto
 from app.services.admin.admin_checkout_service import AdminCheckoutService
 from app.services.auth.auth_service import get_current_admin_user
 
@@ -22,3 +23,8 @@ router = APIRouter(
 async def delete_cart(cart_id: int, db: db_dependency):
     service = AdminCheckoutService(db)
     service.delete_checkout_by_id(cart_id)
+
+@router.post("/{checkout_id}/ai-summary", status_code=status.HTTP_201_CREATED)
+async def generate_checkout_summary(checkout_id: int, db: db_dependency) -> CheckoutSummaryResponseDto:
+    service = AdminCheckoutService(db)
+    return service.generate_checkout_summary(checkout_id)

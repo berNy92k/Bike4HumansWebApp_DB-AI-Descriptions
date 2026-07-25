@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -109,6 +111,32 @@ def test_delete_checkout_not_found(client, seeded_data):
 
     # When
     response = client.delete("/admin/checkouts/999999")
+
+    # Then
+    assert response.status_code == 404
+
+
+def test_generate_checkout_summary(client, seeded_data):
+    # Given
+    checkout_id = seeded_data.id
+
+    with patch(
+        "app.services.admin.admin_checkout_service.CheckoutSummaryAiService.generate_summary",
+        return_value="Sesja checkout obejmuje 1 rower o wartości 100.0 PLN, status: oczekująca.",
+    ):
+        # When
+        response = client.post(f"/admin/checkouts/{checkout_id}/ai-summary")
+
+    # Then
+    assert response.status_code == 201
+    assert "checkout" in response.json()["summary"]
+
+
+def test_generate_checkout_summary_not_found(client, seeded_data):
+    # Given
+
+    # When
+    response = client.post("/admin/checkouts/999999/ai-summary")
 
     # Then
     assert response.status_code == 404

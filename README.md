@@ -21,13 +21,16 @@ The application combines:
 
 The main idea behind this repository is to extend the existing bike shop with AI-assisted features.
 
-Planned AI use cases:
-- generating **product descriptions for bikes**
-- assisting with content creation in **admin panel sections**
-- supporting faster and more consistent data entry
-- making the admin workflow more useful and scalable
+Implemented AI use cases:
+- generating **product descriptions for bikes and manufacturers**
+- **auto-tagging** bike attributes (type, frame material, brakes, ...) from a free-text description, constrained
+  to valid values via OpenAI structured outputs
+- **natural-language search** for bikes (e.g. "something for the city under 3000 zl") mapped to real filters
+- **"similar bikes" recommendations** on the storefront, cached per bike after the first AI call
+- **AI-generated summaries** for admin orders, checkouts, and carts, to help staff scan records without reading
+  the raw table
 
-This means the project is no longer just a standard shop backend — it is becoming a base for experimenting with **AI in e-commerce administration**.
+This means the project is no longer just a standard shop backend — it has become a base for experimenting with **AI in e-commerce administration**, covering every admin section where AI content genuinely adds value (users were deliberately left out — there's no descriptive data to generate from).
 
 ---
 
@@ -81,7 +84,7 @@ Order page:
 - **Seeded starter data** for easier development and testing
 - **Simple frontend** for presenting store content and validating functionality
 - **Clean project structure** designed for easy extension
-- **Prepared for AI expansion** in content generation workflows
+- **AI-powered content and insights** (OpenAI): bike/manufacturer description generation, bike auto-tagging via structured outputs, natural-language bike search, "similar bikes" recommendations, and AI summaries for admin orders/checkouts/carts — all cached in the database and rate-limited where public-facing
 
 ---
 
@@ -239,6 +242,5 @@ across `docker compose down` / `up` cycles — use `docker compose down -v` to a
 
 ## 📌 Next Improvements
 
-- Extend AI support to other admin sections
 - Improve admin content workflows
 - Add RAG or other AI-related features

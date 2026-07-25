@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -109,6 +111,32 @@ def test_delete_cart_not_found(client, seeded_data):
 
     # When
     response = client.delete("/admin/carts/999999")
+
+    # Then
+    assert response.status_code == 404
+
+
+def test_generate_cart_summary(client, seeded_data):
+    # Given
+    cart_id = seeded_data.id
+
+    with patch(
+        "app.services.admin.admin_cart_service.CartSummaryAiService.generate_summary",
+        return_value="Koszyk jest pusty, status: oczekujący.",
+    ):
+        # When
+        response = client.post(f"/admin/carts/{cart_id}/ai-summary")
+
+    # Then
+    assert response.status_code == 201
+    assert "Koszyk" in response.json()["summary"]
+
+
+def test_generate_cart_summary_not_found(client, seeded_data):
+    # Given
+
+    # When
+    response = client.post("/admin/carts/999999/ai-summary")
 
     # Then
     assert response.status_code == 404
