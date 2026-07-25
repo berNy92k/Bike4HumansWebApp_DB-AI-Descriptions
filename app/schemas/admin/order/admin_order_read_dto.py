@@ -15,6 +15,7 @@ class OrderReadDto(BaseModel):
     payment_method_id: int
     created_at: datetime
     updated_at: datetime
+    ai_summary: str | None = None
     items: list[OrderItemReadDto]
 
     model_config = ConfigDict(from_attributes=True)

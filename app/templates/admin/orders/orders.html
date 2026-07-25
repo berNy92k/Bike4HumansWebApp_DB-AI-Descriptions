@@ -238,6 +238,53 @@
             });
         });
 
+        document.querySelectorAll("[data-ai-summary-btn]").forEach((button) => {
+            button.addEventListener("click", async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const orderId = button.getAttribute("data-order-id");
+                if (!orderId) return;
+
+                const summaryEl = document.getElementById(`ai-summary-${orderId}`);
+                if (!summaryEl) return;
+
+                const token = getAccessToken();
+                if (!token) {
+                    alert("Brak tokenu logowania.");
+                    return;
+                }
+
+                button.disabled = true;
+                const originalText = button.textContent;
+                button.textContent = "Generuję...";
+
+                try {
+                    const response = await fetch(`/admin/orders/${orderId}/ai-summary`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(errorData?.detail || "Nie udało się wygenerować podsumowania.");
+                    }
+
+                    const data = await response.json();
+                    summaryEl.textContent = data.summary;
+                    summaryEl.style.display = "block";
+                } catch (error) {
+                    alert(error.message || "Wystąpił błąd podczas generowania podsumowania.");
+                } finally {
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            });
+        });
+
         const applyFiltersButton = document.querySelector("[data-apply-order-filters]");
         if (applyFiltersButton) {
             applyFiltersButton.addEventListener("click", () => {
@@ -455,6 +502,21 @@
                                 <span class="badge badge-neutral">
                                     {{ order.items|length if order.items else 0 }} produktów
                                 </span>
+                            </div>
+
+                            <div style="margin-bottom: 16px;">
+                                <button
+                                    type="button"
+                                    class="btn btn-success"
+                                    data-ai-summary-btn
+                                    data-order-id="{{ order.id }}"
+                                >
+                                    Podsumowanie AI
+                                </button>
+                                <p
+                                    id="ai-summary-{{ order.id }}"
+                                    style="margin-top: 10px; color: #374151; line-height: 1.6; white-space: pre-wrap; {% if not order.ai_summary %}display: none;{% endif %}"
+                                >{{ order.ai_summary or '' }}</p>
                             </div>
 
                             {% if order.items and order.items|length > 0 %}

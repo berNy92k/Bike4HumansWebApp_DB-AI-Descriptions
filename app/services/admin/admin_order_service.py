@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -6,12 +8,15 @@ from app.repositories.order_repository import OrderRepository
 from app.schemas.admin.order.admin_order_list_request_dto import OrderListRequestDto
 from app.schemas.admin.order.admin_order_list_response_dto import OrderListResponseDto
 from app.schemas.admin.order.admin_order_read_dto import OrderReadDto
+from app.schemas.admin.order.admin_order_summary_response_dto import OrderSummaryResponseDto
+from app.services.ai.order_summary_ai_service import OrderSummaryAiService
 
 
 class AdminOrderService:
 
-    def __init__(self, db: Session):
+    def __init__(self, db: Session, ai_summary_service: OrderSummaryAiService | None = None):
         self.order_repository = OrderRepository(db)
+        self.ai_summary_service = ai_summary_service or OrderSummaryAiService()
 
     def get_orders_paginated(self, request_dto: OrderListRequestDto) -> OrderListResponseDto:
         items, total = self.order_repository.get_orders_paginated(
@@ -44,6 +49,10 @@ class AdminOrderService:
         if not order or not order.items or len(order.items) == 0:
             raise HTTPException(status_code=404, detail="Order not found or empty")
 
+        if order.status != status:
+            order.ai_summary = None
+            order.ai_summary_generated_at = None
+
         order.status = status
         self.order_repository.create_or_update(order)
 
@@ -53,3 +62,15 @@ class AdminOrderService:
             raise HTTPException(status_code=404, detail="Order not found")
 
         self.order_repository.delete(order)
+
+    def generate_order_summary(self, order_id: int) -> OrderSummaryResponseDto:
+        order = self.order_repository.get_order_by_id(order_id)
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+
+        if order.ai_summary is None:
+            order.ai_summary = self.ai_summary_service.generate_summary(order)
+            order.ai_summary_generated_at = datetime.now(timezone.utc)
+            self.order_repository.create_or_update(order)
+
+        return OrderSummaryResponseDto(summary=order.ai_summary)

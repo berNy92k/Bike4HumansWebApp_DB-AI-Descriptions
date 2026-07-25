@@ -6,6 +6,7 @@ from starlette import status
 
 from app.database.database import get_db
 from app.models.order import OrderStatus, Order
+from app.schemas.admin.order.admin_order_summary_response_dto import OrderSummaryResponseDto
 from app.services.admin.admin_order_service import AdminOrderService
 from app.services.auth.auth_service import get_current_admin_user
 
@@ -28,3 +29,8 @@ async def delete_cart(order_id: int, db: db_dependency):
 async def update_order_status(order_id: int, logged_user: current_user_dependency, db: db_dependency, status: OrderStatus):
     service = AdminOrderService(db)
     service.update_status_by_id(logged_user.get("user_id"), status.upper(), order_id)
+
+@router.post("/{order_id}/ai-summary", status_code=status.HTTP_201_CREATED)
+async def generate_order_summary(order_id: int, db: db_dependency) -> OrderSummaryResponseDto:
+    service = AdminOrderService(db)
+    return service.generate_order_summary(order_id)

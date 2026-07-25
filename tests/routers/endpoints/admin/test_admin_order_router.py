@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -134,6 +136,32 @@ def test_delete_order_not_found(client, seeded_data):
 
     # When
     response = client.delete("/admin/orders/999999")
+
+    # Then
+    assert response.status_code == 404
+
+
+def test_generate_order_summary(client, seeded_data):
+    # Given
+    order_id = seeded_data.id
+
+    with patch(
+        "app.services.admin.admin_order_service.OrderSummaryAiService.generate_summary",
+        return_value="Zamówienie zawiera 1 rower Trek Marlin 7 o wartości 100.0 PLN, status: oczekujące.",
+    ):
+        # When
+        response = client.post(f"/admin/orders/{order_id}/ai-summary")
+
+    # Then
+    assert response.status_code == 201
+    assert "Trek Marlin 7" in response.json()["summary"]
+
+
+def test_generate_order_summary_not_found(client, seeded_data):
+    # Given
+
+    # When
+    response = client.post("/admin/orders/999999/ai-summary")
 
     # Then
     assert response.status_code == 404
