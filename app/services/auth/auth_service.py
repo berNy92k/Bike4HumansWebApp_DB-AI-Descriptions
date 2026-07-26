@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from typing import Annotated
 
 from dotenv import load_dotenv
-from fastapi import Depends, HTTPException, Request
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -36,14 +36,6 @@ async def get_current_admin_user(current_user: Annotated[dict, Depends(get_curre
     return current_user
 
 
-async def get_current_user_from_cookie(request: Request):
-    token = request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not authorized")
-
-    return _decode_jwt_token(token)
-
-
 def _decode_jwt_token(token: str):
     try:
         payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
@@ -72,25 +64,10 @@ class AuthService:
 
     def __init__(self, db: Session):
         self.user_service = UserService(db)
-        self.role_repository = RoleRepository(db)
 
     def authenticate_user(self, username: str, password: str) -> User:
         user: User = self.user_service.find_user_by_username(username)
         if not bcrypt_context.verify(password, str(user.hashed_password)):
             raise HTTPException(status_code=401, detail="User is not authorized")
-
-        return user
-
-    async def validate_access(self, request: Request):
-        user_dict = await get_current_user_from_cookie(request)
-        user_id: int = int(user_dict.get("user_id"))
-
-        user: User = self.user_service.find_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User is not found")
-
-        role = self.role_repository.get_role_by_id(user.role_id)
-        if not role or not role.has_permission(PermissionCode.ADMIN_PANEL_ACCESS):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is forbidden")
 
         return user

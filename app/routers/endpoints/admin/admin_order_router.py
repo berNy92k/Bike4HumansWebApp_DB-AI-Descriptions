@@ -1,11 +1,14 @@
-from typing import Annotated
+from datetime import datetime
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app.database.database import get_db
 from app.models.order import OrderStatus, Order
+from app.schemas.admin.order.admin_order_list_request_dto import OrderListRequestDto
+from app.schemas.admin.order.admin_order_list_response_dto import OrderListResponseDto
 from app.schemas.admin.order.admin_order_summary_response_dto import OrderSummaryResponseDto
 from app.services.admin.admin_order_service import AdminOrderService
 from app.services.auth.auth_service import get_current_admin_user
@@ -18,6 +21,37 @@ router = APIRouter(
     dependencies=[Depends(get_current_admin_user)],
     include_in_schema=False
 )
+
+
+@router.get("/", status_code=status.HTTP_200_OK, response_model=OrderListResponseDto)
+async def find_orders(
+    db: db_dependency,
+    page: int = Query(1, ge=1),
+    size: int = Query(10, ge=1, le=100),
+    order_id: str | None = Query(None),
+    user_id: int | None = Query(None),
+    status_filter: str | None = Query(None, alias="status"),
+    total_price_min: float | None = Query(None, ge=0),
+    total_price_max: float | None = Query(None, ge=0),
+    created_at_min: datetime | None = Query(None),
+    created_at_max: datetime | None = Query(None),
+    sort_by: Literal["created_at", "status"] = Query("created_at"),
+    sort_direction: Literal["asc", "desc"] = Query("desc"),
+):
+    service = AdminOrderService(db)
+    return service.get_orders_paginated(OrderListRequestDto(
+        page=page,
+        size=size,
+        order_id=order_id,
+        user_id=user_id,
+        status=status_filter,
+        total_price_min=total_price_min,
+        total_price_max=total_price_max,
+        created_at_min=created_at_min,
+        created_at_max=created_at_max,
+        sort_by=sort_by,
+        sort_direction=sort_direction,
+    ))
 
 
 @router.delete("/{order_id}", status_code=status.HTTP_200_OK)

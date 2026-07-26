@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -27,15 +27,15 @@ async def create_user(db: db_dependency, user: UserCreateDto):
     service.create_user(user)
 
 
-@router.post("/token", status_code=status.HTTP_201_CREATED)
-async def create_token(db: db_dependency, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+@router.post("/token", status_code=status.HTTP_200_OK)
+async def create_token(db: db_dependency, response: Response,
+                       form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     service = AuthService(db)
     user: User = service.authenticate_user(form_data.username, form_data.password)
 
     minutes: int = 20
     token = generate_jwt_token(form_data.username, user.id, user.role_id, timedelta(minutes=minutes))
 
-    response = RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
     response.set_cookie(
         key="access_token",
         value=token,
@@ -45,7 +45,14 @@ async def create_token(db: db_dependency, form_data: Annotated[OAuth2PasswordReq
         max_age=minutes * 60,
         path="/",
     )
-    return response
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": user.id,
+        "role_id": user.role_id,
+        "username": user.username,
+    }
 
 @router.get("/logout", status_code=status.HTTP_200_OK)
 async def logout():

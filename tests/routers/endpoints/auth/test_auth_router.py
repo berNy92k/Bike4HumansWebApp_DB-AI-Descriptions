@@ -100,8 +100,12 @@ def test_create_token_success(client, seeded_user):
     response = client.post("/auth/token", data=form_data, follow_redirects=False)
 
     # Then
-    assert response.status_code == 303
-    assert response.headers["location"] == "/"
+    assert response.status_code == 200
+    data = response.json()
+    assert data["token_type"] == "bearer"
+    assert data["access_token"]
+    assert data["username"] == "john"
+    assert data["role_id"] == 4
     assert "access_token" in response.cookies
 
 

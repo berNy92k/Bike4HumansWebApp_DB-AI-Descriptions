@@ -110,7 +110,25 @@ def test_find_all_bikes(client, seeded_data):
 
     # Then
     assert response.status_code == 200
-    assert len(response.json()) == 2
+    data = response.json()
+    assert len(data["items"]) == 2
+    assert data["total"] == 2
+    assert data["page"] == 1
+
+
+def test_find_all_bikes_paginated(client, seeded_data):
+    # Given
+
+    # When
+    response = client.get("/admin/bikes/", params={"page": 1, "size": 1})
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) == 1
+    assert data["size"] == 1
+    assert data["total"] == 2
+    assert data["pages"] == 2
 
 
 def test_find_bike_by_id(client, seeded_data):
@@ -147,14 +165,14 @@ def test_create_bike(client, seeded_data):
         "brand_id": 1,
     }
 
-    bikes_before = len(client.get("/admin/bikes/").json())
+    bikes_before = len(client.get("/admin/bikes/").json()["items"])
 
     # When
     response = client.post("/admin/bikes/", json=payload)
 
     # Then
     assert response.status_code == 201
-    bikes_after = len(client.get("/admin/bikes/").json())
+    bikes_after = len(client.get("/admin/bikes/").json()["items"])
     assert bikes_before < bikes_after
 
 

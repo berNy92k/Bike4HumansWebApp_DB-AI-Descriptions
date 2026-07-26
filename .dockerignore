@@ -16,6 +16,9 @@ __pycache__
 app.db
 testapp.db
 
+frontend/node_modules
+frontend/dist
+
 README.md
 LICENSE
 Dockerfile

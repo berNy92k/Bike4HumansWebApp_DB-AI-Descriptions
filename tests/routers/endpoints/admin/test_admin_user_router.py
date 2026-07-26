@@ -124,7 +124,34 @@ def test_get_all_users(client, seeded_target_user):
 
     # Then
     assert response.status_code == 200
-    assert any(u["username"] == "target" for u in response.json())
+    data = response.json()
+    assert any(u["username"] == "target" for u in data["items"])
+    assert data["total"] == 1
+
+
+def test_get_user_by_id(client, seeded_target_user):
+    # Given
+    login_as(1, 1)
+
+    # When
+    response = client.get(f"/admin/user/{seeded_target_user.id}")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert data["username"] == "target"
+    assert data["role_name"] == "user"
+
+
+def test_get_user_by_id_not_found(client, seeded_target_user):
+    # Given
+    login_as(1, 1)
+
+    # When
+    response = client.get("/admin/user/999999")
+
+    # Then
+    assert response.status_code == 404
 
 
 def test_update_user_all_fields_by_super_admin_allowed(client, seeded_target_user, db_session):
@@ -215,6 +242,30 @@ def test_get_all_roles(client, seeded_roles):
     # Then
     assert response.status_code == 200
     assert response.json()["total"] == 3
+
+
+def test_get_role_by_id(client, seeded_roles):
+    # Given
+    login_as(1, 1)
+    role_id = seeded_roles[2].id
+
+    # When
+    response = client.get(f"/admin/user/roles/{role_id}")
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["name"] == "user"
+
+
+def test_get_role_by_id_not_found(client, seeded_roles):
+    # Given
+    login_as(1, 1)
+
+    # When
+    response = client.get("/admin/user/roles/999999")
+
+    # Then
+    assert response.status_code == 404
 
 
 def test_create_new_role_by_super_admin_allowed(client, seeded_roles):

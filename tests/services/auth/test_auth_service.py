@@ -150,48 +150,6 @@ def test_authenticate_user_user_not_found(db_session, seeded_users):
 
 
 @pytest.mark.asyncio
-async def test_validate_access_allowed(db_session, seeded_users, monkeypatch):
-    # Given
-    auth_service = AuthService(db_session)
-
-    async def fake_get_current_user_from_cookie(request):
-        return {"user_id": seeded_users[0].id}
-
-    monkeypatch.setattr(
-        "app.services.auth.auth_service.get_current_user_from_cookie",
-        fake_get_current_user_from_cookie,
-    )
-
-    # When
-    result = await auth_service.validate_access(request=None)
-
-    # Then
-    assert result is not None
-    assert result.username == "admin"
-
-
-@pytest.mark.asyncio
-async def test_validate_access_forbidden(db_session, seeded_users, monkeypatch):
-    # Given
-    auth_service = AuthService(db_session)
-
-    async def fake_get_current_user_from_cookie(request):
-        return {"user_id": seeded_users[1].id}
-
-    monkeypatch.setattr(
-        "app.services.auth.auth_service.get_current_user_from_cookie",
-        fake_get_current_user_from_cookie,
-    )
-
-    # When / Then
-    with pytest.raises(HTTPException) as exc:
-        await auth_service.validate_access(request=None)
-
-    assert exc.value.status_code == 403
-    assert exc.value.detail == "User is forbidden"
-
-
-@pytest.mark.asyncio
 async def test_get_current_admin_user_allowed(db_session, seeded_roles):
     # Given
     current_user = {"user_id": 1, "username": "admin", "role_id": 1}
@@ -213,24 +171,3 @@ async def test_get_current_admin_user_forbidden(db_session, seeded_roles):
         await get_current_admin_user(current_user=current_user, db=db_session)
 
     assert exc.value.status_code == 403
-
-
-@pytest.mark.asyncio
-async def test_validate_access_user_not_found(db_session, seeded_users, monkeypatch):
-    # Given
-    auth_service = AuthService(db_session)
-
-    async def fake_get_current_user_from_cookie(request):
-        return {"user_id": 999}
-
-    monkeypatch.setattr(
-        "app.services.auth.auth_service.get_current_user_from_cookie",
-        fake_get_current_user_from_cookie,
-    )
-
-    # When / Then
-    with pytest.raises(HTTPException) as exc:
-        await auth_service.validate_access(request=None)
-
-    assert exc.value.status_code == 404
-    assert exc.value.detail == "User not found"

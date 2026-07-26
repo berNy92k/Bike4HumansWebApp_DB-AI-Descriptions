@@ -106,7 +106,9 @@ def test_find_all_manufacturers(client, seeded_data):
 
     # Then
     assert response.status_code == 200
-    assert len(response.json()) == 2
+    data = response.json()
+    assert len(data["items"]) == 2
+    assert data["total"] == 2
 
 
 def test_find_manufacturer_by_id(client, seeded_data):
@@ -136,14 +138,14 @@ def test_create_manufacturer(client, seeded_data):
     # Given
     payload = {"name": "Specialized", "description": "Nowa marka"}
 
-    manufacturers_before = len(client.get("/admin/manufacturer/").json())
+    manufacturers_before = len(client.get("/admin/manufacturer/").json()["items"])
 
     # When
     response = client.post("/admin/manufacturer/", json=payload)
 
     # Then
     assert response.status_code == 201
-    manufacturers_after = len(client.get("/admin/manufacturer/").json())
+    manufacturers_after = len(client.get("/admin/manufacturer/").json()["items"])
     assert manufacturers_before < manufacturers_after
 
 

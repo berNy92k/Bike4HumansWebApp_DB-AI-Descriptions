@@ -55,6 +55,31 @@ def seeded_bike(db_session, clean_tables):
     return bike
 
 
+def test_get_my_cart(client, seeded_bike, db_session):
+    # Given
+    client.post("/cart/item", json={"bike_id": seeded_bike.id})
+
+    # When
+    response = client.get("/cart/")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert data["user_id"] == 1
+    assert len(data["items"]) == 1
+    assert data["items"][0]["bike_id"] == seeded_bike.id
+
+
+def test_get_my_cart_not_found(client, seeded_bike):
+    # Given
+
+    # When
+    response = client.get("/cart/")
+
+    # Then
+    assert response.status_code == 404
+
+
 def test_add_item_to_cart(client, seeded_bike, db_session):
     # Given
     payload = {"bike_id": seeded_bike.id}

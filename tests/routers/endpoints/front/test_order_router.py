@@ -78,6 +78,27 @@ def seeded_pending_order(db_session, clean_tables):
     return order
 
 
+def test_get_my_order(client, seeded_pending_order):
+    # Given
+
+    # When
+    response = client.get(f"/api/order/{seeded_pending_order.order_id}")
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["order_id"] == "ORD00000001"
+
+
+def test_get_my_order_not_found(client, seeded_pending_order):
+    # Given
+
+    # When
+    response = client.get("/api/order/UNKNOWN0001")
+
+    # Then
+    assert response.status_code == 404
+
+
 def test_create_order(client, seeded_pending_checkout, db_session):
     # Given
 

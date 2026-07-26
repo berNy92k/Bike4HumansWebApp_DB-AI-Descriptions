@@ -52,6 +52,58 @@ def seeded_bikes(db_session, clean_bikes_table):
     return bikes
 
 
+def test_find_bikes(client, seeded_bikes):
+    # Given
+
+    # When
+    response = client.get("/api/bikes/")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) == 2
+    assert data["total"] == 2
+
+
+def test_find_bikes_filtered_by_bike_type(client, seeded_bikes, db_session):
+    # Given
+    from app.models.bike import Bike
+    other = Bike(name="Cube Touring", price=2999.0, stock_quantity=1, created_by=1, brand_id=1, bike_type="CITY")
+    db_session.add(other)
+    db_session.commit()
+
+    # When
+    response = client.get("/api/bikes/", params={"bike_type": "CITY"})
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["items"]) == 1
+    assert data["items"][0]["name"] == "Cube Touring"
+
+
+def test_find_bike_by_id(client, seeded_bikes):
+    # Given
+    bike_id = seeded_bikes[0].id
+
+    # When
+    response = client.get(f"/api/bikes/{bike_id}")
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["name"] == "Trek Marlin 7"
+
+
+def test_find_bike_by_id_not_found(client, seeded_bikes):
+    # Given
+
+    # When
+    response = client.get("/api/bikes/999999")
+
+    # Then
+    assert response.status_code == 404
+
+
 def test_get_similar_bikes_recommendation(client, seeded_bikes):
     # Given
     bike_id = seeded_bikes[0].id

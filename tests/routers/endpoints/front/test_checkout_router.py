@@ -65,6 +65,54 @@ def seeded_pending_cart(db_session, clean_tables):
     return cart
 
 
+def test_get_my_pending_checkout(client, seeded_pending_cart):
+    # Given
+    client.post("/checkout/")
+
+    # When
+    response = client.get("/checkout/")
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["status"] == "PENDING"
+
+
+def test_get_my_pending_checkout_not_found(client, clean_tables):
+    # Given
+
+    # When
+    response = client.get("/checkout/")
+
+    # Then
+    assert response.status_code == 404
+
+
+def test_get_my_completed_checkout(client, seeded_pending_cart, db_session):
+    # Given
+    client.post("/checkout/")
+    checkout = db_session.query(Checkout).filter(Checkout.user_id == 1).first()
+    checkout.status = "COMPLETED"
+    db_session.commit()
+
+    # When
+    response = client.get("/checkout/completed")
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["status"] == "COMPLETED"
+
+
+def test_get_my_completed_checkout_not_found(client, seeded_pending_cart):
+    # Given
+    client.post("/checkout/")
+
+    # When
+    response = client.get("/checkout/completed")
+
+    # Then
+    assert response.status_code == 404
+
+
 def test_create_checkout(client, seeded_pending_cart, db_session):
     # Given
 

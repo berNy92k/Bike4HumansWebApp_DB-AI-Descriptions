@@ -94,6 +94,19 @@ def seeded_data(db_session, clean_tables):
     return checkout
 
 
+def test_find_checkouts(client, seeded_data):
+    # Given
+
+    # When
+    response = client.get("/admin/checkouts/")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["checkouts"]) == 1
+    assert data["total"] == 1
+
+
 def test_delete_checkout(client, seeded_data, db_session):
     # Given
     checkout_id = seeded_data.id

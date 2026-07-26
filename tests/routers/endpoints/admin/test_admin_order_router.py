@@ -105,6 +105,30 @@ def seeded_data(db_session, clean_tables):
     return order
 
 
+def test_find_orders(client, seeded_data):
+    # Given
+
+    # When
+    response = client.get("/admin/orders/")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["orders"]) == 1
+    assert data["orders"][0]["order_id"] == "ORD00000001"
+
+
+def test_find_orders_filtered_by_status(client, seeded_data):
+    # Given
+
+    # When
+    response = client.get("/admin/orders/", params={"status": "DELIVERY"})
+
+    # Then
+    assert response.status_code == 200
+    assert response.json()["total"] == 0
+
+
 def test_update_order_status(client, seeded_data, db_session):
     # Given
     order_id = seeded_data.id

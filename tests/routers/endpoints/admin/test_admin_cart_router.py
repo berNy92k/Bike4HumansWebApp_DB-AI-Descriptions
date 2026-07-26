@@ -94,6 +94,19 @@ def seeded_data(db_session, clean_tables):
     return cart
 
 
+def test_find_carts(client, seeded_data):
+    # Given
+
+    # When
+    response = client.get("/admin/carts/")
+
+    # Then
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["carts"]) == 1
+    assert data["total"] == 1
+
+
 def test_delete_cart(client, seeded_data, db_session):
     # Given
     cart_id = seeded_data.id

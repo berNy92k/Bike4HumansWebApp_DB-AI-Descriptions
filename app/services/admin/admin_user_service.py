@@ -168,6 +168,9 @@ class AdminUserService:
 
         return role
 
+    def get_role_details(self, role_id: int) -> RoleReadDto:
+        return self._to_role_read_dto(self.get_role_by_id(role_id))
+
     def create_role(self, role_dto: RoleCreateDto, current_user: dict) -> None:
         self._ensure_super_admin(current_user)
 
