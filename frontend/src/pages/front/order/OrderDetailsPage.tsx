@@ -45,37 +45,40 @@ export function OrderDetailsPage() {
         <div className="order-details-main">
           <div className="order-details-main-header">
             <h3>{failed ? 'Status zamówienia' : 'Podsumowanie zamówienia'}</h3>
-            <span className={`inline-badge ${failed ? 'inline-badge--error' : 'inline-badge--success'}`}>
-              {order.status}
-            </span>
+            <span className={`inline-badge ${failed ? 'inline-badge--error' : ''}`}>{order.status}</span>
           </div>
           {failed ? (
-            <p className="detail-text">Płatność została anulowana lub zakończona błędem.</p>
+            <div className="order-summary-list">
+              <div className="order-summary-item order-summary-item--total">
+                <span>Informacja</span>
+                <strong>Płatność została anulowana lub zakończona błędem.</strong>
+              </div>
+            </div>
           ) : (
-            <div className="checkout-summary">
-              <div>
+            <div className="order-summary-list">
+              <div className="order-summary-item">
                 <span>Order ID</span>
                 <strong>#{order.order_id}</strong>
               </div>
-              <div>
+              <div className="order-summary-item">
                 <span>Metoda płatności</span>
                 <strong>{method?.name}</strong>
               </div>
-              <div>
+              <div className="order-summary-item">
                 <span>Waluta</span>
                 <strong>{order.currency}</strong>
               </div>
-              <div>
+              <div className="order-summary-item">
                 <span>Tax</span>
                 <strong>{tax}%</strong>
               </div>
-              <div>
+              <div className="order-summary-item">
                 <span>Suma produktów</span>
                 <strong>
                   {order.total_price} {order.currency}
                 </strong>
               </div>
-              <div className="checkout-summary-total">
+              <div className="order-summary-item order-summary-item--total">
                 <span>Łącznie</span>
                 <strong>
                   {order.total_price} {order.currency}

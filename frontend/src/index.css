@@ -1010,28 +1010,43 @@ section > h2 {
   font-size: 1.1rem;
 }
 
-.checkout-summary-total {
+/* Order details page: two-column summary + side info card */
+
+.order-summary-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  background: var(--accent-soft);
+  gap: 12px;
+}
+
+.order-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
-  min-width: 140px;
+  background: var(--bg);
 }
 
-.checkout-summary-total span {
+.order-summary-item span {
   color: var(--text-muted);
-  font-size: 0.8rem;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.checkout-summary-total strong {
-  font-size: 1.1rem;
+.order-summary-item strong {
+  font-size: 1rem;
+}
+
+.order-summary-item--total {
+  background: var(--accent-soft);
+}
+
+.order-summary-item--total strong {
+  font-size: 1.12rem;
   color: var(--accent);
 }
-
-/* Order details page: two-column summary + side info card */
 
 .order-details-grid {
   display: grid;
@@ -1123,19 +1138,9 @@ section > h2 {
   white-space: nowrap;
 }
 
-.inline-badge--success {
-  background: #dcfce7;
-  color: #15803d;
-}
-
 .inline-badge--error {
   background: #fee2e2;
   color: #b91c1c;
-}
-
-:root[data-theme='dark'] .inline-badge--success {
-  background: #052e1a;
-  color: #4ade80;
 }
 
 :root[data-theme='dark'] .inline-badge--error {
