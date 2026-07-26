@@ -9,7 +9,7 @@ import { useAuth } from '../../../context/AuthContext'
 // this simulated payment provider only ever transitions out of "pending".
 const STATUS_OPTIONS = [
   { status: 'delivery', label: 'Zapłacone', className: 'btn-primary' },
-  { status: 'canceled', label: 'Anuluj', className: '' },
+  { status: 'canceled', label: 'Anuluj', className: 'btn-secondary' },
   { status: 'failed', label: 'Błąd płatności', className: 'btn-danger' },
 ]
 
@@ -47,48 +47,60 @@ export function PaymentProviderPage() {
 
   return (
     <main>
+      <span className="page-eyebrow">Payment provider</span>
       <h1>Fake provider płatności</h1>
-      <p>Wybierz, czy płatność została zakończona, anulowana albo zakończyła się błędem.</p>
+      <p className="section-subtitle">Wybierz, czy płatność została zakończona, anulowana albo zakończyła się błędem.</p>
 
-      <div className="checkout-summary">
-        <div>
-          <span>Checkout ID</span>
-          <strong>{checkout.id}</strong>
+      <div className="order-details-grid">
+        <div className="order-details-main">
+          <div className="order-details-main-header">
+            <h3>Informacje o płatności</h3>
+            <span className="inline-badge">Symulacja</span>
+          </div>
+          <div className="order-summary-list">
+            <div className="order-summary-item">
+              <span>Checkout ID</span>
+              <strong>{checkout.id}</strong>
+            </div>
+            <div className="order-summary-item">
+              <span>Użytkownik</span>
+              <strong>{user?.username}</strong>
+            </div>
+            <div className="order-summary-item">
+              <span>Metoda płatności</span>
+              <strong>{method.name}</strong>
+            </div>
+            <div className="order-summary-item">
+              <span>Opłata serwisowa</span>
+              <strong>
+                {method.price} {checkout.currency}
+              </strong>
+            </div>
+            <div className="order-summary-item order-summary-item--total">
+              <span>Razem</span>
+              <strong>
+                {checkout.total_price + method.price} {checkout.currency}
+              </strong>
+            </div>
+          </div>
         </div>
-        <div>
-          <span>Użytkownik</span>
-          <strong>{user?.username}</strong>
-        </div>
-        <div>
-          <span>Metoda płatności</span>
-          <strong>{method.name}</strong>
-        </div>
-        <div>
-          <span>Opłata serwisowa</span>
-          <strong>
-            {method.price} {checkout.currency}
-          </strong>
-        </div>
-        <div>
-          <span>Razem</span>
-          <strong>
-            {checkout.total_price + method.price} {checkout.currency}
-          </strong>
-        </div>
-      </div>
 
-      {error && <p role="alert">{error}</p>}
-      <div className="payment-provider-actions">
-        {STATUS_OPTIONS.map((option) => (
-          <button
-            key={option.status}
-            className={option.className}
-            onClick={() => void handleStatus(option.status)}
-            disabled={pendingStatus !== null}
-          >
-            {pendingStatus === option.status ? 'Przetwarzanie...' : option.label}
-          </button>
-        ))}
+        <aside className="order-details-side">
+          <h3>Fake provider</h3>
+          {error && <p role="alert">{error}</p>}
+          <div className="payment-provider-actions">
+            {STATUS_OPTIONS.map((option) => (
+              <button
+                key={option.status}
+                className={option.className}
+                onClick={() => void handleStatus(option.status)}
+                disabled={pendingStatus !== null}
+              >
+                {pendingStatus === option.status ? 'Przetwarzanie...' : option.label}
+              </button>
+            ))}
+          </div>
+        </aside>
       </div>
     </main>
   )

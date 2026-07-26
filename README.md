@@ -2,8 +2,8 @@
 
 Backend for an online bike store built with **Python** and **FastAPI**.
 
-This project started as a 1:1 copy of my previous repository -> https://github.com/berNy92k/Bike4HumansWebApp_DB, but it is now being developed further in a more focused direction:
-the next step is adding **AI-based content generation**, first for **bike descriptions**, and later potentially for other sections in the **admin panel**.
+This project started as a 1:1 copy of my previous repository -> https://github.com/berNy92k/Bike4HumansWebApp_DB, but it has since been developed further in a more focused direction:
+adding **AI-based content generation** across the admin panel and storefront, and migrating the frontend from server-rendered Jinja pages to a React (Vite + TypeScript) SPA.
 
 The application combines:
 - **REST API / backend**
@@ -49,23 +49,38 @@ This means the project is no longer just a standard shop backend — it has beco
 
 ---
 
-Admin panel:
-![admin_homepage.png](app/static/images/readme/admin_homepage.png)
+## 📸 Screenshots
 
-Admin panel -> Orders (filters/ sort by):
-![img.png](app/static/images/readme/admin_orders.png)
+### Storefront
 
 Homepage:
 ![homepage.png](app/static/images/readme/homepage.png)
 
-Bikes:
-![homepage_bikes.png](app/static/images/readme/homepage_bikes.png)
+Bikes catalog, with AI natural-language search and filters:
+![storefront_bikes.png](app/static/images/readme/storefront_bikes.png)
+
+Bike details, with an AI-generated description and AI "similar bikes" recommendations:
+![storefront_bike_details.png](app/static/images/readme/storefront_bike_details.png)
 
 Shopping cart:
-![homepage_shopping_cart.png](app/static/images/readme/homepage_shopping_cart.png)
+![storefront_cart.png](app/static/images/readme/storefront_cart.png)
 
-Order page:
-![homepage_orders.png](app/static/images/readme/homepage_orders.png)
+Order confirmation:
+![storefront_order_details.png](app/static/images/readme/storefront_order_details.png)
+
+### Admin panel
+
+Dashboard:
+![admin_dashboard.png](app/static/images/readme/admin_dashboard.png)
+
+Bikes list, showing AI-generated vs. manually written descriptions:
+![admin_bikes_list.png](app/static/images/readme/admin_bikes_list.png)
+
+Bike edit form, with AI description generation and auto-tagging:
+![admin_bike_edit.png](app/static/images/readme/admin_bike_edit.png)
+
+Orders, with filtering, sorting, and AI-generated order summaries:
+![admin_orders.png](app/static/images/readme/admin_orders.png)
 
 ---
 

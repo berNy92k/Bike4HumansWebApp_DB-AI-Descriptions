@@ -1110,6 +1110,26 @@ section > h2 {
   margin-top: auto;
 }
 
+.order-details-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.order-details-side label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.order-details-side button[type='submit'],
+.order-details-side > button {
+  margin-top: auto;
+}
+
 .order-items-list {
   display: flex;
   flex-direction: column;
@@ -1178,8 +1198,13 @@ section > h2 {
 
 .payment-provider-actions {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
+}
+
+.payment-provider-actions button {
+  justify-content: center;
+  width: 100%;
 }
 
 /* Auth pages */
