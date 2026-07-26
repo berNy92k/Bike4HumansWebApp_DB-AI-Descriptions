@@ -41,10 +41,13 @@ This means the project is no longer just a standard shop backend — it has beco
 - **ORM:** SQLAlchemy
 - **Migrations:** Alembic
 - **Validation / DTOs:** Pydantic
+- **Auth:** JWT (`python-jose`), password hashing with `passlib`/`bcrypt`
+- **AI:** OpenAI API (GPT models, structured outputs for constrained/typed responses)
 - **Testing:** pytest
 - **Server:** Uvicorn
-- **Frontend:** React + TypeScript (Vite), served as a static SPA build behind the FastAPI app
-- **Styling:** plain CSS
+- **Frontend:** React 19 + TypeScript (Vite), React Router
+- **Styling:** plain CSS (custom properties / design tokens, no UI framework)
+- **Containerization:** Docker + Docker Compose (multi-stage build: frontend build stage feeds the FastAPI image)
 - **Development environment:** local virtual environment
 
 ---
@@ -86,7 +89,8 @@ Orders, with filtering, sorting, and AI-generated order summaries:
 
 ## ✨ Highlights
 
-- **Dedicated admin panel** for managing bikes, manufacturers, users, carts, checkouts, and orders
+- **Dedicated admin panel** (its own React SPA area with dashboard, sidebar navigation, and list/details/create/edit pages) for managing bikes, manufacturers, users, roles, carts, checkouts, and orders
+- **Light/dark theme toggle**, persisted per-browser, independent of OS preference
 - **Authentication-based frontend flow** with login/logout state handling
 - **Shopping cart and checkout flow** for logged-in users
 - **Order creation with custom `order_id`**
@@ -140,7 +144,7 @@ The admin order list supports:
 ## 🔑 Features
 
 ### Admin area
-- Manage **bikes**, **manufacturers**, **users**, **orders**, **checkouts**, and **carts**
+- Manage **bikes**, **manufacturers**, **users**, **roles/permissions**, **orders**, **checkouts**, and **carts**
 - Full CRUD operations: **create / read / update / delete**
 - Separate views, forms, and DTOs for admin workflows
 - List, details, edit, and create pages for records
@@ -148,8 +152,10 @@ The admin order list supports:
 
 ### Frontend
 - React (Vite + TypeScript) SPA in `frontend/`, consuming the JSON API
-- Public homepage with product presentation
+- Separate `admin/` and storefront (`front/`) route trees, each with its own layout/navigation
+- Public homepage with product presentation, catalog with AI-powered filters/search
 - Authentication-aware header with login/logout state
+- Light/dark theme toggle
 - Shopping cart pages
 - Checkout pages
 - Payment provider page
