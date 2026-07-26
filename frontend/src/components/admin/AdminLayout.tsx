@@ -8,6 +8,8 @@ import {
   IconFactory,
   IconHome,
   IconPackage,
+  IconPlus,
+  IconSettings,
   IconShield,
   IconUser,
 } from '../icons/Icons'
@@ -21,6 +23,11 @@ const navItems = [
   { to: '/admin/orders/list', label: 'Zamówienia', Icon: IconPackage },
   { to: '/admin/checkouts/list', label: 'Checkouty', Icon: IconCreditCard },
   { to: '/admin/carts/list', label: 'Koszyki', Icon: IconCart },
+]
+
+const quickCreateItems = [
+  { to: '/admin/bikes/create', label: 'Dodaj rower' },
+  { to: '/admin/manufacturer/create', label: 'Dodaj producenta' },
 ]
 
 export function AdminLayout() {
@@ -49,11 +56,30 @@ export function AdminLayout() {
               {item.label}
             </NavLink>
           ))}
+          <a href="#">
+            <span className="admin-nav-icon">
+              <IconSettings />
+            </span>
+            Ustawienia
+          </a>
+        </nav>
+
+        <span className="admin-nav-label">Szybkie opcje</span>
+        <nav>
+          {quickCreateItems.map((item) => (
+            <Link key={item.to} to={item.to}>
+              <span className="admin-nav-icon">
+                <IconPlus />
+              </span>
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="admin-sidebar-footer">
           <span>Status: aktywny</span>
           <span>Zalogowano jako {user?.username}</span>
+          <span>Wersja panelu: 1.0</span>
         </div>
       </aside>
       <div className="admin-main">

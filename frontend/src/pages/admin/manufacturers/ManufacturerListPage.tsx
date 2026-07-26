@@ -5,6 +5,7 @@ import { usePaginatedList } from '../../../hooks/usePaginatedList'
 import { Pagination } from '../../../components/Pagination'
 import { AdminListSection } from '../../../components/admin/AdminListSection'
 import { StatusBadge } from '../../../components/admin/StatusBadge'
+import { IconFactory } from '../../../components/icons/Icons'
 
 export function ManufacturerListPage() {
   const [page, setPage] = useState(1)
@@ -35,8 +36,9 @@ export function ManufacturerListPage() {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Logo</th>
                 <th>Nazwa</th>
-                <th>Opis AI?</th>
+                <th>Opis</th>
                 <th>Akcje</th>
               </tr>
             </thead>
@@ -44,9 +46,18 @@ export function ManufacturerListPage() {
               {data.items.map((manufacturer) => (
                 <tr key={manufacturer.id}>
                   <td>{manufacturer.id}</td>
+                  <td>
+                    <span className="admin-table-thumb">
+                      {manufacturer.image_url ? (
+                        <img src={manufacturer.image_url} alt={manufacturer.name} />
+                      ) : (
+                        <IconFactory />
+                      )}
+                    </span>
+                  </td>
                   <td>{manufacturer.name}</td>
                   <td>
-                    <StatusBadge active={manufacturer.is_description_ai_generated} />
+                    <StatusBadge active={manufacturer.is_description_ai_generated} trueLabel="AI" falseLabel="Ręcznie" />
                   </td>
                   <td>
                     <div className="admin-table-actions">

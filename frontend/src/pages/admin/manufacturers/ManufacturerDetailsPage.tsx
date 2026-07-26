@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getManufacturer, type Manufacturer } from '../../../api/manufacturers'
+import { StatusBadge } from '../../../components/admin/StatusBadge'
 
 export function ManufacturerDetailsPage() {
   const { id } = useParams<{ id: string }>()
@@ -19,9 +20,22 @@ export function ManufacturerDetailsPage() {
   return (
     <section>
       <h1>{manufacturer.name}</h1>
+      {manufacturer.image_url && (
+        <div className="admin-detail-image">
+          <img src={manufacturer.image_url} alt={manufacturer.name} />
+        </div>
+      )}
       <p>{manufacturer.description ?? 'Brak opisu.'}</p>
-      {manufacturer.is_description_ai_generated && <span className="ai-badge">Opis wygenerowany przez AI</span>}
-      <p>Zdjęcie: {manufacturer.image_url ?? '—'}</p>
+      <dl className="admin-details-grid">
+        <dt>Źródło opisu</dt>
+        <dd>
+          <StatusBadge
+            active={manufacturer.is_description_ai_generated}
+            trueLabel="Wygenerowany przez AI"
+            falseLabel="Wpisany ręcznie"
+          />
+        </dd>
+      </dl>
       <Link to={`/admin/manufacturer/${manufacturer.id}/edit`}>Edytuj</Link>
       {' · '}
       <Link to="/admin/manufacturer/list">Wróć do listy</Link>

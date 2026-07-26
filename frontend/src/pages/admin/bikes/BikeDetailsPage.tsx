@@ -20,9 +20,17 @@ export function BikeDetailsPage() {
   return (
     <section>
       <h1>{bike.name}</h1>
+      {bike.image_url && (
+        <div className="admin-detail-image">
+          <img src={bike.image_url} alt={bike.name} />
+        </div>
+      )}
       <p>{bike.description ?? 'Brak opisu.'}</p>
-      {bike.is_description_ai_generated && <span className="ai-badge">Opis wygenerowany przez AI</span>}
       <dl className="admin-details-grid">
+        <dt>Źródło opisu</dt>
+        <dd>
+          <StatusBadge active={bike.is_description_ai_generated} trueLabel="Wygenerowany przez AI" falseLabel="Wpisany ręcznie" />
+        </dd>
         <dt>Cena</dt>
         <dd>{bike.price} PLN</dd>
         <dt>Stan magazynowy</dt>

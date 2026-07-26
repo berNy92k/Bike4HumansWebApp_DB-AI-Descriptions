@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { ManufacturerFormValues } from '../../../api/manufacturers'
 import { generateManufacturerDescription } from '../../../api/manufacturers'
+import { StatusBadge } from '../../../components/admin/StatusBadge'
 
 interface ManufacturerFormProps {
   initialValues: ManufacturerFormValues
@@ -62,10 +63,12 @@ export function ManufacturerForm({ initialValues, submitLabel, onSubmit }: Manuf
           rows={4}
         />
       </label>
-      <button type="button" onClick={() => void handleGenerateDescription()} disabled={isGeneratingDescription || !values.name}>
-        {isGeneratingDescription ? 'Generowanie...' : 'Wygeneruj opis AI'}
-      </button>
-      {values.is_description_ai_generated && <span className="ai-badge">Opis wygenerowany przez AI</span>}
+      <div className="admin-form-actions-inline">
+        <button type="button" onClick={() => void handleGenerateDescription()} disabled={isGeneratingDescription || !values.name}>
+          {isGeneratingDescription ? 'Generowanie...' : 'Wygeneruj opis AI'}
+        </button>
+        <StatusBadge active={values.is_description_ai_generated} trueLabel="Wygenerowany przez AI" falseLabel="Wpisany ręcznie" />
+      </div>
 
       <label>
         URL zdjęcia
@@ -75,6 +78,11 @@ export function ManufacturerForm({ initialValues, submitLabel, onSubmit }: Manuf
           maxLength={500}
         />
       </label>
+      {values.image_url && (
+        <div className="admin-form-image-preview">
+          <img src={values.image_url} alt="Podgląd logo producenta" />
+        </div>
+      )}
 
       {error && <p role="alert">{error}</p>}
       <button type="submit" disabled={isSubmitting}>

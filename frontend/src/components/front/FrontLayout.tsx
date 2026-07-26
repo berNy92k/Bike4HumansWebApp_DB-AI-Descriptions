@@ -17,6 +17,7 @@ export function FrontLayout() {
           <Link to="/">Home</Link>
           <Link to="/bikes">Rowery</Link>
           <Link to="/manufacturers">Producenci</Link>
+          <a href="/#about">Dlaczego my</a>
         </nav>
         <div className="site-header-actions">
           <ThemeToggle />
@@ -35,6 +36,31 @@ export function FrontLayout() {
         </div>
       </header>
       <Outlet />
+      <footer className="site-footer">
+        <div className="site-footer-inner">
+          <div className="site-footer-brand">
+            <h3>Bike4Humans</h3>
+            <p>Nowoczesny sklep rowerowy z wyselekcjonowaną ofertą rowerów, ram i akcesoriów.</p>
+          </div>
+          <div>
+            <h4>Szybkie linki</h4>
+            <Link to="/">Strona główna</Link>
+            <Link to="/bikes">Rowery</Link>
+            <Link to="/manufacturers">Producenci</Link>
+            <a href="/#about">O nas</a>
+          </div>
+          <div>
+            <h4>Kontakt</h4>
+            <p>Adres: Twoja lokalizacja</p>
+            <p>Email: kontakt@example.com</p>
+            <p>Telefon: +48 000 000 000</p>
+          </div>
+        </div>
+        <div className="site-footer-bottom">
+          <span>© 2026 Bike4Humans</span>
+          <span>Zrobione z pasją do rowerów</span>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -34,8 +34,26 @@ export interface OrderListResponse {
 // OrderStatus *enum value*, which is lowercase (see app/models/order.py:OrderStatus).
 export const ORDER_STATUSES = ['pending', 'delivery', 'canceled', 'failed', 'completed'] as const
 
-export function listOrders(page = 1, size = 10): Promise<OrderListResponse> {
-  return apiClient.get(`/admin/orders/?page=${page}&size=${size}`)
+export interface OrderFilters {
+  page?: number
+  size?: number
+  order_id?: string
+  user_id?: number
+  status?: string
+  total_price_min?: number
+  total_price_max?: number
+  created_at_min?: string
+  created_at_max?: string
+  sort_by?: 'created_at' | 'status'
+  sort_direction?: 'asc' | 'desc'
+}
+
+export function listOrders(filters: OrderFilters = {}): Promise<OrderListResponse> {
+  const query = new URLSearchParams()
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value) !== '') query.set(key, String(value))
+  })
+  return apiClient.get(`/admin/orders/?${query.toString()}`)
 }
 
 export function deleteOrder(id: number): Promise<void> {

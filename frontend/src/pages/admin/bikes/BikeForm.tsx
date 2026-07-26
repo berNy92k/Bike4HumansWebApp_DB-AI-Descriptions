@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import type { BikeFormValues } from '../../../api/bikes'
 import { autoTagBike, generateBikeDescription } from '../../../api/bikes'
 import { listManufacturers, type Manufacturer } from '../../../api/manufacturers'
+import { StatusBadge } from '../../../components/admin/StatusBadge'
 import {
   BIKE_COLORS,
   BIKE_TYPES,
@@ -158,8 +159,8 @@ export function BikeForm({ initialValues, submitLabel, onSubmit }: BikeFormProps
         <button type="button" onClick={() => void handleAutoTag()} disabled={isAutoTagging || !values.name || !values.description}>
           {isAutoTagging ? 'Tagowanie...' : 'Auto-tag AI'}
         </button>
+        <StatusBadge active={values.is_description_ai_generated} trueLabel="Wygenerowany przez AI" falseLabel="Wpisany ręcznie" />
       </div>
-      {values.is_description_ai_generated && <span className="ai-badge">Opis wygenerowany przez AI</span>}
 
       <OptionalSelect label="Typ roweru" value={values.bike_type} options={BIKE_TYPES} onChange={(v) => set('bike_type', v)} />
       <OptionalSelect
@@ -279,6 +280,11 @@ export function BikeForm({ initialValues, submitLabel, onSubmit }: BikeFormProps
         URL zdjęcia
         <input value={values.image_url ?? ''} onChange={(e) => set('image_url', e.target.value)} maxLength={500} />
       </label>
+      {values.image_url && (
+        <div className="admin-form-image-preview">
+          <img src={values.image_url} alt="Podgląd zdjęcia roweru" />
+        </div>
+      )}
       <label className="admin-form-checkbox">
         <input type="checkbox" checked={values.is_active} onChange={(e) => set('is_active', e.target.checked)} />
         Aktywny

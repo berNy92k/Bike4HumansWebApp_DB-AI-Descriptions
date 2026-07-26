@@ -5,6 +5,7 @@ import { usePaginatedList } from '../../../hooks/usePaginatedList'
 import { Pagination } from '../../../components/Pagination'
 import { AdminListSection } from '../../../components/admin/AdminListSection'
 import { StatusBadge } from '../../../components/admin/StatusBadge'
+import { IconBike } from '../../../components/icons/Icons'
 
 export function BikeListPage() {
   const [page, setPage] = useState(1)
@@ -35,10 +36,12 @@ export function BikeListPage() {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Zdjęcie</th>
                 <th>Nazwa</th>
                 <th>Cena</th>
                 <th>Stan</th>
                 <th>Aktywny</th>
+                <th>Opis</th>
                 <th>Akcje</th>
               </tr>
             </thead>
@@ -46,11 +49,19 @@ export function BikeListPage() {
               {data.items.map((bike) => (
                 <tr key={bike.id}>
                   <td>{bike.id}</td>
+                  <td>
+                    <span className="admin-table-thumb">
+                      {bike.image_url ? <img src={bike.image_url} alt={bike.name} /> : <IconBike />}
+                    </span>
+                  </td>
                   <td>{bike.name}</td>
                   <td>{bike.price} PLN</td>
                   <td>{bike.stock_quantity}</td>
                   <td>
                     <StatusBadge active={bike.is_active} />
+                  </td>
+                  <td>
+                    <StatusBadge active={bike.is_description_ai_generated} trueLabel="AI" falseLabel="Ręcznie" />
                   </td>
                   <td>
                     <div className="admin-table-actions">

@@ -43,30 +43,63 @@ export function CartStep1Page() {
 
   return (
     <main>
+      <span className="page-eyebrow">Koszyk</span>
       <h1>Krok 1: podsumowanie zamówienia</h1>
-      <p>Masz {cart.items.length} produkt(ów) w koszyku.</p>
+      <p className="section-subtitle">Sprawdź zawartość koszyka i przejdź do kolejnego etapu zakupu.</p>
 
-      <div className="cart-items">
-        {cart.items.map((item) => {
-          const bike = bikes[item.bike_id]
-          return (
-            <div key={item.id} className="cart-item">
-              {bike?.image_url && <img src={bike.image_url} alt={bike.name} />}
-              <div>
-                <h4>{bike?.name ?? `Rower #${item.bike_id}`}</h4>
-                <p>Ilość: {item.quantity}</p>
-                {bike?.color && <p>Kolor: {bike.color}</p>}
+      <div className="order-details-main">
+        <div className="order-details-main-header">
+          <div>
+            <h3>Twoje produkty</h3>
+            <p className="card-subtitle">Masz {cart.items.length} produkt(ów) w koszyku.</p>
+          </div>
+          <span className="inline-badge">Krok 1 z 3</span>
+        </div>
+
+        <div className="cart-items">
+          {cart.items.map((item) => {
+            const bike = bikes[item.bike_id]
+            return (
+              <div key={item.id} className="cart-item">
+                {bike?.image_url && <img src={bike.image_url} alt={bike.name} />}
+                <div>
+                  <h4>{bike?.name ?? `Rower #${item.bike_id}`}</h4>
+                  {bike && (
+                    <p>
+                      Cena: <strong>{bike.price} zł</strong>
+                    </p>
+                  )}
+                  <p>
+                    Ilość: <strong>{item.quantity}</strong>
+                  </p>
+                  {bike?.color && (
+                    <p>
+                      Kolor: <strong>{bike.color}</strong>
+                    </p>
+                  )}
+                  {bike?.frame_size && (
+                    <p>
+                      Rama: <strong>{bike.frame_size}</strong>
+                    </p>
+                  )}
+                </div>
+                <div className="cart-item-value">
+                  <span>Wartość</span>
+                  <strong>{bike ? (bike.price * item.quantity).toFixed(2) : '—'} zł</strong>
+                </div>
               </div>
-              <strong>{bike ? (bike.price * item.quantity).toFixed(2) : '—'} zł</strong>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
 
-      {error && <p role="alert">{error}</p>}
-      <button className="btn-primary" onClick={() => void handleNext()} disabled={isSubmitting}>
-        {isSubmitting ? 'Przetwarzanie...' : 'Dalej'}
-      </button>
+        <div className="cart-step1-footer">
+          <p>Po kliknięciu najpierw utworzymy checkout, a potem przejdziesz do kolejnego kroku.</p>
+          {error && <p role="alert">{error}</p>}
+          <button className="btn-primary" onClick={() => void handleNext()} disabled={isSubmitting}>
+            {isSubmitting ? 'Przetwarzanie...' : 'Dalej'}
+          </button>
+        </div>
+      </div>
     </main>
   )
 }
