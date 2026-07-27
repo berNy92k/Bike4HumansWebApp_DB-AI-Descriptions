@@ -73,6 +73,9 @@ function OrderRow({ order, onChanged }: { order: Order; onChanged: () => void })
       </td>
       <td>{order.created_at}</td>
       <td>{order.updated_at}</td>
+      <td title={order.address ? `${order.address.address_line_1}, ${order.address.postal_code} ${order.address.city}` : undefined}>
+        {order.address?.city ?? '—'}
+      </td>
       <td>
         {summary ?? <em>brak</em>}
         <div>
@@ -319,6 +322,7 @@ export function OrderListPage() {
                 <th>Status</th>
                 <th>Data stworzenia</th>
                 <th>Data zaktualizowania</th>
+                <th>Adres</th>
                 <th>Podsumowanie AI</th>
                 <th>Akcje</th>
               </tr>

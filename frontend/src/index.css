@@ -1116,6 +1116,28 @@ section > h2 {
   gap: 20px;
 }
 
+.address-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.address-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+@media (max-width: 700px) {
+  .address-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .order-details-side label {
   display: flex;
   flex-direction: column;

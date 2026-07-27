@@ -1,4 +1,5 @@
 import { apiClient } from './apiClient'
+import type { Address } from './address'
 
 export interface OrderItem {
   id: number
@@ -19,6 +20,7 @@ export interface Order {
   created_at: string
   updated_at: string
   ai_summary: string | null
+  address: Address | null
   items: OrderItem[]
 }
 

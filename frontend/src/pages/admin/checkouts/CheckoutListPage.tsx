@@ -37,6 +37,9 @@ function CheckoutRow({ checkout, onChanged }: { checkout: Checkout; onChanged: (
       <td>
         <TextStatusBadge status={checkout.status} />
       </td>
+      <td title={checkout.address ? `${checkout.address.address_line_1}, ${checkout.address.postal_code} ${checkout.address.city}` : undefined}>
+        {checkout.address?.city ?? '—'}
+      </td>
       <td>
         {summary ?? <em>brak</em>}
         <div>
@@ -78,6 +81,7 @@ export function CheckoutListPage() {
                 <th>Użytkownik</th>
                 <th>Wartość</th>
                 <th>Status</th>
+                <th>Adres</th>
                 <th>Podsumowanie AI</th>
                 <th>Akcje</th>
               </tr>

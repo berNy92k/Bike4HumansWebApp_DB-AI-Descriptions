@@ -108,6 +108,14 @@ export function OrderDetailsPage() {
                 <span>Payment</span>
                 <strong>{method?.name}</strong>
               </div>
+              {order.address && (
+                <div className="order-details-side-row">
+                  <span>Adres dostawy</span>
+                  <strong>
+                    {order.address.address_line_1}, {order.address.postal_code} {order.address.city}
+                  </strong>
+                </div>
+              )}
               <Link to="/" className="site-btn-primary">
                 Wróć na stronę główną
               </Link>

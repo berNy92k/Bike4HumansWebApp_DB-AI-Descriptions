@@ -47,6 +47,7 @@ export default defineConfig({
       '/api': alwaysProxy(),
       '/payment-methods': alwaysProxy(),
       '/static': alwaysProxy(),
+      '/address': alwaysProxy(),
     },
   },
 })

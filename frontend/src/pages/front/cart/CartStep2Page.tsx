@@ -1,8 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getMyAddress, saveMyAddress, type AddressPayload } from '../../../api/address'
 import { getMyPendingCheckout, type Checkout } from '../../../api/checkout'
 import { createOrder } from '../../../api/order'
 import { listPaymentMethods, type PaymentMethod } from '../../../api/paymentMethods'
+
+const EMPTY_ADDRESS: AddressPayload = {
+  company_name: null,
+  vat_number: null,
+  address_line_1: '',
+  address_line_2: null,
+  city: '',
+  postal_code: '',
+  country_code: '',
+  state_province: '',
+}
 
 export function CartStep2Page() {
   const navigate = useNavigate()
@@ -10,6 +22,7 @@ export function CartStep2Page() {
   const [methods, setMethods] = useState<PaymentMethod[]>([])
   const [selectedMethodId, setSelectedMethodId] = useState<number | null>(null)
   const [tax, setTax] = useState('0')
+  const [address, setAddress] = useState<AddressPayload>(EMPTY_ADDRESS)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -21,11 +34,39 @@ export function CartStep2Page() {
         setSelectedMethodId(c.payment_method_id || m[0]?.id || null)
       })
       .catch(() => setError('Nie znaleziono checkoutu.'))
+
+    getMyAddress()
+      .then((a) =>
+        setAddress({
+          company_name: a.company_name,
+          vat_number: a.vat_number,
+          address_line_1: a.address_line_1,
+          address_line_2: a.address_line_2,
+          city: a.city,
+          postal_code: a.postal_code,
+          country_code: a.country_code,
+          state_province: a.state_province,
+        }),
+      )
+      .catch(() => {
+        // no saved address yet - this is the normal first-checkout case, leave the form blank
+      })
   }, [])
+
+  function updateAddressField(field: keyof AddressPayload, value: string) {
+    setAddress((prev) => ({ ...prev, [field]: value }))
+  }
 
   async function handleSubmit() {
     setIsSubmitting(true)
     setError(null)
+    try {
+      await saveMyAddress(address)
+    } catch {
+      setError('Nie udało się zapisać adresu dostawy. Sprawdź wypełnione pola.')
+      setIsSubmitting(false)
+      return
+    }
     try {
       await createOrder()
       navigate('/cart/payment-provider')
@@ -102,6 +143,85 @@ export function CartStep2Page() {
                   <span>{method.price.toFixed(2)} zł</span>
                 </label>
               ))}
+            </div>
+          </div>
+
+          <div className="order-details-main">
+            <div className="order-details-main-header">
+              <h3>Adres dostawy</h3>
+              <span className="inline-badge">Wymagane</span>
+            </div>
+            <div className="address-form-grid">
+              <label>
+                Ulica i numer
+                <input
+                  type="text"
+                  required
+                  value={address.address_line_1}
+                  onChange={(e) => updateAddressField('address_line_1', e.target.value)}
+                />
+              </label>
+              <label>
+                Ulica i numer (c.d., opcjonalnie)
+                <input
+                  type="text"
+                  value={address.address_line_2 ?? ''}
+                  onChange={(e) => updateAddressField('address_line_2', e.target.value)}
+                />
+              </label>
+              <label>
+                Miasto
+                <input
+                  type="text"
+                  required
+                  value={address.city}
+                  onChange={(e) => updateAddressField('city', e.target.value)}
+                />
+              </label>
+              <label>
+                Kod pocztowy
+                <input
+                  type="text"
+                  required
+                  value={address.postal_code}
+                  onChange={(e) => updateAddressField('postal_code', e.target.value)}
+                />
+              </label>
+              <label>
+                Województwo / region
+                <input
+                  type="text"
+                  required
+                  value={address.state_province}
+                  onChange={(e) => updateAddressField('state_province', e.target.value)}
+                />
+              </label>
+              <label>
+                Kraj (kod)
+                <input
+                  type="text"
+                  required
+                  placeholder="np. PL"
+                  value={address.country_code}
+                  onChange={(e) => updateAddressField('country_code', e.target.value)}
+                />
+              </label>
+              <label>
+                Nazwa firmy (opcjonalnie)
+                <input
+                  type="text"
+                  value={address.company_name ?? ''}
+                  onChange={(e) => updateAddressField('company_name', e.target.value)}
+                />
+              </label>
+              <label>
+                NIP (opcjonalnie)
+                <input
+                  type="text"
+                  value={address.vat_number ?? ''}
+                  onChange={(e) => updateAddressField('vat_number', e.target.value)}
+                />
+              </label>
             </div>
           </div>
         </div>

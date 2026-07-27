@@ -6,9 +6,11 @@ from sqlalchemy.orm import Session
 
 from app.models.checkout import Checkout, CheckoutStatus
 from app.models.order import OrderItem, Order, OrderStatus
+from app.models.user import User
 from app.repositories.bike_repository import BikeRepository
 from app.repositories.checkout_repository import CheckoutRepository
 from app.repositories.order_repository import OrderRepository
+from app.repositories.user_repository import UserRepository
 
 
 class OrderService:
@@ -17,6 +19,7 @@ class OrderService:
         self.bike_repository = BikeRepository(db)
         self.order_repository = OrderRepository(db)
         self.checkout_repository = CheckoutRepository(db)
+        self.user_repository = UserRepository(db)
 
     def _generate_order_id(self, length: int = 11) -> str:
         alphabet = string.ascii_uppercase + string.digits
@@ -26,6 +29,10 @@ class OrderService:
         checkout: Checkout = self.checkout_repository.get_cart_by_user_id_and_status(user_id, CheckoutStatus.PENDING)
         if not checkout or not checkout.items or len(checkout.items) == 0:
             raise HTTPException(status_code=404, detail="Checkout not found or empty")
+
+        user: User = self.user_repository.get_user_by_id(user_id)
+        if not user or not user.address_id:
+            raise HTTPException(status_code=400, detail="Shipping address is required")
 
         order_items: list[OrderItem] = []
         for item in checkout.items:
@@ -40,12 +47,14 @@ class OrderService:
             currency=checkout.currency,
             payment_method_id=1,
             total_price=checkout.total_price,
+            address_id=user.address_id,
         )
         order.items = order_items
 
         self.order_repository.create_or_update(order)
 
         checkout.status = CheckoutStatus.COMPLETED.name
+        checkout.address_id = user.address_id
         self.checkout_repository.create_or_update(checkout)
 
     def update_status(self, user_id: int, status: OrderStatus, previous_status: OrderStatus) -> Order:

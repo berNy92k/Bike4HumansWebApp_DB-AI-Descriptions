@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from app.models.bike import Bike
 from app.models.checkout import Checkout, CheckoutItem, CheckoutStatus
 from app.models.order import Order, OrderItem, OrderStatus
+from app.models.user import Address, User
 from app.repositories.order_repository import OrderRepository
 from app.services.front.order_service import OrderService
 from tests.database.database import override_get_db
@@ -27,6 +28,8 @@ def clean_tables(db_session):
     db_session.query(CheckoutItem).delete()
     db_session.query(Checkout).delete()
     db_session.query(Bike).delete()
+    db_session.query(User).delete()
+    db_session.query(Address).delete()
     db_session.commit()
 
     yield
@@ -36,6 +39,8 @@ def clean_tables(db_session):
     db_session.query(CheckoutItem).delete()
     db_session.query(Checkout).delete()
     db_session.query(Bike).delete()
+    db_session.query(User).delete()
+    db_session.query(Address).delete()
     db_session.commit()
 
 
@@ -44,6 +49,16 @@ def seeded_pending_checkout(db_session, clean_tables):
     # Given
     bike = Bike(name="Trek Marlin 7", price=1000.0, stock_quantity=5, created_by=1, brand_id=1)
     db_session.add(bike)
+    db_session.commit()
+
+    address = Address(address_line_1="Street 1", city="Warszawa", postal_code="00-001",
+                       country_code="PL", state_province="Mazowieckie")
+    db_session.add(address)
+    db_session.commit()
+
+    user = User(id=1, username="john", email="john@example.com", name="John", surname="Doe",
+                hashed_password="hash", role_id=1, address_id=address.id)
+    db_session.add(user)
     db_session.commit()
 
     checkout = Checkout(user_id=1, currency="PLN", status=CheckoutStatus.PENDING.name, total_price=2000.0,
@@ -97,6 +112,49 @@ def test_create_order_without_checkout(db_session, clean_tables):
         service.create_order(user_id=99)
 
     assert exc.value.status_code == 404
+
+
+def test_create_order_without_address(db_session, clean_tables):
+    # Given
+    bike = Bike(name="Trek Marlin 7", price=1000.0, stock_quantity=5, created_by=1, brand_id=1)
+    db_session.add(bike)
+    db_session.commit()
+
+    user = User(id=2, username="jane", email="jane@example.com", name="Jane", surname="Doe",
+                hashed_password="hash", role_id=1, address_id=None)
+    db_session.add(user)
+    db_session.commit()
+
+    checkout = Checkout(user_id=2, currency="PLN", status=CheckoutStatus.PENDING.name, total_price=1000.0,
+                         payment_method_id=1)
+    checkout.items.append(CheckoutItem(bike_id=bike.id, quantity=1))
+    db_session.add(checkout)
+    db_session.commit()
+
+    service = OrderService(db_session)
+
+    # When / Then
+    with pytest.raises(HTTPException) as exc:
+        service.create_order(user_id=2)
+
+    assert exc.value.status_code == 400
+
+
+def test_create_order_copies_address_onto_order_and_checkout(db_session, seeded_pending_checkout):
+    # Given
+    service = OrderService(db_session)
+    user = db_session.query(User).filter(User.id == 1).first()
+
+    # When
+    service.create_order(user_id=1)
+
+    # Then
+    order = db_session.query(Order).filter(Order.user_id == 1).first()
+    assert order.address_id == user.address_id
+
+    db_session.expire_all()
+    checkout = db_session.get(Checkout, seeded_pending_checkout.id)
+    assert checkout.address_id == user.address_id
 
 
 def test_update_status(db_session, seeded_pending_order):

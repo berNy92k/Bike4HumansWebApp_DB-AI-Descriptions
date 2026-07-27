@@ -8,7 +8,7 @@ from app.routers.endpoints.admin import admin_bike_router, admin_cart_router, ad
 from app.routers.endpoints.admin import admin_user_router, admin_manufacturer_router, admin_dashboard_router
 from app.routers.endpoints.auth import auth_router
 from app.routers.endpoints.front import homepage_router, cart_router, checkout_router, order_router, bike_router, \
-    manufacturer_router, payment_method_router
+    manufacturer_router, payment_method_router, address_router
 
 
 def init_pre_requested_methods(app: FastAPI):
@@ -27,6 +27,7 @@ def init_routers(app: FastAPI):
     app.include_router(checkout_router.router)
     app.include_router(order_router.router)
     app.include_router(order_router.public_router)
+    app.include_router(address_router.router)
 
     # auth
     app.include_router(auth_router.router)
