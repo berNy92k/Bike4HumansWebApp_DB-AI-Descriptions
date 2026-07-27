@@ -222,6 +222,8 @@ The repository includes migrations for:
 - payment methods
 - checkout/order-related changes
 - custom `order_id` support for orders
+- an expanded catalog (38 manufacturers, 300+ bikes, real photos, mixed AI/manual descriptions)
+- realistic order/checkout/cart history across a larger set of customer accounts
 
 This makes it easier to run the project locally and keep the database structure consistent.
 
