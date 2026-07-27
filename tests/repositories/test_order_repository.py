@@ -80,6 +80,21 @@ def test_get_order_by_user_id_and_status(db_session, seeded_orders):
     assert result.order_id == "ORD00000001"
 
 
+def test_get_order_by_user_id_and_status_returns_most_recent_when_multiple_match(db_session, seeded_orders):
+    # Given - user 1 already has an older PENDING order from seeded_orders; add a newer one
+    repo = OrderRepository(db_session)
+    newer_order = Order(order_id="ORD00000004", user_id=1, currency="PLN", status=OrderStatus.PENDING.name,
+                        total_price=400.0, payment_method_id=1)
+    db_session.add(newer_order)
+    db_session.commit()
+
+    # When
+    result = repo.get_order_by_user_id_and_status(1, OrderStatus.PENDING.name)
+
+    # Then
+    assert result.id == newer_order.id
+
+
 def test_get_order_by_order_id_and_user_id(db_session, seeded_orders):
     # Given
     repo = OrderRepository(db_session)

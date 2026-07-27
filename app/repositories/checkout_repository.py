@@ -15,6 +15,7 @@ class CheckoutRepository:
         return (self.db.query(Checkout)
                 .where(Checkout.user_id == user_id)
                 .where(Checkout.status == status.name)
+                .order_by(Checkout.id.desc())
                 .first())
 
     def get_checkouts_paginated(self, page: int, size: int):

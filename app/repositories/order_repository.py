@@ -20,6 +20,7 @@ class OrderRepository:
         return (self.db.query(Order)
                 .where(Order.user_id == user_id)
                 .where(Order.status == status)
+                .order_by(Order.id.desc())
                 .first())
 
     def get_order_by_user_id_and_order_id(self, user_id: int, order_id: int):

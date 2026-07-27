@@ -81,6 +81,20 @@ def test_get_cart_by_user_id_and_status(db_session, seeded_carts):
     assert result.status == CartStatus.PENDING.name
 
 
+def test_get_cart_by_user_id_and_status_returns_most_recent_when_multiple_match(db_session, seeded_carts):
+    # Given - user 1 already has an older PENDING cart from seeded_carts; add a newer one
+    repo = CartRepository(db_session)
+    newer_cart = Cart(user_id=1, currency="PLN", status=CartStatus.PENDING.name)
+    db_session.add(newer_cart)
+    db_session.commit()
+
+    # When
+    result = repo.get_cart_by_user_id_and_status(1, CartStatus.PENDING)
+
+    # Then
+    assert result.id == newer_cart.id
+
+
 def test_get_carts_paginated(db_session, seeded_carts):
     # Given
     repo = CartRepository(db_session)

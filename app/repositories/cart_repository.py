@@ -18,6 +18,7 @@ class CartRepository:
         return (self.db.query(Cart)
                 .where(Cart.user_id == user_id)
                 .where(Cart.status == status.name)
+                .order_by(Cart.id.desc())
                 .first())
 
     def get_carts_paginated(self, page: int, size: int):
