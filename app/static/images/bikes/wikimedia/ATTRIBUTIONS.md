@@ -1,0 +1,153 @@
+# Wikimedia Commons image attributions
+
+Downloaded via the Commons API for local dev seed data. All images are CC0 / public domain / CC-BY / CC-BY-SA licensed.
+
+- `mountain_02.jpg` — File:2020 Kozinec plaque Kozel.jpg — by Qasinka — CC0 — https://commons.wikimedia.org/wiki/File:2020_Kozinec_plaque_Kozel.jpg
+- `mountain_03.jpg` — File:Author A-Gang 2008 2.jpg — by Midnight Runner — Public domain — https://commons.wikimedia.org/wiki/File:Author_A-Gang_2008_2.jpg
+- `mountain_04.jpg` — File:Bike 057.jpg — by DIZAS — Public domain — https://commons.wikimedia.org/wiki/File:Bike_057.jpg
+- `mountain_05.jpg` — File:Bike-Arkus.jpg — by Kasahacker — Public domain — https://commons.wikimedia.org/wiki/File:Bike-Arkus.jpg
+- `mountain_06.jpg` — File:Blue Trek parked.JPG — by SeppVei — Public domain — https://commons.wikimedia.org/wiki/File:Blue_Trek_parked.JPG
+- `mountain_07.jpg` — File:Brandl (35648863996).jpg — by Lexware Mountainbike Team — CC0 — https://commons.wikimedia.org/wiki/File:Brandl_(35648863996).jpg
+- `mountain_08.jpg` — File:Cube acid 2011.JPG — by JHenryW — Public domain — https://commons.wikimedia.org/wiki/File:Cube_acid_2011.JPG
+- `mountain_09.jpg` — File:Da Bomb Cherry 007.jpg — by Xskier at Italian Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Da_Bomb_Cherry_007.jpg
+- `mountain_10.jpg` — File:Devinci bike.JPG — by Porkercon (talk) — Public domain — https://commons.wikimedia.org/wiki/File:Devinci_bike.JPG
+- `mountain_11.jpg` — File:DL 110707 MDE 221.jpg — by Gganio — Public domain — https://commons.wikimedia.org/wiki/File:DL_110707_MDE_221.jpg
+- `mountain_12.jpg` — File:E-biking at Les Saisies.jpg — by N1k0mmons — CC0 — https://commons.wikimedia.org/wiki/File:E-biking_at_Les_Saisies.jpg
+- `mountain_13.jpg` — File:F1000.JPG — by Jakkel at Dutch Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:F1000.JPG
+- `mountain_14.jpg` — File:Fahrradabteil NRW-Express.jpg — by EveryPicture — Public domain — https://commons.wikimedia.org/wiki/File:Fahrradabteil_NRW-Express.jpg
+- `mountain_15.jpg` — File:Freeride bike.JPG — by PeteJMitchell at English Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Freeride_bike.JPG
+- `mountain_16.jpg` — File:GarelliFahrrad.jpg — by Huhu at German Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:GarelliFahrrad.jpg
+- `mountain_17.jpg` — File:GT XCR 1000.jpg — by Gt-man at de.wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:GT_XCR_1000.jpg
+- `mountain_18.jpg` — File:GT Zaskar 2012.JPG — by Rudolphs no uno — CC0 — https://commons.wikimedia.org/wiki/File:GT_Zaskar_2012.JPG
+- `mountain_19.jpg` — File:IF 29er Steel Mountainbike.jpg — by Kev0153 — Public domain — https://commons.wikimedia.org/wiki/File:IF_29er_Steel_Mountainbike.jpg
+- `mountain_20.jpg` — File:In peace with Nature (Unsplash).jpg — by Riccardo Chiarini riccardoch — CC0 — https://commons.wikimedia.org/wiki/File:In_peace_with_Nature_(Unsplash).jpg
+- `mountain_21.jpg` — File:KHS Alite100.JPG — by Fletcher at English Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:KHS_Alite100.JPG
+- `mountain_22.jpg` — File:LTS frame2.JPG — by GT-man — Public domain — https://commons.wikimedia.org/wiki/File:LTS_frame2.JPG
+- `mountain_23.jpg` — File:Mojomojo2.jpg — by Spicytuna — Public domain — https://commons.wikimedia.org/wiki/File:Mojomojo2.jpg
+- `road_01.jpg` — File:'Cyclists' enjoying 'Friday Night' in Soho of London..jpg — by Rudolph.A.furtado — Public domain — https://commons.wikimedia.org/wiki/File:%27Cyclists%27_enjoying_%27Friday_Night%27_in_Soho_of_London..jpg
+- `road_02.jpg` — File:Airbourne-rando-bike.jpg — by John Preston (Prestonjb at en.wikipedia0 — CC0 — https://commons.wikimedia.org/wiki/File:Airbourne-rando-bike.jpg
+- `road_03.jpg` — File:Bicicletta usata da Moser nel 1984.JPG — by Jaakko — Public domain — https://commons.wikimedia.org/wiki/File:Bicicletta_usata_da_Moser_nel_1984.JPG
+- `road_04.jpg` — File:Bicycle parking in one of the restaurant in Batu Arang.jpg — by WPSamson — CC0 — https://commons.wikimedia.org/wiki/File:Bicycle_parking_in_one_of_the_restaurant_in_Batu_Arang.jpg
+- `road_05.jpg` — File:Giant bike that Alexander Vinokourov used 20060203.jpg — by No machine-readable author provided. Mikelo assumed (based on copyright claims). — Public domain — https://commons.wikimedia.org/wiki/File:Giant_bike_that_Alexander_Vinokourov_used_20060203.jpg
+- `road_06.jpg` — File:Jersey Town Criterium 2010 45.jpg — by Man vyi — Public domain — https://commons.wikimedia.org/wiki/File:Jersey_Town_Criterium_2010_45.jpg
+- `road_07.jpg` — File:'Parked Racer' in Soho on 'Friday party night'..jpg — by Rudolph.A.furtado — Public domain — https://commons.wikimedia.org/wiki/File:%27Parked_Racer%27_in_Soho_on_%27Friday_party_night%27..jpg
+- `road_08.jpg` — File:Porsche R Bike model.jpg — by JaDAK — CC0 — https://commons.wikimedia.org/wiki/File:Porsche_R_Bike_model.jpg
+- `road_09.jpg` — File:R900.JPG — by Jakkel at Dutch Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:R900.JPG
+- `road_10.jpg` — File:Road bike parked at restaurant in Janda Baik.jpg — by WPSamson — CC0 — https://commons.wikimedia.org/wiki/File:Road_bike_parked_at_restaurant_in_Janda_Baik.jpg
+- `road_11.jpg` — File:Taupo Cycle Challenge 02.jpg — by Ingolfson — Public domain — https://commons.wikimedia.org/wiki/File:Taupo_Cycle_Challenge_02.jpg
+- `road_12.jpg` — File:Triban RC520 Decathlon road bike.jpg — by Moklys — CC0 — https://commons.wikimedia.org/wiki/File:Triban_RC520_Decathlon_road_bike.jpg
+- `road_13.jpg` — File:Flag off of the road racing bicycles.jpg — by Samson Ssemakadde — CC0 — https://commons.wikimedia.org/wiki/File:Flag_off_of_the_road_racing_bicycles.jpg
+- `road_14.jpg` — File:Flag off of the road racing bicycles in Kampala5.jpg — by Samson Ssemakadde — CC0 — https://commons.wikimedia.org/wiki/File:Flag_off_of_the_road_racing_bicycles_in_Kampala5.jpg
+- `road_15.jpg` — File:Flag off of the road racing bicycles in Kampala9.jpg — by Samson Ssemakadde — CC0 — https://commons.wikimedia.org/wiki/File:Flag_off_of_the_road_racing_bicycles_in_Kampala9.jpg
+- `road_16.jpg` — File:LomondRoadsTTTeam.jpg — by Jbyrne1701 — CC0 — https://commons.wikimedia.org/wiki/File:LomondRoadsTTTeam.jpg
+- `road_17.jpg` — File:Road racing with bicycles in Uganda.jpg — by Samson Ssemakadde — CC0 — https://commons.wikimedia.org/wiki/File:Road_racing_with_bicycles_in_Uganda.jpg
+- `road_18.jpg` — File:1886. Ivel Racing Safety Bicycle. From 'Bartleet's Bicycle Book' No. 33.jpg — by Unknown authorUnknown author — Public domain — https://commons.wikimedia.org/wiki/File:1886._Ivel_Racing_Safety_Bicycle._From_%27Bartleet%27s_Bicycle_Book%27_No._33.jpg
+- `road_19.jpg` — File:Moscow 2025-08-10 bicycle race, riders 116 Trek.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_116_Trek.jpg
+- `road_20.jpg` — File:Moscow 2025-08-10 bicycle race, riders 136 Argon18.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_136_Argon18.jpg
+- `road_21.jpg` — File:Moscow 2025-08-10 bicycle race, riders 148 Argon18,Merida.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_148_Argon18,Merida.jpg
+- `road_22.jpg` — File:Moscow 2025-08-10 bicycle race, riders 149 Argon18,Merida.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_149_Argon18,Merida.jpg
+- `road_23.jpg` — File:Moscow 2025-08-10 bicycle race, riders 151 Argon18.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_151_Argon18.jpg
+- `road_24.jpg` — File:Plani-Alti GdR '12.jpg — by sconosciuto — Public domain — https://commons.wikimedia.org/wiki/File:Plani-Alti_GdR_%2712.jpg
+- `road_25.jpg` — File:Road racing with bicycles flag off.jpg — by Samson Ssemakadde — CC0 — https://commons.wikimedia.org/wiki/File:Road_racing_with_bicycles_flag_off.jpg
+- `gravel_01.jpg` — File:At the top of Puech des Mourgues.jpg — by N1k0mmons — CC0 — https://commons.wikimedia.org/wiki/File:At_the_top_of_Puech_des_Mourgues.jpg
+- `gravel_02.jpg` — File:Bike and leaves colors.jpg — by N1k0mmons — CC0 — https://commons.wikimedia.org/wiki/File:Bike_and_leaves_colors.jpg
+- `gravel_03.jpg` — File:Sandy trail on a Gravel Bike.jpg — by Elliott R. Plack — CC0 — https://commons.wikimedia.org/wiki/File:Sandy_trail_on_a_Gravel_Bike.jpg
+- `gravel_04.jpg` — File:Man on a tall bicycle in rural New Zealand, 1949.jpg — by William Hall Raine — Public domain — https://commons.wikimedia.org/wiki/File:Man_on_a_tall_bicycle_in_rural_New_Zealand,_1949.jpg
+- `gravel_05.jpg` — File:Marin Nicasio 1 Gravelbike.jpg — by Ginstertal — CC0 — https://commons.wikimedia.org/wiki/File:Marin_Nicasio_1_Gravelbike.jpg
+- `gravel_06.jpg` — File:Bicycle handlebars (Unsplash).jpg — by Markus Spiske markusspiske — CC0 — https://commons.wikimedia.org/wiki/File:Bicycle_handlebars_(Unsplash).jpg
+- `gravel_07.jpg` — File:Gravel bike race in southeast Oregon (28438800417).jpg — by BLM Oregon &amp; Washington — Public domain — https://commons.wikimedia.org/wiki/File:Gravel_bike_race_in_southeast_Oregon_(28438800417).jpg
+- `gravel_08.jpg` — File:Gravel bike race in southeast Oregon (42340124455).jpg — by BLM Oregon &amp; Washington — Public domain — https://commons.wikimedia.org/wiki/File:Gravel_bike_race_in_southeast_Oregon_(42340124455).jpg
+- `gravel_09.jpg` — File:Gravel bike race in southeast Oregon (42340272145).jpg — by BLM Oregon &amp; Washington — Public domain — https://commons.wikimedia.org/wiki/File:Gravel_bike_race_in_southeast_Oregon_(42340272145).jpg
+- `gravel_10.jpg` — File:Valley of the Gods Eclipse Gravel Bike (53263540183).jpg — by BLMUtah — Public domain — https://commons.wikimedia.org/wiki/File:Valley_of_the_Gods_Eclipse_Gravel_Bike_(53263540183).jpg
+- `gravel_11.jpg` — File:A fire road near Montaud.jpg — by N1k0mmons — CC0 — https://commons.wikimedia.org/wiki/File:A_fire_road_near_Montaud.jpg
+- `gravel_12.jpg` — File:Cycle tourist, Island Saddle, New Zealand.JPG — by Alan Liefting — Public domain — https://commons.wikimedia.org/wiki/File:Cycle_tourist,_Island_Saddle,_New_Zealand.JPG
+- `gravel_13.jpg` — File:E-biking at Les Saisies.jpg — by N1k0mmons — CC0 — https://commons.wikimedia.org/wiki/File:E-biking_at_Les_Saisies.jpg
+- `gravel_14.jpg` — File:Amazor helmet after crash, closer view.jpg — by Otoomet — CC0 — https://commons.wikimedia.org/wiki/File:Amazor_helmet_after_crash,_closer_view.jpg
+- `gravel_15.jpg` — File:Amazor helmet after crash.jpg — by Otoomet — CC0 — https://commons.wikimedia.org/wiki/File:Amazor_helmet_after_crash.jpg
+- `gravel_16.jpg` — File:Riding Towards Ranfurly On Grey Day.jpg — by Ingolfson — CC0 — https://commons.wikimedia.org/wiki/File:Riding_Towards_Ranfurly_On_Grey_Day.jpg
+- `gravel_18.jpg` — File:A cheerful cyclist on the Denali Park Road (fa060444-d1d8-45ca-86b6-5cc36ec4225c).JPG — by NPS Photo / Emily Mesner — Public domain — https://commons.wikimedia.org/wiki/File:A_cheerful_cyclist_on_the_Denali_Park_Road_(fa060444-d1d8-45ca-86b6-5cc36ec4225c).JPG
+- `gravel_19.jpg` — File:A young biker pedals along the Rend Trail. (cbcf12eb-e9cd-4d33-aadc-fd273788136e).jpg — by NPS photo/Dave Bieri — Public domain — https://commons.wikimedia.org/wiki/File:A_young_biker_pedals_along_the_Rend_Trail._(cbcf12eb-e9cd-4d33-aadc-fd273788136e).jpg
+- `city_01.jpg` — File:Rowery miejskie Ostrołęka.jpg — by Blamster19 — CC0 — https://commons.wikimedia.org/wiki/File:Rowery_miejskie_Ostro%C5%82%C4%99ka.jpg
+- `city_02.jpg` — File:Anchor-style bicycle parking in Salt Lake City Utah.jpg — by Will Patrol Tonight — CC0 — https://commons.wikimedia.org/wiki/File:Anchor-style_bicycle_parking_in_Salt_Lake_City_Utah.jpg
+- `city_03.jpg` — File:Delivery of Yakult drinks by bicycle, Fukushima City.jpg — by Mikael Colville-Andersen — CC0 — https://commons.wikimedia.org/wiki/File:Delivery_of_Yakult_drinks_by_bicycle,_Fukushima_City.jpg
+- `city_04.jpg` — File:Man riding a bicycle in a snowstorm in Quebec city, Quebec, Canada.jpg — by Wilfredor — CC0 — https://commons.wikimedia.org/wiki/File:Man_riding_a_bicycle_in_a_snowstorm_in_Quebec_city,_Quebec,_Canada.jpg
+- `city_06.jpg` — File:Bicycle lane in Hyderabad Hitec City, autorickshaw parked on it.jpg — by Syced — CC0 — https://commons.wikimedia.org/wiki/File:Bicycle_lane_in_Hyderabad_Hitec_City,_autorickshaw_parked_on_it.jpg
+- `city_07.jpg` — File:Bicycle saddle Terry Anatomica Men (CityComfort Men).jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Bicycle_saddle_Terry_Anatomica_Men_(CityComfort_Men).jpg
+- `city_08.jpg` — File:Man biking on Recife city.jpg — by Wilfredor — CC0 — https://commons.wikimedia.org/wiki/File:Man_biking_on_Recife_city.jpg
+- `city_09.jpg` — File:Bicycle lane in Hyderabad Hitec City.jpg — by Syced — CC0 — https://commons.wikimedia.org/wiki/File:Bicycle_lane_in_Hyderabad_Hitec_City.jpg
+- `city_10.jpg` — File:Cyclist-with-bicycle-in-russian-empire.jpg — by Unknown authorUnknown author — Public domain — https://commons.wikimedia.org/wiki/File:Cyclist-with-bicycle-in-russian-empire.jpg
+- `city_11.jpg` — File:Practice Bus Bicycle Carrier.jpg — by Tjhorner — CC0 — https://commons.wikimedia.org/wiki/File:Practice_Bus_Bicycle_Carrier.jpg
+- `city_12.jpg` — File:SM City Butuan Bicycle Lane.jpg — by Butuan City PIO (Public Information Office of the Butuan City Government) — Public domain — https://commons.wikimedia.org/wiki/File:SM_City_Butuan_Bicycle_Lane.jpg
+- `city_13.jpg` — File:Bicycle parking at the City Harbor in Tomaszów Mazowiecki, Poland.jpg — by WrS.tm.pl — Public domain — https://commons.wikimedia.org/wiki/File:Bicycle_parking_at_the_City_Harbor_in_Tomasz%C3%B3w_Mazowiecki,_Poland.jpg
+- `city_14.jpg` — File:Calm (person with children on bicycle).jpg — by Mikael Colville-Andersen — CC0 — https://commons.wikimedia.org/wiki/File:Calm_(person_with_children_on_bicycle).jpg
+- `city_15.jpg` — File:Postal Bicycle 1940s jeh.jpg — by Jim.henderson — CC0 — https://commons.wikimedia.org/wiki/File:Postal_Bicycle_1940s_jeh.jpg
+- `city_16.jpg` — File:'32 Ford Model B (Bike & Tattoo Show '13).jpg — by Bull-Doser — Public domain — https://commons.wikimedia.org/wiki/File:%2732_Ford_Model_B_(Bike_%26_Tattoo_Show_%2713).jpg
+- `city_17.jpg` — File:Estancia Mall Bicycle Parking.jpg — by Ganmatthew — CC0 — https://commons.wikimedia.org/wiki/File:Estancia_Mall_Bicycle_Parking.jpg
+- `city_25.jpg` — File:Double Wagner tuba by Alexander.jpg — by Zanetta — Public domain — https://commons.wikimedia.org/wiki/File:Double_Wagner_tuba_by_Alexander.jpg
+- `trekking_01.jpg` — File:CSR JakubPostrzygacz.JPG — by Kellony — Public domain — https://commons.wikimedia.org/wiki/File:CSR_JakubPostrzygacz.JPG
+- `trekking_02.jpg` — File:Fahrradtour 18. September 013.jpg — by ich — Public domain — https://commons.wikimedia.org/wiki/File:Fahrradtour_18._September_013.jpg
+- `trekking_03.jpg` — File:Saint-Loup-Terrier (Ardennes) old bicyclerack still in use....JPG — by Havang(nl) — CC0 — https://commons.wikimedia.org/wiki/File:Saint-Loup-Terrier_(Ardennes)_old_bicyclerack_still_in_use....JPG
+- `trekking_04.jpg` — File:Vtt raid edhec.JPG — by Loutreraideuse — CC0 — https://commons.wikimedia.org/wiki/File:Vtt_raid_edhec.JPG
+- `trekking_05.jpg` — File:Moscow 2025-08-10 bicycle race, riders 116 Trek.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_116_Trek.jpg
+- `trekking_06.jpg` — File:TREK 1200.JPG — by Tx-re — Public domain — https://commons.wikimedia.org/wiki/File:TREK_1200.JPG
+- `trekking_07.jpg` — File:Moscow 2025-08-10 bicycle race, riders 185 Trek.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders_185_Trek.jpg
+- `trekking_08.jpg` — File:Trek Heavyweight Winterhandschuh.jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Trek_Heavyweight_Winterhandschuh.jpg
+- `trekking_09.jpg` — File:B'Twin Original hybrid bicycle.jpg — by This photo was taken by Przemysław JahrAutorem zdjęcia jest Przemysław JahrWykorzystując zdjęcie proszę podać jako autora:Przemysław Jahr / Wikimedia Commons — Public domain — https://commons.wikimedia.org/wiki/File:B%27Twin_Original_hybrid_bicycle.jpg
+- `trekking_10.jpg` — File:Commuting Icebike.jpg — by Elipongo at en.Wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Commuting_Icebike.jpg
+- `trekking_12.jpg` — File:The Shuttle Enterprise - GPN-2000-001363.jpg — by NASA — Public domain — https://commons.wikimedia.org/wiki/File:The_Shuttle_Enterprise_-_GPN-2000-001363.jpg
+- `trekking_13.jpg` — File:Creepertrail1.jpg — by Metayel — Public domain — https://commons.wikimedia.org/wiki/File:Creepertrail1.jpg
+- `trekking_14.jpg` — File:Blue Trek parked.JPG — by SeppVei — Public domain — https://commons.wikimedia.org/wiki/File:Blue_Trek_parked.JPG
+- `trekking_15.jpg` — File:A couple on a cycling trek on banks of Rhine River(Germany).jpg — by Rudolph.A.furtado — Public domain — https://commons.wikimedia.org/wiki/File:A_couple_on_a_cycling_trek_on_banks_of_Rhine_River(Germany).jpg
+- `trekking_18.jpg` — File:UAR 7825 (53912274421).jpg — by Koldo Zuazaga — CC0 — https://commons.wikimedia.org/wiki/File:UAR_7825_(53912274421).jpg
+- `electric_01.jpg` — File:BionX-D-stator.jpg — by Theosch — CC0 — https://commons.wikimedia.org/wiki/File:BionX-D-stator.jpg
+
+Juliatim at de.wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Vivax_Assist_Elektronik.jpg
+- `electric_03.jpg` — File:Vivax Assist Kurbel&motor.jpg — by Gruber Antrieb GmbH &amp; Co KG.
+
+Juliatim at de.wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Vivax_Assist_Kurbel%26motor.jpg
+- `electric_04.jpg` — File:Vivax Assist Sattelrohrmotor.jpg — by Gruber Antrieb GmbH &amp; Co KG — Public domain — https://commons.wikimedia.org/wiki/File:Vivax_Assist_Sattelrohrmotor.jpg
+- `electric_05.jpg` — File:Vivax Assist Taster.jpg — by Gruber Antrieb GmbH &amp; Co KG.
+
+Juliatim at de.wikipedia — Public domain — https://commons.wikimedia.org/wiki/File:Vivax_Assist_Taster.jpg
+- `electric_06.jpg` — File:37 W54 Green Power SUV electric bike jeh.jpg — by Jim.henderson — Public domain — https://commons.wikimedia.org/wiki/File:37_W54_Green_Power_SUV_electric_bike_jeh.jpg
+- `electric_07.jpg` — File:BESV PSA1 electric bicycle.jpg — by Syced — CC0 — https://commons.wikimedia.org/wiki/File:BESV_PSA1_electric_bicycle.jpg
+- `electric_09.jpg` — File:MOD BIKES Easy Sahara SideCar Electric Bicycle.jpg — by Kanaka-editor — CC0 — https://commons.wikimedia.org/wiki/File:MOD_BIKES_Easy_Sahara_SideCar_Electric_Bicycle.jpg
+- `electric_10.jpg` — File:Sigo E-bike sharing station Berlin 3v9.jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Sigo_E-bike_sharing_station_Berlin_3v9.jpg
+- `electric_11.jpg` — File:Sigo E-bike sharing station Berlin 5v9.jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Sigo_E-bike_sharing_station_Berlin_5v9.jpg
+- `electric_12.jpg` — File:Sigo E-bike sharing station Berlin 6v9.jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Sigo_E-bike_sharing_station_Berlin_6v9.jpg
+- `electric_13.jpg` — File:Sigo E-bike sharing station Berlin 7v9.jpg — by Singlespeedfahrer — CC0 — https://commons.wikimedia.org/wiki/File:Sigo_E-bike_sharing_station_Berlin_7v9.jpg
+- `bmx_01.jpg` — File:Bicicleta BMX.jpg — by Unknown — Public domain — https://commons.wikimedia.org/wiki/File:Bicicleta_BMX.jpg
+- `bmx_02.jpg` — File:Bicicleta consertada.JPG — by Brasileiro — CC0 — https://commons.wikimedia.org/wiki/File:Bicicleta_consertada.JPG
+- `bmx_03.jpg` — File:Biker an der Landskrone, Düsseldorf, September 2024.jpg — by Kürschner (talk) 17:42, 17 September 2024 (UTC) — CC0 — https://commons.wikimedia.org/wiki/File:Biker_an_der_Landskrone,_D%C3%BCsseldorf,_September_2024.jpg
+- `bmx_04.jpg` — File:BMX Cruiser.JPG — by Kiezpro (talk) — Public domain — https://commons.wikimedia.org/wiki/File:BMX_Cruiser.JPG
+- `bmx_05.jpg` — File:BMX.JPG — by Black Wulfric — Public domain — https://commons.wikimedia.org/wiki/File:BMX.JPG
+- `bmx_06.jpg` — File:Cool bikes.jpg — by TheDudeFromTheUpperEchelon — CC0 — https://commons.wikimedia.org/wiki/File:Cool_bikes.jpg
+- `bmx_07.jpg` — File:Equipe de ciclismo de Votuporanga conquista boas colocações nas provas do fim de semana (3).jpg — by ASCOM - Prefeitura de Votuporanga — Public domain — https://commons.wikimedia.org/wiki/File:Equipe_de_ciclismo_de_Votuporanga_conquista_boas_coloca%C3%A7%C3%B5es_nas_provas_do_fim_de_semana_(3).jpg
+- `bmx_08.jpg` — File:Freestyle BMX bike 2019-04-05 (1).jpg — by Schweiz41 — Public domain — https://commons.wikimedia.org/wiki/File:Freestyle_BMX_bike_2019-04-05_(1).jpg
+- `bmx_09.jpg` — File:Freestyle BMX bike 2019-04-05 (2).jpg — by Schweiz41 — Public domain — https://commons.wikimedia.org/wiki/File:Freestyle_BMX_bike_2019-04-05_(2).jpg
+- `bmx_10.jpg` — File:GT PERFORMER 26 2012.JPG — by Tx-re — Public domain — https://commons.wikimedia.org/wiki/File:GT_PERFORMER_26_2012.JPG
+- `bmx_11.jpg` — File:Homestead Bicycles Colors.jpg — by Nedla detsmlo — Public domain — https://commons.wikimedia.org/wiki/File:Homestead_Bicycles_Colors.jpg
+- `bmx_12.jpg` — File:Homestead Bicycles Rear Tri.jpg — by Nedla detsmlo — Public domain — https://commons.wikimedia.org/wiki/File:Homestead_Bicycles_Rear_Tri.jpg
+- `bmx_14.jpg` — File:'BMX Biker' in London..JPG — by Rudolph.A.furtado — Public domain — https://commons.wikimedia.org/wiki/File:%27BMX_Biker%27_in_London..JPG
+- `bmx_15.jpg` — File:ActionShot Bike01.jpg — by Okseduard — Public domain — https://commons.wikimedia.org/wiki/File:ActionShot_Bike01.jpg
+- `children_02.jpg` — File:Kinderfahrzeug bild1.JPG — by Alf van Beem — CC0 — https://commons.wikimedia.org/wiki/File:Kinderfahrzeug_bild1.JPG
+- `children_04.jpg` — File:President George W. Bush Helps Guide a Donated Bicycle to a Toy Distribution Vehicle at The "Toys for Tots" Collection Center at the Naval District Washington Anacostia Annex in Was - DPLA - e5040e581ec8d90aa47ca095f5b447dc.JPG — by President (2001-2009 : Bush). Office of Management and Administration. Office of White House Management. Photography Office. 1/20/2001-1/20/2009 — Public domain — https://commons.wikimedia.org/wiki/File:President_George_W._Bush_Helps_Guide_a_Donated_Bicycle_to_a_Toy_Distribution_Vehicle_at_The_%22Toys_for_Tots%22_Collection_Center_at_the_Naval_District_Washington_Anacostia_Annex_in_Was_-_DPLA_-_e5040e581ec8d90aa47ca095f5b447dc.JPG
+
+- `children_01.jpg` — File:A Photo of Toys Donated by State Department Employees (46212820822).jpg — by U.S. Department of State from United States — Public domain — https://commons.wikimedia.org/wiki/File:A_Photo_of_Toys_Donated_by_State_Department_Employees_(46212820822).jpg
+- `children_03.jpg` — File:Kinderfahrzeug bild1.JPG — by Alf van Beem — CC0 — https://commons.wikimedia.org/wiki/File:Kinderfahrzeug_bild1.JPG
+- `children_05.jpg` — File:Meussia (Jura, France) en juillet 2018 - 20.JPG — by Benoît Prieur — CC0 — https://commons.wikimedia.org/wiki/File:Meussia_(Jura,_France)_en_juillet_2018_-_20.JPG
+- `children_06.jpg` — File:President George W. Bush Helps Guide a Donated Bicycle to a Toy Distribution Vehicle at The "Toys for Tots" Collection Center at the Naval District Washington Anacostia Annex in Was - DPLA - e5040e581ec8d90aa47ca095f5b447dc.JPG — by President (2001-2009 : Bush). Office of Management and Administration. Office of White House Management. Photography Office. 1/20/2001-1/20/2009 — Public domain — https://commons.wikimedia.org/wiki/File:President_George_W._Bush_Helps_Guide_a_Donated_Bicycle_to_a_Toy_Distribution_Vehicle_at_The_%22Toys_for_Tots%22_Collection_Center_at_the_Naval_District_Washington_Anacostia_Annex_in_Was_-_DPLA_-_e5040e581ec8d90aa47ca095f5b447dc.JPG
+- `children_07.jpg` — File:Balance bicycle with skies.jpg — by Ohel003 (talk · contribs) (Outi Leinonen) — Public domain — https://commons.wikimedia.org/wiki/File:Balance_bicycle_with_skies.jpg
+- `children_08.jpg` — File:Calm (person with children on bicycle).jpg — by Mikael Colville-Andersen — CC0 — https://commons.wikimedia.org/wiki/File:Calm_(person_with_children_on_bicycle).jpg
+- `children_09.jpg` — File:Father Taken Children Riding Bicycle in Chengkungling 20150606a.jpg — by 玄史生 — CC0 — https://commons.wikimedia.org/wiki/File:Father_Taken_Children_Riding_Bicycle_in_Chengkungling_20150606a.jpg
+- `children_10.jpg` — File:Father Taken Children Riding Bicycle in Chengkungling 20150606b.jpg — by 玄史生 — CC0 — https://commons.wikimedia.org/wiki/File:Father_Taken_Children_Riding_Bicycle_in_Chengkungling_20150606b.jpg
+- `children_11.jpg` — File:Moscow 2025-08-10 bicycle race, riders-children 02 Specialized.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders-children_02_Specialized.jpg
+- `children_12.jpg` — File:Moscow 2025-08-10 bicycle race, riders-children 03.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders-children_03.jpg
+- `children_13.jpg` — File:Moscow bicycle parade 2026-05-24 children 06.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_bicycle_parade_2026-05-24_children_06.jpg
+- `children_14.jpg` — File:Moscow bicycle parade 2026-05-24 children 30.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_bicycle_parade_2026-05-24_children_30.jpg
+- `children_15.jpg` — File:Moscow bicycle parade 2026-05-24 children 51.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_bicycle_parade_2026-05-24_children_51.jpg
+- `children_16.jpg` — File:Women and children with a Falkirk and District Co-operative Society bicycle in 1936.jpg — by Unknown authorUnknown author — Public domain — https://commons.wikimedia.org/wiki/File:Women_and_children_with_a_Falkirk_and_District_Co-operative_Society_bicycle_in_1936.jpg
+- `children_17.jpg` — File:Moscow 2025-08-10 bicycle race, riders-children 09.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders-children_09.jpg
+- `children_18.jpg` — File:Moscow 2025-08-10 bicycle race, riders-children 10.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_2025-08-10_bicycle_race,_riders-children_10.jpg
+- `children_19.jpg` — File:Moscow bicycle parade 2026-05-24 children 01.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_bicycle_parade_2026-05-24_children_01.jpg
+- `children_20.jpg` — File:Moscow bicycle parade 2026-05-24 children 05.jpg — by Retired electrician — CC0 — https://commons.wikimedia.org/wiki/File:Moscow_bicycle_parade_2026-05-24_children_05.jpg
