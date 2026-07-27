@@ -2062,6 +2062,75 @@ section > h2 {
   background: linear-gradient(90deg, var(--accent), var(--success));
 }
 
+.admin-revenue-panel {
+  margin-bottom: 20px;
+}
+
+.admin-revenue-summary {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-revenue-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-revenue-summary strong {
+  font-size: 1.5rem;
+}
+
+.admin-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 170px;
+  padding-top: 8px;
+}
+
+.admin-bar-chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  min-width: 0;
+}
+
+.admin-bar-chart-value {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.admin-bar-chart-track {
+  flex: 1;
+  width: 100%;
+  max-width: 40px;
+  display: flex;
+  align-items: flex-end;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.admin-bar-chart-track > span {
+  display: block;
+  width: 100%;
+  min-height: 2px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: linear-gradient(180deg, var(--accent), var(--success));
+}
+
+.admin-bar-chart-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 .admin-hint-list {
   display: flex;
   flex-direction: column;

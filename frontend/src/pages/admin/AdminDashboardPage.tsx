@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listBikes, type Bike } from '../../api/bikes'
-import { listManufacturers } from '../../api/manufacturers'
-import { listUsers } from '../../api/users'
-import { listRoles } from '../../api/roles'
+import { getDashboardStats, type DashboardStats } from '../../api/dashboard'
 import { useAuth } from '../../context/AuthContext'
 import { IconBike, IconFactory, IconSearch, IconShield, IconUser } from '../../components/icons/Icons'
 
@@ -35,12 +33,34 @@ const STAT_NOTES: Record<keyof Counts, string> = {
   roles: 'Ilość roli w systemie',
 }
 
-const CATALOG_HEALTH = [
-  { label: 'Produkty kompletne', percent: 84 },
-  { label: 'Zdjęcia dodane', percent: 71 },
-  { label: 'Opisy uzupełnione', percent: 92 },
-  { label: 'Producenci aktywni', percent: 95 },
+const CATALOG_HEALTH_LABELS: { key: keyof DashboardStats['catalog_health']; label: string }[] = [
+  { key: 'bikes_complete_pct', label: 'Produkty kompletne' },
+  { key: 'bikes_with_image_pct', label: 'Zdjęcia dodane' },
+  { key: 'bikes_with_description_pct', label: 'Opisy uzupełnione' },
+  { key: 'manufacturers_with_bikes_pct', label: 'Producenci z ofertą' },
 ]
+
+const STATUS_LABELS_PL: Record<string, string> = {
+  PENDING: 'Oczekujące',
+  DELIVERY: 'W dostawie',
+  COMPLETED: 'Zrealizowane',
+  CANCELED: 'Anulowane',
+  FAILED: 'Nieudane',
+}
+
+const MONTH_LABELS_PL = [
+  'sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru',
+]
+
+function formatMonth(month: string): string {
+  const [, monthNum] = month.split('-')
+  const index = Number(monthNum) - 1
+  return MONTH_LABELS_PL[index] ?? month
+}
+
+function formatPln(value: number): string {
+  return `${value.toLocaleString('pl-PL', { maximumFractionDigits: 0 })} zł`
+}
 
 const TIPS = [
   {
@@ -51,30 +71,32 @@ const TIPS = [
     title: 'Dbaj o zdjęcia i opisy',
     body: 'Produkty bez zdjęć albo z bardzo krótkim opisem warto uzupełniać w pierwszej kolejności. To właśnie one najbardziej wpływają na odbiór oferty.',
   },
-  {
-    title: 'Uważaj na poprawność przypisań',
-    body: 'Sprawdź, czy rower jest przypisany do właściwego producenta i czy dane nie dublują się pod podobnymi nazwami. To później oszczędza dużo ręcznej poprawy.',
-  },
-  {
-    title: 'Porządkuj katalog regularnie',
-    body: 'Jeśli widzisz nieaktualne, niepełne albo przypadkowe rekordy, poprawiaj je na bieżąco. Panel najlepiej działa wtedy, gdy dane są czyste i spójne.',
-  },
 ]
 
 export function AdminDashboardPage() {
   const { user } = useAuth()
-  const [counts, setCounts] = useState<Counts | null>(null)
+  const [stats, setStats] = useState<DashboardStats | null>(null)
   const [recentBikes, setRecentBikes] = useState<Bike[]>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    Promise.all([listBikes(1, 10), listManufacturers(1, 1), listUsers(1, 1), listRoles(1, 1)])
-      .then(([bikes, manufacturers, users, roles]) => {
+    Promise.all([getDashboardStats(), listBikes(1, 10)])
+      .then(([dashboardStats, bikes]) => {
+        setStats(dashboardStats)
         setRecentBikes(bikes.items)
-        setCounts({ bikes: bikes.total, manufacturers: manufacturers.total, users: users.total, roles: roles.total })
       })
       .catch(() => setError('Nie udało się pobrać danych panelu.'))
   }, [])
+
+  const counts: Counts | null = stats && {
+    bikes: stats.bikes_count,
+    manufacturers: stats.manufacturers_count,
+    users: stats.users_count,
+    roles: stats.roles_count,
+  }
+
+  const maxMonthlyRevenue = stats ? Math.max(1, ...stats.revenue_by_month.map((row) => row.revenue)) : 1
+  const maxStatusCount = stats ? Math.max(1, ...stats.orders_by_status.map((row) => row.count)) : 1
 
   return (
     <section className="admin-dashboard">
@@ -113,6 +135,41 @@ export function AdminDashboardPage() {
         </div>
       )}
 
+      {stats && (
+        <div className="admin-panel admin-revenue-panel">
+          <div className="admin-panel-header">
+            <div>
+              <h2>Przychód</h2>
+              <p className="admin-panel-subtitle">Na podstawie zrealizowanych zamówień (dostarczone i zakończone).</p>
+            </div>
+            <span className="admin-badge admin-badge--blue">{stats.orders_count} zamówień łącznie</span>
+          </div>
+          <div className="admin-revenue-summary">
+            <div>
+              <span className="admin-stat-note">Łączny przychód</span>
+              <strong>{formatPln(stats.orders_total_revenue)}</strong>
+            </div>
+            <div>
+              <span className="admin-stat-note">Średnia wartość zamówienia</span>
+              <strong>{formatPln(stats.average_order_value)}</strong>
+            </div>
+          </div>
+          {stats.revenue_by_month.length > 0 && (
+            <div className="admin-bar-chart">
+              {stats.revenue_by_month.map((row) => (
+                <div key={row.month} className="admin-bar-chart-col">
+                  <span className="admin-bar-chart-value">{formatPln(row.revenue)}</span>
+                  <div className="admin-bar-chart-track">
+                    <span style={{ height: `${(row.revenue / maxMonthlyRevenue) * 100}%` }} />
+                  </div>
+                  <span className="admin-bar-chart-label">{formatMonth(row.month)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="admin-dashboard-grid">
         <div className="admin-panel">
           <div className="admin-panel-header">
@@ -148,18 +205,18 @@ export function AdminDashboardPage() {
           <div className="admin-panel-header">
             <div>
               <h2>Stan katalogu</h2>
-              <p className="admin-panel-subtitle">Krótki podgląd jakości danych.</p>
+              <p className="admin-panel-subtitle">Realny podgląd jakości danych, liczony z bazy.</p>
             </div>
           </div>
           <div className="admin-progress-list">
-            {CATALOG_HEALTH.map((row) => (
-              <div key={row.label} className="admin-progress-row">
+            {stats && CATALOG_HEALTH_LABELS.map((row) => (
+              <div key={row.key} className="admin-progress-row">
                 <div className="admin-progress-top">
                   <span>{row.label}</span>
-                  <span>{row.percent}%</span>
+                  <span>{stats.catalog_health[row.key]}%</span>
                 </div>
                 <div className="admin-progress-bar">
-                  <span style={{ width: `${row.percent}%` }} />
+                  <span style={{ width: `${stats.catalog_health[row.key]}%` }} />
                 </div>
               </div>
             ))}
@@ -186,6 +243,52 @@ export function AdminDashboardPage() {
                   </small>
                 </span>
                 <span className="admin-recent-price">{bike.price} PLN</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="admin-panel">
+          <div className="admin-panel-header">
+            <div>
+              <h2>Zamówienia wg statusu</h2>
+              <p className="admin-panel-subtitle">Wszystkie zamówienia, niezależnie od realizacji.</p>
+            </div>
+            <Link to="/admin/orders/list" className="admin-badge admin-badge--green">
+              Zobacz wszystkie
+            </Link>
+          </div>
+          <div className="admin-progress-list">
+            {stats && stats.orders_by_status.map((row) => (
+              <div key={row.status} className="admin-progress-row">
+                <div className="admin-progress-top">
+                  <span>{STATUS_LABELS_PL[row.status] ?? row.status}</span>
+                  <span>{row.count}</span>
+                </div>
+                <div className="admin-progress-bar">
+                  <span style={{ width: `${(row.count / maxStatusCount) * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="admin-panel">
+          <div className="admin-panel-header">
+            <h2>Najlepiej sprzedające się rowery</h2>
+          </div>
+          <ul className="admin-recent-list">
+            {stats && stats.top_bikes.length === 0 && <li><span className="admin-stat-note">Brak zrealizowanych zamówień.</span></li>}
+            {stats && stats.top_bikes.map((bike) => (
+              <li key={bike.bike_id}>
+                <span className="admin-nav-icon">
+                  <IconBike />
+                </span>
+                <span className="admin-recent-list-text">
+                  <Link to={`/admin/bikes/${bike.bike_id}/details`}>{bike.name}</Link>
+                  <small>{bike.quantity_sold} szt. sprzedanych</small>
+                </span>
+                <span className="admin-recent-price">{formatPln(bike.revenue)}</span>
               </li>
             ))}
           </ul>
